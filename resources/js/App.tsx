@@ -1,42 +1,34 @@
-import '../css/app.css';
+import "../css/app.css";
+import {createRoot} from "react-dom/client";
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {createRouter, RouterProvider} from "@tanstack/react-router";
+import {routeTree} from "./routeTree.gen";
+import {AuthProvider, useAuth} from "@/AuthContext";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createRouter, RouterProvider } from '@tanstack/react-router';
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
+export const router = createRouter({
+    routeTree,
+    context: {
+        auth: undefined! as AuthContextType
+    }
+});
 
-import { routeTree } from './routeTree.gen';
-
-export const router = createRouter({ routeTree });
-
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
     interface Register {
         router: typeof router;
     }
 }
+const queryClient = new QueryClient();
 
-function App() {
-    return <RouterProvider router={router} />;
+function InnerApp() {
+    const auth = useAuth();
+    return <RouterProvider router={router} context={{auth}}/>;
 }
 
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            gcTime: 0,
-        },
-    },
-});
-
-const rootElement = document.getElementById('app');
-
-if (!rootElement) {
-    throw new Error('No root element found. Make sure to include the <div id="app"></div> in your layout template.');
-}
-
-createRoot(rootElement).render(
-    <StrictMode>
-        <QueryClientProvider client={queryClient}>
-            <App />
-        </QueryClientProvider>
-    </StrictMode>,
+createRoot(document.getElementById("app")!).render(
+    <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+            <InnerApp/>
+        </AuthProvider>
+    </QueryClientProvider>
 );
+
