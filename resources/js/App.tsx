@@ -4,6 +4,7 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {createRouter, RouterProvider} from "@tanstack/react-router";
 import {routeTree} from "./routeTree.gen";
 import {AuthProvider, useAuth} from "@/AuthContext";
+import AdminNavbarComponent from "@/components/AdminNavbarComponent";
 
 export const router = createRouter({
     routeTree,

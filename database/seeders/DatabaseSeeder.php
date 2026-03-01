@@ -20,5 +20,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'cs2-nades@gmail.com',
             'password' => bcrypt('password'),
         ]);
+
+        $this->call(MapSeeder::class);
+        $this->call(NadeSeeder::class);
     }
 }

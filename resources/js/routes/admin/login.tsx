@@ -6,7 +6,7 @@ import {Button} from "@/components/ui/button";
 import React from "react";
 import {useAuth} from "@/AuthContext";
 
-export const Route = createFileRoute('/admin/')({
+export const Route = createFileRoute('/admin/login')({
     component: RouteComponent,
 })
 

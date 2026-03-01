@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Resources\MapResource;
+use App\Models\Map;
 
 class DashboardController extends Controller
 {
@@ -18,5 +19,10 @@ class DashboardController extends Controller
         } else {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
+    }
+
+    public function getMaps(){
+        $maps = Map::query()->get();
+        return MapResource::collection($maps);
     }
 }
