@@ -1,9 +1,8 @@
-import {createFileRoute, redirect, useNavigate} from '@tanstack/react-router'
+import {createFileRoute, redirect} from '@tanstack/react-router'
 import React from "react";
-import MapsComponent from "@/components/MapsComponent";
 import AdminLayout from "@/layouts/AdminLayout";
 
-export const Route = createFileRoute('/admin/dashboard')({
+export const Route = createFileRoute('/admin/dashboard/')({
     beforeLoad: async ({context}) => {
         const auth: AuthContextType = (context as { auth: AuthContextType }).auth;
         const user: LoginData = auth.user ?? (await auth.loadUser());
@@ -21,7 +20,6 @@ function RouteComponent() {
     return (
         <div>
             <AdminLayout>
-                {/*<MapsComponent/>*/}
             </AdminLayout>
         </div>
     )

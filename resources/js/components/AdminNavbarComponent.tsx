@@ -4,7 +4,6 @@ import {
     MenubarGroup,
     MenubarItem,
     MenubarMenu,
-    MenubarSeparator, MenubarShortcut,
     MenubarTrigger
 } from "@/components/ui/menubar";
 import React from "react";
@@ -13,7 +12,7 @@ import {useNavigate} from "@tanstack/react-router";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 
 export default function AdminNavbarComponent() {
-    const {user, logout} = useAuth();
+    const {logout} = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -24,26 +23,33 @@ export default function AdminNavbarComponent() {
     const home = () => {
         navigate({to: "/admin/dashboard"})
     }
+
+    const maps = () => {
+        navigate({to: "/admin/dashboard/maps"})
+    }
     return (
         <div>
             <Menubar className="mb-5 h-14">
                 <MenubarMenu>
-                    <h1 className="font-bold text-4xl m-5">CS2 Nades</h1>
+                    <h1 className="font-bold text-4xl m-5 cursor-pointer">CS2 Nades</h1>
                 </MenubarMenu>
                 <MenubarMenu>
-                    <h1 onClick={home} className="ms-10 grow font-bold text-2xl">Home</h1>
+                    <h1 onClick={home} className="ms-10 font-bold text-2xl cursor-pointer">Home</h1>
+                </MenubarMenu>
+                <MenubarMenu>
+                    <h1 onClick={maps} className="ms-10 grow font-bold text-2xl cursor-pointer">Maps</h1>
                 </MenubarMenu>
                 <MenubarMenu>
                     <MenubarTrigger>
-                        <Avatar>
+                        <Avatar className="cursor-pointer">
                             <AvatarImage/>
                             <AvatarFallback>CS2</AvatarFallback>
                         </Avatar>
                     </MenubarTrigger>
                     <MenubarContent>
                         <MenubarGroup>
-                            <MenubarItem>Profile</MenubarItem>
-                            <MenubarItem onClick={handleLogout}>Logout</MenubarItem>
+                            <MenubarItem className="cursor-pointer">Profile</MenubarItem>
+                            <MenubarItem className="cursor-pointer" onClick={handleLogout}>Logout</MenubarItem>
                         </MenubarGroup>
                     </MenubarContent>
                 </MenubarMenu>

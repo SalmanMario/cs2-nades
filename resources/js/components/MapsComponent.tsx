@@ -14,17 +14,17 @@ export default function MapsComponent() {
     if (error) return <div>Error: {error.message}</div>
 
     return (
-        <div>
+        <div className="container mx-auto p-4">
             <div className="grid grid-cols-12 gap-10">
                 {data?.data.map((map: MapData) => (
                     <div key={map.id} className="col-span-12 md:col-span-6 lg:col-span-3">
-                        <Card className="relative mx-auto w-full max-w-sm pt-0 cursor-pointer"
+                        <Card className="cursor-pointer"
                               onClick={() => navigate({to: `/admin/dashboard/${map.id}`})}
                         >
                             <img
                                 src={`/storage/${map.image}`}
                                 alt={map.name}
-                                className="w-full object-cover"
+                                className="object-cover"
                             />
 
                             <CardHeader className="text-center text-4xl">
