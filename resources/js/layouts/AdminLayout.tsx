@@ -1,11 +1,14 @@
 import AdminNavbarComponent from "@/components/AdminNavbarComponent";
 import FooterComponent from "@/components/FooterComponent";
+import React from "react";
 
-export default function AdminLayout({children} : any) {
+export default function AdminLayout({children}: any) {
+
+
     return (
-        <div>
+        <div className="flex flex-col min-h-screen">
             <AdminNavbarComponent/>
-            <div className="container mx-auto">
+            <div className="flex-1 mx-auto">
                 {children}
             </div>
             <FooterComponent/>
