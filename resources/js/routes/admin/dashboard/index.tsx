@@ -1,6 +1,7 @@
 import {createFileRoute, redirect} from '@tanstack/react-router'
 import React from "react";
 import AdminLayout from "@/layouts/AdminLayout";
+import MapLayout from "@/components/MapLayout";
 
 export const Route = createFileRoute('/admin/dashboard/')({
     beforeLoad: async ({context}) => {

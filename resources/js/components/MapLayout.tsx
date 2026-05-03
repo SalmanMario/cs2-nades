@@ -1,9 +1,4 @@
-import dust2NoCallouts from "../../../database/seeders/images/maps-img/Dust2_callouts.png";
-import dust2Callouts from "../../../database/seeders/images/maps-img/Dust2_no_callouts.png";
-import smoke from "../../../public/storage/images/nades-types/Smoke.png";
-import he_grenade from "@/images/nades-types/HE_Grenade.png";
-import incendiary from "@/images/nades-types/Incendiary.png";
-import flashbang from "../../../public/storage/images/nades-types/Flashbang.png";
+import dust2NoCallouts from "../../../database/seeders/images/maps-callouts-img/dust2_no_callouts.png";
 import React, {useState, useEffect} from "react";
 import {Sidebar, SidebarGroup, SidebarHeader, SidebarProvider} from "@/components/ui/sidebar";
 import {Button} from "@/components/ui/button";
@@ -24,11 +19,11 @@ export default function MapLayout() {
     const [mapImage, setMapImage] = useState<HTMLImageElement | null>(null);
     const [mapImageCallouts, setMapImageCallouts] = useState<HTMLImageElement | null>(null);
 
-    useEffect(() => {
-        const img = new window.Image();
-        img.src = dust2Callouts;
-        img.onload = () => setMapImage(img);
-    }, []);
+    // useEffect(() => {
+    //     const img = new window.Image();
+    //     img.src = dust2Callouts;
+    //     img.onload = () => setMapImage(img);
+    // }, []);
 
     useEffect(() => {
         const img = new window.Image();
@@ -36,11 +31,11 @@ export default function MapLayout() {
         img.onload = () => setMapImageCallouts(img);
     }, []);
 
-    useEffect(() => {
-        const img = new window.Image();
-        img.src = he_grenade;
-        img.onload = () => setHeIcon(img);
-    }, []);
+    // useEffect(() => {
+    //     const img = new window.Image();
+    //     img.src = he_grenade;
+    //     img.onload = () => setHeIcon(img);
+    // }, []);
 
     const getCoords = (e : KonvaEventObject<MouseEvent>) => {
         const pos = e.target.getStage()?.getPointerPosition();

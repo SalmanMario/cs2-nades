@@ -19,7 +19,7 @@ export default function MapsComponent() {
                 {data?.data.map((map: MapData) => (
                     <div key={map.id} className="col-span-12 md:col-span-6 lg:col-span-3">
                         <Card className="cursor-pointer"
-                              onClick={() => navigate({to: `/admin/dashboard/${map.id}`})}
+                              onClick={() => navigate({to: `/admin/dashboard/maps/${map.name.toLowerCase()}`})}
                         >
                             <img
                                 src={`/storage/${map.image}`}

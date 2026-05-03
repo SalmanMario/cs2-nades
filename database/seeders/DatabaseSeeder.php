@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(MapSeeder::class);
         $this->call(NadeSeeder::class);
+        $this->call(TeamSeeder::class);
     }
 }

@@ -13,7 +13,9 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
-import { Route as AdminDashboardMapsRouteImport } from './routes/admin/dashboard/maps'
+import { Route as AdminDashboardMapsIndexRouteImport } from './routes/admin/dashboard/maps/index'
+import { Route as AdminDashboardMapsMapNameIndexRouteImport } from './routes/admin/dashboard/maps/$mapName/index'
+import { Route as AdminDashboardMapsMapNameCreateRouteImport } from './routes/admin/dashboard/maps/$mapName/create'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -35,33 +37,51 @@ const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
   path: '/admin/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminDashboardMapsRoute = AdminDashboardMapsRouteImport.update({
-  id: '/admin/dashboard/maps',
-  path: '/admin/dashboard/maps',
+const AdminDashboardMapsIndexRoute = AdminDashboardMapsIndexRouteImport.update({
+  id: '/admin/dashboard/maps/',
+  path: '/admin/dashboard/maps/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminDashboardMapsMapNameIndexRoute =
+  AdminDashboardMapsMapNameIndexRouteImport.update({
+    id: '/admin/dashboard/maps/$mapName/',
+    path: '/admin/dashboard/maps/$mapName/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AdminDashboardMapsMapNameCreateRoute =
+  AdminDashboardMapsMapNameCreateRouteImport.update({
+    id: '/admin/dashboard/maps/$mapName/create',
+    path: '/admin/dashboard/maps/$mapName/create',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin/login': typeof AdminLoginRoute
-  '/admin/dashboard/maps': typeof AdminDashboardMapsRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
+  '/admin/dashboard/maps/': typeof AdminDashboardMapsIndexRoute
+  '/admin/dashboard/maps/$mapName/create': typeof AdminDashboardMapsMapNameCreateRoute
+  '/admin/dashboard/maps/$mapName/': typeof AdminDashboardMapsMapNameIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin/login': typeof AdminLoginRoute
-  '/admin/dashboard/maps': typeof AdminDashboardMapsRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
+  '/admin/dashboard/maps': typeof AdminDashboardMapsIndexRoute
+  '/admin/dashboard/maps/$mapName/create': typeof AdminDashboardMapsMapNameCreateRoute
+  '/admin/dashboard/maps/$mapName': typeof AdminDashboardMapsMapNameIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin/login': typeof AdminLoginRoute
-  '/admin/dashboard/maps': typeof AdminDashboardMapsRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
+  '/admin/dashboard/maps/': typeof AdminDashboardMapsIndexRoute
+  '/admin/dashboard/maps/$mapName/create': typeof AdminDashboardMapsMapNameCreateRoute
+  '/admin/dashboard/maps/$mapName/': typeof AdminDashboardMapsMapNameIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -69,30 +89,38 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin/login'
-    | '/admin/dashboard/maps'
     | '/admin/dashboard/'
+    | '/admin/dashboard/maps/'
+    | '/admin/dashboard/maps/$mapName/create'
+    | '/admin/dashboard/maps/$mapName/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/admin/login'
-    | '/admin/dashboard/maps'
     | '/admin/dashboard'
+    | '/admin/dashboard/maps'
+    | '/admin/dashboard/maps/$mapName/create'
+    | '/admin/dashboard/maps/$mapName'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/admin/login'
-    | '/admin/dashboard/maps'
     | '/admin/dashboard/'
+    | '/admin/dashboard/maps/'
+    | '/admin/dashboard/maps/$mapName/create'
+    | '/admin/dashboard/maps/$mapName/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminLoginRoute: typeof AdminLoginRoute
-  AdminDashboardMapsRoute: typeof AdminDashboardMapsRoute
   AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
+  AdminDashboardMapsIndexRoute: typeof AdminDashboardMapsIndexRoute
+  AdminDashboardMapsMapNameCreateRoute: typeof AdminDashboardMapsMapNameCreateRoute
+  AdminDashboardMapsMapNameIndexRoute: typeof AdminDashboardMapsMapNameIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -125,11 +153,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/dashboard/maps': {
-      id: '/admin/dashboard/maps'
+    '/admin/dashboard/maps/': {
+      id: '/admin/dashboard/maps/'
       path: '/admin/dashboard/maps'
-      fullPath: '/admin/dashboard/maps'
-      preLoaderRoute: typeof AdminDashboardMapsRouteImport
+      fullPath: '/admin/dashboard/maps/'
+      preLoaderRoute: typeof AdminDashboardMapsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard/maps/$mapName/': {
+      id: '/admin/dashboard/maps/$mapName/'
+      path: '/admin/dashboard/maps/$mapName'
+      fullPath: '/admin/dashboard/maps/$mapName/'
+      preLoaderRoute: typeof AdminDashboardMapsMapNameIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard/maps/$mapName/create': {
+      id: '/admin/dashboard/maps/$mapName/create'
+      path: '/admin/dashboard/maps/$mapName/create'
+      fullPath: '/admin/dashboard/maps/$mapName/create'
+      preLoaderRoute: typeof AdminDashboardMapsMapNameCreateRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -139,8 +181,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminLoginRoute: AdminLoginRoute,
-  AdminDashboardMapsRoute: AdminDashboardMapsRoute,
   AdminDashboardIndexRoute: AdminDashboardIndexRoute,
+  AdminDashboardMapsIndexRoute: AdminDashboardMapsIndexRoute,
+  AdminDashboardMapsMapNameCreateRoute: AdminDashboardMapsMapNameCreateRoute,
+  AdminDashboardMapsMapNameIndexRoute: AdminDashboardMapsMapNameIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,6 +1,6 @@
 <?php
 
-use App\Enum\NadeEnum;
+use App\Enum\TeamEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,10 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nades', function (Blueprint $table) {
+        Schema::create('teams', function (Blueprint $table) {
             $table->id();
-            $table->enum('name', NadeEnum::cases());
-            $table->string('image', 255);
+            $table->enum('name', TeamEnum::cases());
+            $table->string("image", 255);
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nades');
+        Schema::dropIfExists('teams');
     }
 };

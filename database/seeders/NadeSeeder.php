@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Enum\NadeEnum;
 use App\Models\Nade;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class NadeSeeder extends Seeder
 {
@@ -13,10 +15,20 @@ class NadeSeeder extends Seeder
      */
     public function run(): void
     {
+        $storagePath = Storage::path('/public/images/nade-img');
+        if (!File::exists($storagePath)) {
+            File::makeDirectory($storagePath, 0775, true);
+        }
+
         foreach (NadeEnum::cases() as $nade) {
             Nade::query()->updateOrCreate([
                 'name' => $nade->value,
+            ], [
+                'image' => 'images/nades-img/'.$nade->value.'.png',
             ]);
         }
+
+
+        File::copyDirectory('database/seeders/images/nades-img', $storagePath);
     }
 }
