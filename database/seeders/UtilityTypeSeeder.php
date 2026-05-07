@@ -3,12 +3,12 @@
 namespace Database\Seeders;
 
 use App\Enum\NadeEnum;
-use App\Models\Nade;
+use App\Models\UtilityType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
-class NadeSeeder extends Seeder
+class UtilityTypeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,7 +21,7 @@ class NadeSeeder extends Seeder
         }
 
         foreach (NadeEnum::cases() as $nade) {
-            Nade::query()->updateOrCreate([
+            UtilityType::query()->updateOrCreate([
                 'name' => $nade->value,
             ], [
                 'image' => 'images/nades-img/'.$nade->value.'.png',

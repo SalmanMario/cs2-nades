@@ -7,13 +7,13 @@ use App\Http\Resources\MapResource;
 use App\Http\Resources\NadeResource;
 use App\Http\Resources\TeamResource;
 use App\Models\Map;
-use App\Models\Nade;
+use App\Models\UtilityType;
 use App\Models\Team;
 
 class ApiUtilsController extends Controller
 {
     public function getNades(){
-        return NadeResource::collection(Nade::all());
+        return NadeResource::collection(UtilityType::all());
     }
 
     public function getTeams(){

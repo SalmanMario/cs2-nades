@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nades', function (Blueprint $table) {
+        Schema::create('utility_types', function (Blueprint $table) {
             $table->id();
             $table->enum('name', NadeEnum::cases());
             $table->string('image', 255);
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nades');
+        Schema::dropIfExists('utility_types');
     }
 };
