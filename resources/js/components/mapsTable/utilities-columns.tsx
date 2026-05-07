@@ -10,8 +10,9 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {UtilityTable} from "@/types/Utility";
+import {NavigateFn} from "@tanstack/react-router";
 
-export const utilitiesColumns: ColumnDef<UtilityTable>[] = [
+export const utilitiesColumns = (navigate: NavigateFn, mapName: string): ColumnDef<UtilityTable>[] => [
     {
         accessorKey: "grenade_name",
         header: () => {
@@ -127,6 +128,7 @@ export const utilitiesColumns: ColumnDef<UtilityTable>[] = [
         header: "Actions",
         cell: ({row}) => {
             const action = row.original;
+            console.log(action)
 
             return (
                 <DropdownMenu>
@@ -139,7 +141,7 @@ export const utilitiesColumns: ColumnDef<UtilityTable>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(action.id)}
+                            onClick={() => navigate({ to: "/admin/dashboard/maps/$mapName/$id/edit", params: { mapName, id: String(action.id) } })}
                         >
                             Edit
                         </DropdownMenuItem>

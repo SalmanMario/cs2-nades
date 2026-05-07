@@ -14,7 +14,7 @@ class Utility extends Model
 
     public function attachments(): HasMany
     {
-        return $this->hasMany(Attachment::class);
+        return $this->hasMany(Attachment::class, 'attachmentable_id');
     }
 
     public function team(): belongsTo

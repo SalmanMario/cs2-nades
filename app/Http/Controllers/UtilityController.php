@@ -47,6 +47,7 @@ class UtilityController extends Controller
      */
     public function store(UtilityRequest $request)
     {
+        $this->attachmentService->initFolder($request->map_name);
         $mapId = Map::where('name', $request->map_name)->first()->id;
 
         $startCoords = StartUtilityCoordinate::query()->create([
@@ -70,8 +71,8 @@ class UtilityController extends Controller
         $utility = new Utility();
         $utility->fill([
             'grenade_name' => $request->grenade_name,
-            'team_type_id' => $request->team_type_id,
-            'technique_type' => strtoupper($request->technique_type),
+            'team_id' => $request->team_type_id,
+            'technique_type' => $request->technique_type,
             'movement_type' => $request->movement_type,
             'map_id' => $mapId,
             'utility_coordinate_id' => $coordinates->id,
@@ -99,7 +100,8 @@ class UtilityController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $utility = Utility::with(['team', 'utilityCoordinates.utility_type', 'utilityCoordinates.start_utility_coordinates', 'utilityCoordinates.end_utility_coordinates', 'attachments'])->find($id);
+        return new UtilityResource($utility);
     }
 
     /**
@@ -107,7 +109,31 @@ class UtilityController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $utility = Utility::with(['team', 'utilityCoordinates.utility_type', 'utilityCoordinates.start_utility_coordinates', 'utilityCoordinates.end_utility_coordinates', 'attachments'])->find($id);
+
+        $utility->utilityCoordinates->start_utility_coordinates->update([
+            'x' => $request->existing_start_coords_x ? $request->existing_start_coords_x : $request->start_coords_x,
+            'y' => $request->existing_start_coords_y ? $request->existing_start_coords_y : $request->start_coords_y,
+            'title_from' => $request->title_from,
+        ]);
+
+        $utility->utilityCoordinates->end_utility_coordinates->update([
+            'x' => $request->existing_end_coords_x ? $request->existing_end_coords_x : $request->end_coords_x,
+            'y' => $request->existing_end_coords_y ? $request->existing_end_coords_y : $request->end_coords_y,
+            'title_to' => $request->title_to,
+        ]);
+
+        $utility->update([
+            'grenade_name' => $request->grenade_name,
+            'team_id' => $request->team_type_id,
+            'technique_type' => $request->technique_type,
+            'movement_type' => $request->movement_type,
+        ]);
+
+        if ($request->hasFile('image_lineup'))
+            $this->attachmentService->process($request->file('image_lineup'), AttachmentType::IMAGE_LINEUP->value, $utility);
+        if ($request->hasFile('video_lineup'))
+            $this->attachmentService->process($request->file('video_lineup'), AttachmentType::VIDEO_LINEUP->value, $utility);
     }
 
     /**

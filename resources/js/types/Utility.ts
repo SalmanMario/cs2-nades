@@ -15,6 +15,7 @@ export type UtilityTable = {
 }
 
 export type UtilityForm = {
+    id: string,
     grenade_name: string,
     utility_type_id: string,
     team_type_id: string,
@@ -24,10 +25,12 @@ export type UtilityForm = {
     title_to: string,
     start_coords_x: string,
     start_coords_y: string,
+    start_coords_title_from: string,
     existing_start_coords_x: string,
     existing_start_coords_y: string,
     end_coords_x: string,
     end_coords_y: string,
+    end_coords_title_to: string,
     existing_end_coords_x: string,
     existing_end_coords_y: string,
     image_lineup: File[],

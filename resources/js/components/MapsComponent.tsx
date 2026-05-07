@@ -16,7 +16,7 @@ export default function MapsComponent() {
     return (
         <div className="container mx-auto p-4">
             <div className="grid grid-cols-12 gap-10">
-                {data?.data.map((map: MapData) => (
+                {data?.data.map((map: MapResponse) => (
                     <div key={map.id} className="col-span-12 md:col-span-6 lg:col-span-3">
                         <Card className="cursor-pointer"
                               onClick={() => navigate({to: `/admin/dashboard/maps/${map.name.toLowerCase()}`})}

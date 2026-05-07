@@ -19,7 +19,6 @@ function RouteComponent() {
         method: 'GET',
         url: `/utilities/${mapName}`,
     })
-    console.log(utilities)
     const goToCreate = () => {
         navigate({to: "/admin/dashboard/maps/$mapName/create", params: {mapName}}).then()
     }
@@ -27,7 +26,7 @@ function RouteComponent() {
        <AdminLayout>
            <Button variant="outline" className="mb-5" onClick={goToCreate}>Create Utility</Button>
            {utilities && (
-               <DataTable columns={utilitiesColumns} data={utilities?.data ?? []}/>
+               <DataTable columns={utilitiesColumns(navigate, mapName)} data={utilities?.data ?? []}/>
            )}
        </AdminLayout>
     </div>

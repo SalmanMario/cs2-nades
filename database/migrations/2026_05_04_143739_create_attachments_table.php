@@ -16,8 +16,10 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->nullableMorphs('attachmentable');
-            $table->string('filename', 255);
             $table->string('type')->nullable();
+            $table->string('filename', 255);
+            $table->string('extension', 5);
+            $table->string('path', 255);
         });
     }
 
