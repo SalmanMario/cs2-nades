@@ -18,7 +18,6 @@ return new class extends Migration
             $table->nullableMorphs('attachmentable');
             $table->string('type')->nullable();
             $table->string('filename', 255);
-            $table->string('extension', 5);
             $table->string('path', 255);
         });
     }

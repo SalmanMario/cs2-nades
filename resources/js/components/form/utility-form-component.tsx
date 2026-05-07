@@ -11,6 +11,13 @@ import {SelectItem} from "@/components/ui/select";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import {Button} from "@/components/ui/button";
 import MapLayoutBackend from "@/components/MapLayoutBackend";
+import {FilePond, registerPlugin} from 'react-filepond';
+import 'filepond/dist/filepond.min.css';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import {FilePondFile} from "filepond";
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType);
 
 export default function UtilityFormComponent({utility = null, mapName}: {
     utility: UtilityForm | null,
@@ -18,6 +25,8 @@ export default function UtilityFormComponent({utility = null, mapName}: {
 }) {
     const [isEditingStartCoordinates, setIsEditingStartCoordinates] = useState(false);
     const [isEditingEndCoordinates, setIsEditingEndCoordinates] = useState(false);
+    const [imageLineup, setImageLineup] = useState<FilePondFile[]>([]);
+    const [videoLineup, setVideoLineup] = useState<FilePondFile[]>([]);
     const isEditing = utility ? 'PUT' : 'POST'
     type Nade = {
         id: string,
@@ -55,7 +64,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
     });
 
     const handleMutation = useMutationApi<UtilityForm, Error, FormData>({
-        url: utility ? `/utilities/${utility.id}` : '/utilities-img',
+        url: utility ? `/utilities/${utility.id}` : '/utilities',
         method: isEditing,
     })
 
@@ -80,15 +89,18 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         formData.append("existing_end_coords_x", utility.existing_end_coords_x);
         formData.append("existing_end_coords_y", utility.existing_end_coords_y);
 
-        if (utility.image_lineup)
-            utility.image_lineup.forEach((file) => {
-                formData.append("image_lineup[]", file);
-            });
+        imageLineup.forEach((file) => {
+            if (file.serverId) {
+                formData.append("image_lineup_ids[]", file.serverId);
+            }
+        });
 
-        if (utility.video_lineup)
-            utility.video_lineup.forEach((file) => {
-                formData.append("video_lineup[]", file);
-            });
+        videoLineup.forEach((file) => {
+            if (file.serverId) {
+                formData.append("video_lineup_ids[]", file.serverId);
+            }
+        })
+
         handleMutation.mutate(formData, {
             onSuccess: () => {
                 reset()
@@ -315,29 +327,28 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                     <AccordionItem value="item-1">
                         <AccordionTrigger>Image Lineup</AccordionTrigger>
                         <AccordionContent className="space-y-4">
-                            <Input type="file" id="image_lineup" accept="image/*" multiple onChange={(e) => {
-                                const files = e.target.files
-                                setValue('image_lineup', files ? Array.from(files) : [], {shouldDirty: true})
-                            }}/>
-                            {errors.image_lineup &&
-                                <p className="text-red-500 text-sm mt-1">{errors.image_lineup.message}</p>}
-                            {previewImageUrls.length > 0 && (
-                                <div>
-                                    <p className="text-sm text-muted-foreground mb-2">New Images</p>
-                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                                        {previewImageUrls.map((image, index) => (
-                                            <div key={index}
-                                                 className="overflow-hidden rounded-md border bg-muted aspect-4/3">
-                                                <img
-                                                    src={image}
-                                                    alt={`Preview ${index + 1}`}
-                                                    className="w-50 h-50 object-cover"
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+                            <FilePond
+                                name="image_lineup"
+                                files={imageLineup}
+                                onupdatefiles={setImageLineup}
+                                acceptedFileTypes={['image/*']}
+                                maxFiles={10}
+                                labelIdle='Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
+                                allowMultiple={true}
+                                server={{
+                                    process: {
+                                        url: '/attachment/upload',
+                                        method: 'POST',
+                                        headers:{
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '',
+                                        },
+                                        onload: (response) => {
+                                            const data = JSON.parse(response);
+                                            return String(data.id);
+                                        },
+                                    },
+                                }}
+                            />
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
@@ -346,14 +357,25 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                     <AccordionItem value="item-1">
                         <AccordionTrigger>Video Lineup</AccordionTrigger>
                         <AccordionContent>
-                            <Input
-                                type="file"
-                                id="video-lineup"
-                                accept="video/*"
-                                multiple
-                                onChange={(e) => {
-                                    const files = e.target.files
-                                    setValue('video_lineup', files ? Array.from(files) : [], {shouldDirty: true})
+                            <FilePond
+                                name="video_lineup"
+                                files={videoLineup}
+                                onupdatefiles={setVideoLineup}
+                                acceptedFileTypes={["video/mp4"]}
+                                maxFiles={1}
+                                labelIdle='Drag & Drop your video or <span class="filepond--label-action">Browse</span>'
+                                server={{
+                                    process: {
+                                        url: '/attachment/upload',
+                                        method: 'POST',
+                                        headers:{
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '',
+                                        },
+                                        onload: (response) => {
+                                            const data = JSON.parse(response);
+                                            return String(data.id);
+                                        },
+                                    },
                                 }}
                             />
                             {errors.video_lineup &&

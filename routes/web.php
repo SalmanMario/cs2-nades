@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ApiAttachmentController;
 use App\Http\Controllers\Api\ApiUtilsController;
 use App\Http\Controllers\UtilityController;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +12,7 @@ Route::get('/getMaps', [\App\Http\Controllers\DashboardController::class, 'getMa
 Route::get('/getNades', [ApiUtilsController::class, 'getNades'])->name('getNades');
 Route::get('/getTeams', [ApiUtilsController::class, 'getTeams'])->name('getTeams');
 Route::get('/getMap/{map}', [ApiUtilsController::class, 'getMap'])->name('getMap');
+Route::post('/attachment/upload', [ApiAttachmentController::class, 'store'])->name('attachment.store');
 
 Route::get('/utilities/{mapName}', [UtilityController::class, 'index']);
 Route::resource('utilities', UtilityController::class)->except('index');

@@ -8,17 +8,15 @@ use Illuminate\Support\Facades\File;
 
 class AttachmentService
 {
-    public function process(array $data, string $type, Model $attachable)
+    public function process(array $fileIds, string $type, Model $attachable)
     {
-        foreach ($data as $d) {
-            $image = new Attachment();
-            $image->fill([
-                'attachmentable_id' => $attachable->id,
-                'attachmentable_type' => $attachable::class,
-                'filename' => $d->getClientOriginalName(),
+        $images = Attachment::whereIn('id', $fileIds)->get();
+        foreach ($images as $image) {
+            $image->update([
                 'type' => $type,
+                'attachmentable_id' => $attachable->id,
+                'attachmentable_type' => $attachable->getMorphClass(),
             ]);
-            $image->save();
         }
     }
 
