@@ -13,6 +13,7 @@ Route::get('/getNades', [ApiUtilsController::class, 'getNades'])->name('getNades
 Route::get('/getTeams', [ApiUtilsController::class, 'getTeams'])->name('getTeams');
 Route::get('/getMap/{map}', [ApiUtilsController::class, 'getMap'])->name('getMap');
 Route::post('/attachment/upload', [ApiAttachmentController::class, 'store'])->name('attachment.store');
+Route::get('/attachment/{attachment}', [ApiAttachmentController::class, 'show'])->name('attachment.show');
 
 Route::get('/utilities/{mapName}', [UtilityController::class, 'index']);
 Route::resource('utilities', UtilityController::class)->except('index');

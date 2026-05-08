@@ -4,7 +4,7 @@ import {DataTable} from "@/components/mapsTable/data-table";
 import {utilitiesColumns} from "@/components/mapsTable/utilities-columns";
 import {Button} from "@/components/ui/button";
 import {useQueryApi} from "@/hooks/use-query";
-import {UtilityTable} from "@/types/Utility";
+import {UtilityTable} from "../../../../../types/utility";
 
 export const Route = createFileRoute('/admin/dashboard/maps/$mapName/')({
     component: RouteComponent

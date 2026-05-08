@@ -1,4 +1,4 @@
-type UserData = {
+type User = {
     id: number,
     name: string,
     email: string,

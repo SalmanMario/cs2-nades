@@ -45,7 +45,7 @@ class UtilityController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UtilityRequest $request)
     {
         $mapId = Map::where('name', $request->map_name)->first()->id;
 
@@ -133,6 +133,8 @@ class UtilityController extends Controller
             $this->attachmentService->process($request->file('image_lineup'), AttachmentType::IMAGE_LINEUP->value, $utility);
         if ($request->hasFile('video_lineup'))
             $this->attachmentService->process($request->file('video_lineup'), AttachmentType::VIDEO_LINEUP->value, $utility);
+
+        return response()->json(['message' => 'Utility updated successfully'], 200);
     }
 
     /**

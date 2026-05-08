@@ -1,4 +1,4 @@
-import type {UtilityForm} from "@/types/Utility";
+import type {UtilityForm, UtilityFormErrors} from "@/types/utility";
 import {useMutationApi} from "@/hooks/use-mutation";
 import React, {useEffect, useState} from "react";
 import {useQueryApi} from "@/hooks/use-query";
@@ -12,11 +12,13 @@ import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/co
 import {Button} from "@/components/ui/button";
 import MapLayoutBackend from "@/components/MapLayoutBackend";
 import {FilePond, registerPlugin} from 'react-filepond';
-import 'filepond/dist/filepond.min.css';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
-import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
-import {FilePondFile} from "filepond";
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+import 'filepond/dist/filepond.min.css';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import {FilePondFile, FilePondInitialFile} from "filepond";
+import {useNavigate} from "@tanstack/react-router";
+
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType);
 
 export default function UtilityFormComponent({utility = null, mapName}: {
@@ -25,27 +27,18 @@ export default function UtilityFormComponent({utility = null, mapName}: {
 }) {
     const [isEditingStartCoordinates, setIsEditingStartCoordinates] = useState(false);
     const [isEditingEndCoordinates, setIsEditingEndCoordinates] = useState(false);
-    const [imageLineup, setImageLineup] = useState<FilePondFile[]>([]);
-    const [videoLineup, setVideoLineup] = useState<FilePondFile[]>([]);
+    const [startCoordinates, setStartCoordinates] = useState<{ x: number; y: number } | undefined>(undefined);
+    const [endCoordinates, setEndCoordinates] = useState<{ x: number; y: number } | undefined>(undefined);
+    const [imageLineup, setImageLineup] = useState<FilePondInitialFile[]>([]);
+    const [videoLineup, setVideoLineup] = useState<FilePondInitialFile[]>([]);
+    const navigate = useNavigate();
     const isEditing = utility ? 'PUT' : 'POST'
-    type Nade = {
-        id: string,
-        name: string,
-        image: string,
-    }
-
-    type Teams = {
-        id: string,
-        name: string,
-        image: string,
-    }
 
     const {
         register,
         handleSubmit,
         control,
         reset,
-        watch,
         setValue,
         setError,
         formState: {errors}
@@ -63,12 +56,18 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         }
     });
 
-    const handleMutation = useMutationApi<UtilityForm, Error, FormData>({
+    const handleImageUpdate = (files: FilePondFile[]) => {
+        setImageLineup(files as unknown as FilePondInitialFile[]);
+    };
+
+    const handleVideoUpdate = (files: FilePondFile[]) => {
+        setVideoLineup(files as unknown as FilePondInitialFile[]);
+    };
+
+    const handleMutation = useMutationApi<UtilityForm, UtilityFormErrors, FormData>({
         url: utility ? `/utilities/${utility.id}` : '/utilities',
         method: isEditing,
     })
-
-    console.log(utility)
 
     const onSubmit = (utility: UtilityForm) => {
         const formData = new FormData();
@@ -89,13 +88,13 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         formData.append("existing_end_coords_x", utility.existing_end_coords_x);
         formData.append("existing_end_coords_y", utility.existing_end_coords_y);
 
-        imageLineup.forEach((file) => {
+        (imageLineup as unknown as FilePondFile[]).forEach((file) => {
             if (file.serverId) {
                 formData.append("image_lineup_ids[]", file.serverId);
             }
         });
 
-        videoLineup.forEach((file) => {
+        (videoLineup as unknown as FilePondFile[]).forEach((file) => {
             if (file.serverId) {
                 formData.append("video_lineup_ids[]", file.serverId);
             }
@@ -103,9 +102,16 @@ export default function UtilityFormComponent({utility = null, mapName}: {
 
         handleMutation.mutate(formData, {
             onSuccess: () => {
-                reset()
+                reset();
+                navigate({
+                    to: "/admin/dashboard/maps/$mapName",
+                    params:{
+                        mapName
+                    }
+                }).then();
             },
             onError: (error) => {
+                console.log(error);
                 Object.entries(error.errors).forEach(([field, message]) => {
                     setError(field as keyof UtilityForm, {message: message[0]})
                 })
@@ -126,19 +132,25 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                 image_lineup: [],
                 video_lineup: [],
             })
+
+            setImageLineup(
+                Object.values(utility.image_lineup ?? {}).map((image: any) => ({
+                    source: String(image.id),
+                    options: {type: 'local'}
+                }))
+            );
+
+            setVideoLineup(
+                Object.values(utility.video_lineup ?? {}).map((video: any) => ({
+                    source: String(video.id),
+                    options: {type: 'local'}
+                }))
+            );
+
+            setStartCoordinates({x: Number(utility.start_coords_x), y: Number(utility.start_coords_y)});
+            setEndCoordinates({x: Number(utility.end_coords_x), y: Number(utility.end_coords_y)});
         }
     }, [utility, reset])
-
-    const imageFiles = watch('image_lineup') as File[]
-    const previewImageUrls = imageFiles
-        ? imageFiles.filter((f) => f instanceof File).map((file) => URL.createObjectURL(file))
-        : []
-
-    useEffect(() => {
-        return () => {
-            previewImageUrls.forEach((url) => URL.revokeObjectURL(url));
-        };
-    }, [previewImageUrls]);
 
     const handleIsEditingStartCoordinates = () => {
         setIsEditingStartCoordinates((prev) => !prev)
@@ -160,7 +172,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         url: `/getMap/${mapName}`,
     })
 
-    const {data: teams} = useQueryApi<{ data: Teams[] }>({
+    const {data: teams} = useQueryApi<{ data: Team[] }>({
         queryKey: ['teams'],
         method: 'GET',
         url: '/getTeams',
@@ -192,7 +204,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
 
                     <div>
                         <SelectForm name="team_type_id" label="Team" placeholder="team" control={control}>
-                            {teams?.data?.map((team: Teams) => (
+                            {teams?.data?.map((team: Team) => (
                                 <SelectItem key={team.id} value={String(team.id)}>{team.name}</SelectItem>
                             ))}
                         </SelectForm>
@@ -330,16 +342,20 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                             <FilePond
                                 name="image_lineup"
                                 files={imageLineup}
-                                onupdatefiles={setImageLineup}
+                                onupdatefiles={handleImageUpdate}
                                 acceptedFileTypes={['image/*']}
                                 maxFiles={10}
                                 labelIdle='Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
                                 allowMultiple={true}
                                 server={{
+                                    load: {
+                                        url: '/attachment/',
+                                        method: "GET",
+                                    },
                                     process: {
                                         url: '/attachment/upload',
                                         method: 'POST',
-                                        headers:{
+                                        headers: {
                                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '',
                                         },
                                         onload: (response) => {
@@ -360,15 +376,19 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                             <FilePond
                                 name="video_lineup"
                                 files={videoLineup}
-                                onupdatefiles={setVideoLineup}
+                                onupdatefiles={handleVideoUpdate}
                                 acceptedFileTypes={["video/mp4"]}
                                 maxFiles={1}
                                 labelIdle='Drag & Drop your video or <span class="filepond--label-action">Browse</span>'
                                 server={{
+                                    load: {
+                                        url: '/attachment/',
+                                        method: "GET"
+                                    },
                                     process: {
                                         url: '/attachment/upload',
                                         method: 'POST',
-                                        headers:{
+                                        headers: {
                                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '',
                                         },
                                         onload: (response) => {
@@ -401,11 +421,16 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                             <MapLayoutBackend mapImage={map?.data?.map_no_callouts}
                                               editingStartingCoords={isEditingStartCoordinates}
                                               editingEndCoords={isEditingEndCoordinates}
+                                              startCoordinates={startCoordinates}
+                                              endCoordinates={endCoordinates}
+
                                               onStartCoordsChange={(coords: { x: number, y: number }) => {
+                                                  setStartCoordinates(coords)
                                                   setValue('start_coords_x', String(coords.x))
                                                   setValue('start_coords_y', String(coords.y))
                                               }}
                                               onEndCoordsChange={(coords: { x: number, y: number }) => {
+                                                  setEndCoordinates(coords);
                                                   setValue('end_coords_x', String(coords.x));
                                                   setValue('end_coords_y', String(coords.y));
                                               }}

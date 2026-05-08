@@ -25,4 +25,13 @@ class ApiAttachmentController extends Controller
         ]);
         return response()->json(['id' => $attachment->id], 201);
     }
+
+    public function show(Attachment $attachment)
+    {
+        $path = storage_path('app/public/images/utilities-img/' . $attachment->filename);
+
+        return response()->file($path, [
+            "Content-Disposition" => "inline; filename=\"{$attachment->filename}\""
+        ]);
+    }
 }
