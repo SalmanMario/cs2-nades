@@ -178,6 +178,12 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         url: '/getTeams',
     })
 
+    const {data: utilityCoordinates} = useQueryApi({
+        queryKey: ['utilityCoordinates'],
+        method: 'GET',
+        url: `/getUtilityCoordinates/${mapName}`,
+    })
+
     return (
         <AdminLayout>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -216,9 +222,9 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
                         <SelectForm name="technique_type" label="Technique" placeholder="technique" control={control}>
-                            <SelectItem value="left_click">Left Click</SelectItem>
-                            <SelectItem value="right_click">Right Click</SelectItem>
-                            <SelectItem value="left_right_click">Left + Right Click</SelectItem>
+                            <SelectItem value="LEFT_CLICK">Left Click</SelectItem>
+                            <SelectItem value="RIGHT_CLICK">Right Click</SelectItem>
+                            <SelectItem value="LEFT_RIGHT_CLICK">Left + Right Click</SelectItem>
                         </SelectForm>
                         {errors.technique_type &&
                             <p className="text-red-500 text-sm mt-1">{errors.technique_type.message}</p>}
@@ -226,12 +232,12 @@ export default function UtilityFormComponent({utility = null, mapName}: {
 
                     <div>
                         <SelectForm name="movement_type" label="Movement" placeholder="movement" control={control}>
-                            <SelectItem value="stationary">Stationary</SelectItem>
-                            <SelectItem value="walking">Walking</SelectItem>
-                            <SelectItem value="jumping">Jumping</SelectItem>
-                            <SelectItem value="running">Running</SelectItem>
-                            <SelectItem value="crouching">Crouching</SelectItem>
-                            <SelectItem value="crouched_walking">Crouched Walking</SelectItem>
+                            <SelectItem value="STATIONARY">Stationary</SelectItem>
+                            <SelectItem value="WALKING">Walking</SelectItem>
+                            <SelectItem value="JUMPING">Jumping</SelectItem>
+                            <SelectItem value="RUNNING">Running</SelectItem>
+                            <SelectItem value="CROUCHING">Crouching</SelectItem>
+                            <SelectItem value="CROUCHED_WALKING">Crouched Walking</SelectItem>
                         </SelectForm>
                         {errors.movement_type &&
                             <p className="text-red-500 text-sm mt-1">{errors.movement_type.message}</p>}
@@ -274,7 +280,11 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                                 <div>
                                     <SelectForm name="existing_start_coords_x" label="Existing Start Coords X"
                                                 placeholder="existing_start_coords_x" control={control}>
-                                        <SelectItem value="100">100 T Spawn</SelectItem>
+                                        {utilityCoordinates?.data?.map((coords) => (
+                                            <SelectItem key={coords.id_existing_start_coords} value={String(coords.existing_start_coords_x)}>
+                                                {coords.existing_start_coords_x} - {coords.title_from}
+                                            </SelectItem>
+                                        ))}
                                     </SelectForm>
                                     {errors.existing_start_coords_x &&
                                         <p className="text-red-500 text-sm mt-1">{errors.existing_start_coords_x.message}</p>}
@@ -283,7 +293,11 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                                 <div>
                                     <SelectForm name="existing_start_coords_y" label="Existing Start Coords Y"
                                                 placeholder="existing_start_coords_y" control={control}>
-                                        <SelectItem value="150">150 T Spawn</SelectItem>
+                                        {utilityCoordinates?.data?.map((coords) => (
+                                            <SelectItem key={coords.id_existing_start_coords} value={String(coords.existing_start_coords_y)}>
+                                                {coords.existing_start_coords_y} - {coords.title_from}
+                                            </SelectItem>
+                                        ))}
                                     </SelectForm>
                                     {errors.existing_start_coords_y &&
                                         <p className="text-red-500 text-sm mt-1">{errors.existing_start_coords_y.message}</p>}
@@ -316,7 +330,11 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                                 <div>
                                     <SelectForm name="existing_end_coords_x" label="Existing End Coords X"
                                                 placeholder="existing_end_coords_x" control={control}>
-                                        <SelectItem value="612">612 Mid</SelectItem>
+                                        {utilityCoordinates?.data?.map((coords) => (
+                                            <SelectItem key={coords.id_existing_end_coords} value={String(coords.existing_end_coords_x)}>
+                                                {coords.existing_end_coords_x} - {coords.title_to}
+                                            </SelectItem>
+                                        ))}
                                     </SelectForm>
                                     {errors.existing_end_coords_x &&
                                         <p className="text-red-500 text-sm mt-1">{errors.existing_end_coords_x.message}</p>}
@@ -325,7 +343,11 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                                 <div>
                                     <SelectForm name="existing_end_coords_y" label="Existing End Coords Y"
                                                 placeholder="existing_end_coords_y" control={control}>
-                                        <SelectItem value="475">475 Mid</SelectItem>
+                                        {utilityCoordinates?.data?.map((coords) => (
+                                            <SelectItem key={coords.id_existing_end_coords} value={String(coords.existing_end_coords_y)}>
+                                                {coords.existing_end_coords_y} - {coords.title_to}
+                                            </SelectItem>
+                                        ))}
                                     </SelectForm>
                                     {errors.existing_end_coords_y &&
                                         <p className="text-red-500 text-sm mt-1">{errors.existing_end_coords_y.message}</p>}

@@ -2,7 +2,7 @@ import {useQuery} from "@tanstack/react-query";
 import {Card, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {useNavigate} from "@tanstack/react-router";
 
-export default function MapsComponent() {
+export default function MapsComponent({onCardClick}: { onCardClick: (mapName: string) => void}) {
     const navigate = useNavigate();
     const {isPending, error, data} = useQuery({
         queryKey: ['maps'],
@@ -19,7 +19,7 @@ export default function MapsComponent() {
                 {data?.data.map((map: MapResponse) => (
                     <div key={map.id} className="col-span-12 md:col-span-6 lg:col-span-3">
                         <Card className="cursor-pointer"
-                              onClick={() => navigate({to: `/admin/dashboard/maps/${map.name.toLowerCase()}`})}
+                              onClick={() => onCardClick(map.name.toLowerCase())}
                         >
                             <img
                                 src={`/storage/${map.image}`}

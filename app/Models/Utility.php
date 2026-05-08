@@ -26,4 +26,9 @@ class Utility extends Model
     {
         return $this->belongsTo(UtilityCoordinate::class, 'utility_coordinate_id');
     }
+
+    public function map(): belongsTo
+    {
+        return $this->belongsTo(Map::class, 'map_id');
+    }
 }

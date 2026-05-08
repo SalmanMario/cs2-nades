@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->softDeletes();
-//            $table->foreignIdFor(\App\Models\Map::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Map::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(StartUtilityCoordinate::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(EndUtilityCoordinate::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(\App\Models\UtilityType::class)->constrained()->cascadeOnDelete();
