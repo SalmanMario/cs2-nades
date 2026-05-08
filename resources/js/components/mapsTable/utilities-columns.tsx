@@ -9,7 +9,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {UtilityTable} from "@/types/Utility";
+import {UtilityTable} from "../../types/utility";
 import {NavigateFn} from "@tanstack/react-router";
 
 export const utilitiesColumns = (navigate: NavigateFn, mapName: string): ColumnDef<UtilityTable>[] => [

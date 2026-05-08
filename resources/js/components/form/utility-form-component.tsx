@@ -1,4 +1,4 @@
-import type {UtilityForm} from "@/types/Utility";
+import type {UtilityForm, UtilityFormErrors} from "@/types/utility";
 import {useMutationApi} from "@/hooks/use-mutation";
 import React, {useEffect, useState} from "react";
 import {useQueryApi} from "@/hooks/use-query";
@@ -11,6 +11,15 @@ import {SelectItem} from "@/components/ui/select";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import {Button} from "@/components/ui/button";
 import MapLayoutBackend from "@/components/MapLayoutBackend";
+import {FilePond, registerPlugin} from 'react-filepond';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+import 'filepond/dist/filepond.min.css';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import {FilePondFile, FilePondInitialFile} from "filepond";
+import {useNavigate} from "@tanstack/react-router";
+
+registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType);
 
 export default function UtilityFormComponent({utility = null, mapName}: {
     utility: UtilityForm | null,
@@ -18,25 +27,18 @@ export default function UtilityFormComponent({utility = null, mapName}: {
 }) {
     const [isEditingStartCoordinates, setIsEditingStartCoordinates] = useState(false);
     const [isEditingEndCoordinates, setIsEditingEndCoordinates] = useState(false);
+    const [startCoordinates, setStartCoordinates] = useState<{ x: number; y: number } | undefined>(undefined);
+    const [endCoordinates, setEndCoordinates] = useState<{ x: number; y: number } | undefined>(undefined);
+    const [imageLineup, setImageLineup] = useState<FilePondInitialFile[]>([]);
+    const [videoLineup, setVideoLineup] = useState<FilePondInitialFile[]>([]);
+    const navigate = useNavigate();
     const isEditing = utility ? 'PUT' : 'POST'
-    type Nade = {
-        id: string,
-        name: string,
-        image: string,
-    }
-
-    type Teams = {
-        id: string,
-        name: string,
-        image: string,
-    }
 
     const {
         register,
         handleSubmit,
         control,
         reset,
-        watch,
         setValue,
         setError,
         formState: {errors}
@@ -54,12 +56,18 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         }
     });
 
-    const handleMutation = useMutationApi<UtilityForm, Error, FormData>({
-        url: utility ? `/utilities/${utility.id}` : '/utilities-img',
+    const handleImageUpdate = (files: FilePondFile[]) => {
+        setImageLineup(files as unknown as FilePondInitialFile[]);
+    };
+
+    const handleVideoUpdate = (files: FilePondFile[]) => {
+        setVideoLineup(files as unknown as FilePondInitialFile[]);
+    };
+
+    const handleMutation = useMutationApi<UtilityForm, UtilityFormErrors, FormData>({
+        url: utility ? `/utilities/${utility.id}` : '/utilities',
         method: isEditing,
     })
-
-    console.log(utility)
 
     const onSubmit = (utility: UtilityForm) => {
         const formData = new FormData();
@@ -80,20 +88,30 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         formData.append("existing_end_coords_x", utility.existing_end_coords_x);
         formData.append("existing_end_coords_y", utility.existing_end_coords_y);
 
-        if (utility.image_lineup)
-            utility.image_lineup.forEach((file) => {
-                formData.append("image_lineup[]", file);
-            });
+        (imageLineup as unknown as FilePondFile[]).forEach((file) => {
+            if (file.serverId) {
+                formData.append("image_lineup_ids[]", file.serverId);
+            }
+        });
 
-        if (utility.video_lineup)
-            utility.video_lineup.forEach((file) => {
-                formData.append("video_lineup[]", file);
-            });
+        (videoLineup as unknown as FilePondFile[]).forEach((file) => {
+            if (file.serverId) {
+                formData.append("video_lineup_ids[]", file.serverId);
+            }
+        })
+
         handleMutation.mutate(formData, {
             onSuccess: () => {
-                reset()
+                reset();
+                navigate({
+                    to: "/admin/dashboard/maps/$mapName",
+                    params:{
+                        mapName
+                    }
+                }).then();
             },
             onError: (error) => {
+                console.log(error);
                 Object.entries(error.errors).forEach(([field, message]) => {
                     setError(field as keyof UtilityForm, {message: message[0]})
                 })
@@ -114,19 +132,25 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                 image_lineup: [],
                 video_lineup: [],
             })
+
+            setImageLineup(
+                Object.values(utility.image_lineup ?? {}).map((image: any) => ({
+                    source: String(image.id),
+                    options: {type: 'local'}
+                }))
+            );
+
+            setVideoLineup(
+                Object.values(utility.video_lineup ?? {}).map((video: any) => ({
+                    source: String(video.id),
+                    options: {type: 'local'}
+                }))
+            );
+
+            setStartCoordinates({x: Number(utility.start_coords_x), y: Number(utility.start_coords_y)});
+            setEndCoordinates({x: Number(utility.end_coords_x), y: Number(utility.end_coords_y)});
         }
     }, [utility, reset])
-
-    const imageFiles = watch('image_lineup') as File[]
-    const previewImageUrls = imageFiles
-        ? imageFiles.filter((f) => f instanceof File).map((file) => URL.createObjectURL(file))
-        : []
-
-    useEffect(() => {
-        return () => {
-            previewImageUrls.forEach((url) => URL.revokeObjectURL(url));
-        };
-    }, [previewImageUrls]);
 
     const handleIsEditingStartCoordinates = () => {
         setIsEditingStartCoordinates((prev) => !prev)
@@ -148,7 +172,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         url: `/getMap/${mapName}`,
     })
 
-    const {data: teams} = useQueryApi<{ data: Teams[] }>({
+    const {data: teams} = useQueryApi<{ data: Team[] }>({
         queryKey: ['teams'],
         method: 'GET',
         url: '/getTeams',
@@ -180,7 +204,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
 
                     <div>
                         <SelectForm name="team_type_id" label="Team" placeholder="team" control={control}>
-                            {teams?.data?.map((team: Teams) => (
+                            {teams?.data?.map((team: Team) => (
                                 <SelectItem key={team.id} value={String(team.id)}>{team.name}</SelectItem>
                             ))}
                         </SelectForm>
@@ -315,29 +339,32 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                     <AccordionItem value="item-1">
                         <AccordionTrigger>Image Lineup</AccordionTrigger>
                         <AccordionContent className="space-y-4">
-                            <Input type="file" id="image_lineup" accept="image/*" multiple onChange={(e) => {
-                                const files = e.target.files
-                                setValue('image_lineup', files ? Array.from(files) : [], {shouldDirty: true})
-                            }}/>
-                            {errors.image_lineup &&
-                                <p className="text-red-500 text-sm mt-1">{errors.image_lineup.message}</p>}
-                            {previewImageUrls.length > 0 && (
-                                <div>
-                                    <p className="text-sm text-muted-foreground mb-2">New Images</p>
-                                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                                        {previewImageUrls.map((image, index) => (
-                                            <div key={index}
-                                                 className="overflow-hidden rounded-md border bg-muted aspect-4/3">
-                                                <img
-                                                    src={image}
-                                                    alt={`Preview ${index + 1}`}
-                                                    className="w-50 h-50 object-cover"
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
+                            <FilePond
+                                name="image_lineup"
+                                files={imageLineup}
+                                onupdatefiles={handleImageUpdate}
+                                acceptedFileTypes={['image/*']}
+                                maxFiles={10}
+                                labelIdle='Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
+                                allowMultiple={true}
+                                server={{
+                                    load: {
+                                        url: '/attachment/',
+                                        method: "GET",
+                                    },
+                                    process: {
+                                        url: '/attachment/upload',
+                                        method: 'POST',
+                                        headers: {
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '',
+                                        },
+                                        onload: (response) => {
+                                            const data = JSON.parse(response);
+                                            return String(data.id);
+                                        },
+                                    },
+                                }}
+                            />
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
@@ -346,14 +373,29 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                     <AccordionItem value="item-1">
                         <AccordionTrigger>Video Lineup</AccordionTrigger>
                         <AccordionContent>
-                            <Input
-                                type="file"
-                                id="video-lineup"
-                                accept="video/*"
-                                multiple
-                                onChange={(e) => {
-                                    const files = e.target.files
-                                    setValue('video_lineup', files ? Array.from(files) : [], {shouldDirty: true})
+                            <FilePond
+                                name="video_lineup"
+                                files={videoLineup}
+                                onupdatefiles={handleVideoUpdate}
+                                acceptedFileTypes={["video/mp4"]}
+                                maxFiles={1}
+                                labelIdle='Drag & Drop your video or <span class="filepond--label-action">Browse</span>'
+                                server={{
+                                    load: {
+                                        url: '/attachment/',
+                                        method: "GET"
+                                    },
+                                    process: {
+                                        url: '/attachment/upload',
+                                        method: 'POST',
+                                        headers: {
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '',
+                                        },
+                                        onload: (response) => {
+                                            const data = JSON.parse(response);
+                                            return String(data.id);
+                                        },
+                                    },
                                 }}
                             />
                             {errors.video_lineup &&
@@ -379,11 +421,16 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                             <MapLayoutBackend mapImage={map?.data?.map_no_callouts}
                                               editingStartingCoords={isEditingStartCoordinates}
                                               editingEndCoords={isEditingEndCoordinates}
+                                              startCoordinates={startCoordinates}
+                                              endCoordinates={endCoordinates}
+
                                               onStartCoordsChange={(coords: { x: number, y: number }) => {
+                                                  setStartCoordinates(coords)
                                                   setValue('start_coords_x', String(coords.x))
                                                   setValue('start_coords_y', String(coords.y))
                                               }}
                                               onEndCoordsChange={(coords: { x: number, y: number }) => {
+                                                  setEndCoordinates(coords);
                                                   setValue('end_coords_x', String(coords.x));
                                                   setValue('end_coords_y', String(coords.y));
                                               }}

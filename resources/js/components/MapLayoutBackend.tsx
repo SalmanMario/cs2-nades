@@ -8,13 +8,13 @@ type MapLayoutBackendProps = {
     mapImage: string,
     editingStartingCoords: boolean,
     editingEndCoords: boolean,
+    startCoordinates?: {x: number, y: number},
+    endCoordinates?: {x: number, y: number},
     onStartCoordsChange?: (coords: {x: number, y: number}) => void,
     onEndCoordsChange?: (coords: {x: number, y: number}) => void,
 }
 
-export default function MapLayoutBackend({mapImage, editingStartingCoords, editingEndCoords, onStartCoordsChange, onEndCoordsChange} : MapLayoutBackendProps) {
-    const [startCoordinates, setStartCoordinates] = useState<{ x: number; y: number } | null>(null);
-    const [endCoordinates, setEndCoordinates] = useState<{ x: number; y: number } | null>(null);
+export default function MapLayoutBackend({mapImage, editingStartingCoords, editingEndCoords, startCoordinates, endCoordinates ,onStartCoordsChange, onEndCoordsChange} : MapLayoutBackendProps) {
     const [img, setImg] = useState<HTMLImageElement | null>(null);
     const [stageSize, setStageSize] = useState({width: 1024, height: 1024});
     const containerRef = useRef<HTMLDivElement>(null);
@@ -49,12 +49,10 @@ export default function MapLayoutBackend({mapImage, editingStartingCoords, editi
         if (!editingStartingCoords && !editingEndCoords) return;
 
         if (editingStartingCoords && pos) {
-            setStartCoordinates({x: pos!.x, y: pos!.y});
             onStartCoordsChange?.({x: pos!.x, y: pos!.y})
         }
 
         if (editingEndCoords && pos) {
-            setEndCoordinates({x: pos!.x, y: pos!.y});
             onEndCoordsChange?.({x: pos!.x, y: pos!.y})
         }
     }

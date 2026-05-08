@@ -1,7 +1,7 @@
 import React, {createContext, useContext, useState} from "react";
 import api from "@/lib/api";
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContext | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState(null);
@@ -17,7 +17,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    const login = async (data: LoginData) => {
+    const login = async (data: Login) => {
         await api.get("/sanctum/csrf-cookie");
         await api.post("/login", data);
         return await loadUser();
