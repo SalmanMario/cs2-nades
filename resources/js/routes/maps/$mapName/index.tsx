@@ -31,6 +31,8 @@ function RouteComponent() {
                     team_id: utility.team_id,
                     start_utility_id: utility.id_existing_start_coords,
                     end_utility_id: utility.id_existing_end_coords,
+                    utility_type: utility.type,
+                    utility_image: utility.image,
                     x: utility.existing_end_coords_x,
                     y: utility.existing_end_coords_y,
                 }))
@@ -41,6 +43,8 @@ function RouteComponent() {
                     team_id: utility.team_id,
                     start_utility_id: utility.id_existing_start_coords,
                     end_utility_id: utility.id_existing_end_coords,
+                    utility_type: utility.type,
+                    utility_image: utility.image,
                     x: utility.existing_start_coords_x,
                     y: utility.existing_start_coords_y,
                 }))

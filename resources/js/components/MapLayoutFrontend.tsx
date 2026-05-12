@@ -1,5 +1,6 @@
 import {Circle, Image, Layer, Line, Stage} from "react-konva";
 import React, {useEffect, useRef, useState} from "react";
+import {MarkerMap} from "@/components/MarkerMap";
 
 export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordinates}) {
     const [activeCircles, setActiveCircles] = useState([]);
@@ -76,15 +77,16 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
                         />
                     ))}
                     {activeCircles.map((line, index) => (
-                        <Circle
-                            key={`start-${index}`}
-                            x={Number(line.start.x)}
-                            y={Number(line.start.y)}
-                            radius={16}
-                            fill="white"
-                            stroke="black"
-                            strokeWidth={2}
-                        />
+                        <MarkerMap props={line} key={index}/>
+                        // <Circle
+                        //     key={`start-${index}`}
+                        //     x={Number(line.start.x)}
+                        //     y={Number(line.start.y)}
+                        //     radius={16}
+                        //     fill="white"
+                        //     stroke="black"
+                        //     strokeWidth={2}
+                        // />
                     ))}
                     {activeCircles.map((line, index) => (
                         <Line

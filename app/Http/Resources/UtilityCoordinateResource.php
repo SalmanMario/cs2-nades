@@ -16,6 +16,8 @@ class UtilityCoordinateResource extends JsonResource
     {
         return [
             'team_id' => $this->utilities->team_id,
+            'type' => $this->utility_type->name,
+            'image' => $this->utility_type->image,
             'id_existing_start_coords' => $this->start_utility_coordinates->id,
             'existing_start_coords_x' => $this->start_utility_coordinates->x,
             'existing_start_coords_y' => $this->start_utility_coordinates->y,
