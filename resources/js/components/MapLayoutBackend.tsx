@@ -8,17 +8,45 @@ type MapLayoutBackendProps = {
     mapImage: string,
     editingStartingCoords: boolean,
     editingEndCoords: boolean,
-    startCoordinates?: {x: number, y: number},
-    endCoordinates?: {x: number, y: number},
-    onStartCoordsChange?: (coords: {x: number, y: number}) => void,
-    onEndCoordsChange?: (coords: {x: number, y: number}) => void,
+    startCoordinates?: { x: number, y: number },
+    endCoordinates?: { x: number, y: number },
+    onStartCoordsChange?: (coords: { x: number, y: number }) => void,
+    onEndCoordsChange?: (coords: { x: number, y: number }) => void,
 }
 
-export default function MapLayoutBackend({mapImage, editingStartingCoords, editingEndCoords, startCoordinates, endCoordinates ,onStartCoordsChange, onEndCoordsChange} : MapLayoutBackendProps) {
+const COORD_SPACE = 1024;
+export default function MapLayoutBackend({
+                                             mapImage,
+                                             editingStartingCoords,
+                                             editingEndCoords,
+                                             startCoordinates,
+                                             endCoordinates,
+                                             onStartCoordsChange,
+                                             onEndCoordsChange
+                                         }: MapLayoutBackendProps) {
     const [img, setImg] = useState<HTMLImageElement | null>(null);
     const [stageSize, setStageSize] = useState({width: 1024, height: 1024});
+    const [scale, setScale] = useState(1);
     const containerRef = useRef<HTMLDivElement>(null);
-    const aspectRatioRef = useRef(1);
+    const imgAspectRef = useRef(1); // naturalHeight / naturalWidth
+
+    function fitStage() {
+        if (!containerRef.current) return;
+        const {offsetWidth: maxW, offsetHeight: maxH} = containerRef.current;
+        const imgAspect = imgAspectRef.current;
+
+        let w = maxW;
+        let h = maxW * imgAspect;
+
+        if (h > maxH) {
+            h = maxH;
+            w = maxH / imgAspect;
+        }
+        const s = w / COORD_SPACE;
+
+        setStageSize({width: w, height: h});
+        setScale(s);
+    }
 
     useEffect(() => {
         if (!mapImage) return;
@@ -26,34 +54,32 @@ export default function MapLayoutBackend({mapImage, editingStartingCoords, editi
         image.src = `/storage/${mapImage}`;
         image.onload = () => {
             setImg(image);
-            aspectRatioRef.current = image.naturalHeight / image.naturalWidth;
-            if (containerRef.current) {
-                const width = containerRef.current.offsetWidth;
-                setStageSize({width, height: width * aspectRatioRef.current});
-            }
+            imgAspectRef.current = image.naturalHeight / image.naturalWidth;
+            fitStage();
         };
     }, [mapImage]);
 
     useEffect(() => {
         if (!containerRef.current) return;
-        const observer = new ResizeObserver(entries => {
-            const width = entries[0].contentRect.width;
-            setStageSize({width, height: width * aspectRatioRef.current});
-        });
+        const observer = new ResizeObserver(() => fitStage());
         observer.observe(containerRef.current);
         return () => observer.disconnect();
     }, []);
 
     const getCoords = (e: KonvaEventObject<MouseEvent>) => {
         const pos = e.target.getStage()?.getPointerPosition();
+        if (!pos) return;
         if (!editingStartingCoords && !editingEndCoords) return;
 
-        if (editingStartingCoords && pos) {
-            onStartCoordsChange?.({x: pos!.x, y: pos!.y})
+        const x = pos.x / scale;
+        const y = pos.y / scale;
+
+        if (editingStartingCoords) {
+            onStartCoordsChange?.({ x, y });
         }
 
-        if (editingEndCoords && pos) {
-            onEndCoordsChange?.({x: pos!.x, y: pos!.y})
+        if (editingEndCoords) {
+            onEndCoordsChange?.({ x, y });
         }
     }
 
@@ -65,13 +91,18 @@ export default function MapLayoutBackend({mapImage, editingStartingCoords, editi
             {editingEndCoords && endCoordinates && (
                 <AlertMarketPositionComponent position={endCoordinates!}/>
             )}
-            <div ref={containerRef} className="w-full">
-                <Stage width={stageSize.width} height={stageSize.height} onClick={getCoords}>
+            <div ref={containerRef} className="w-full h-full flex items-center justify-center overflow-hidden">
+                <Stage width={stageSize.width}
+                       height={stageSize.height}
+                       onClick={getCoords}
+                       scaleX={scale}
+                       scaleY={scale}
+                >
                     <Layer>
                         <Image
                             image={img ?? undefined}
-                            width={stageSize.width}
-                            height={stageSize.height}
+                            width={COORD_SPACE}
+                            height={COORD_SPACE * imgAspectRef.current}
                         />
                         {startCoordinates && (
                             <Circle

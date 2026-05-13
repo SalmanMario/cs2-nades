@@ -14,6 +14,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as MapsMapNameIndexRouteImport } from './routes/maps/$mapName/index'
 import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
+import { Route as MapsMapNameUtilityIdIndexRouteImport } from './routes/maps/$mapName/$utilityId/index'
 import { Route as AdminDashboardMapsIndexRouteImport } from './routes/admin/dashboard/maps/index'
 import { Route as AdminDashboardMapsMapNameIndexRouteImport } from './routes/admin/dashboard/maps/$mapName/index'
 import { Route as AdminDashboardMapsMapNameCreateRouteImport } from './routes/admin/dashboard/maps/$mapName/create'
@@ -44,6 +45,12 @@ const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
   path: '/admin/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MapsMapNameUtilityIdIndexRoute =
+  MapsMapNameUtilityIdIndexRouteImport.update({
+    id: '/maps/$mapName/$utilityId/',
+    path: '/maps/$mapName/$utilityId/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminDashboardMapsIndexRoute = AdminDashboardMapsIndexRouteImport.update({
   id: '/admin/dashboard/maps/',
   path: '/admin/dashboard/maps/',
@@ -75,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
   '/maps/$mapName/': typeof MapsMapNameIndexRoute
   '/admin/dashboard/maps/': typeof AdminDashboardMapsIndexRoute
+  '/maps/$mapName/$utilityId/': typeof MapsMapNameUtilityIdIndexRoute
   '/admin/dashboard/maps/$mapName/create': typeof AdminDashboardMapsMapNameCreateRoute
   '/admin/dashboard/maps/$mapName/': typeof AdminDashboardMapsMapNameIndexRoute
   '/admin/dashboard/maps/$mapName/$id/edit': typeof AdminDashboardMapsMapNameIdEditRoute
@@ -86,6 +94,7 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AdminDashboardIndexRoute
   '/maps/$mapName': typeof MapsMapNameIndexRoute
   '/admin/dashboard/maps': typeof AdminDashboardMapsIndexRoute
+  '/maps/$mapName/$utilityId': typeof MapsMapNameUtilityIdIndexRoute
   '/admin/dashboard/maps/$mapName/create': typeof AdminDashboardMapsMapNameCreateRoute
   '/admin/dashboard/maps/$mapName': typeof AdminDashboardMapsMapNameIndexRoute
   '/admin/dashboard/maps/$mapName/$id/edit': typeof AdminDashboardMapsMapNameIdEditRoute
@@ -98,6 +107,7 @@ export interface FileRoutesById {
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
   '/maps/$mapName/': typeof MapsMapNameIndexRoute
   '/admin/dashboard/maps/': typeof AdminDashboardMapsIndexRoute
+  '/maps/$mapName/$utilityId/': typeof MapsMapNameUtilityIdIndexRoute
   '/admin/dashboard/maps/$mapName/create': typeof AdminDashboardMapsMapNameCreateRoute
   '/admin/dashboard/maps/$mapName/': typeof AdminDashboardMapsMapNameIndexRoute
   '/admin/dashboard/maps/$mapName/$id/edit': typeof AdminDashboardMapsMapNameIdEditRoute
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard/'
     | '/maps/$mapName/'
     | '/admin/dashboard/maps/'
+    | '/maps/$mapName/$utilityId/'
     | '/admin/dashboard/maps/$mapName/create'
     | '/admin/dashboard/maps/$mapName/'
     | '/admin/dashboard/maps/$mapName/$id/edit'
@@ -122,6 +133,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/maps/$mapName'
     | '/admin/dashboard/maps'
+    | '/maps/$mapName/$utilityId'
     | '/admin/dashboard/maps/$mapName/create'
     | '/admin/dashboard/maps/$mapName'
     | '/admin/dashboard/maps/$mapName/$id/edit'
@@ -133,6 +145,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard/'
     | '/maps/$mapName/'
     | '/admin/dashboard/maps/'
+    | '/maps/$mapName/$utilityId/'
     | '/admin/dashboard/maps/$mapName/create'
     | '/admin/dashboard/maps/$mapName/'
     | '/admin/dashboard/maps/$mapName/$id/edit'
@@ -145,6 +158,7 @@ export interface RootRouteChildren {
   AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
   MapsMapNameIndexRoute: typeof MapsMapNameIndexRoute
   AdminDashboardMapsIndexRoute: typeof AdminDashboardMapsIndexRoute
+  MapsMapNameUtilityIdIndexRoute: typeof MapsMapNameUtilityIdIndexRoute
   AdminDashboardMapsMapNameCreateRoute: typeof AdminDashboardMapsMapNameCreateRoute
   AdminDashboardMapsMapNameIndexRoute: typeof AdminDashboardMapsMapNameIndexRoute
   AdminDashboardMapsMapNameIdEditRoute: typeof AdminDashboardMapsMapNameIdEditRoute
@@ -187,6 +201,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/maps/$mapName/$utilityId/': {
+      id: '/maps/$mapName/$utilityId/'
+      path: '/maps/$mapName/$utilityId'
+      fullPath: '/maps/$mapName/$utilityId/'
+      preLoaderRoute: typeof MapsMapNameUtilityIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/dashboard/maps/': {
       id: '/admin/dashboard/maps/'
       path: '/admin/dashboard/maps'
@@ -225,6 +246,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminDashboardIndexRoute: AdminDashboardIndexRoute,
   MapsMapNameIndexRoute: MapsMapNameIndexRoute,
   AdminDashboardMapsIndexRoute: AdminDashboardMapsIndexRoute,
+  MapsMapNameUtilityIdIndexRoute: MapsMapNameUtilityIdIndexRoute,
   AdminDashboardMapsMapNameCreateRoute: AdminDashboardMapsMapNameCreateRoute,
   AdminDashboardMapsMapNameIndexRoute: AdminDashboardMapsMapNameIndexRoute,
   AdminDashboardMapsMapNameIdEditRoute: AdminDashboardMapsMapNameIdEditRoute,

@@ -29,8 +29,8 @@ export default function MapsComponent({onCardClick}: { onCardClick: (mapName: st
 
                             <CardHeader className="text-center text-4xl">
                                 <CardTitle className="mb-5">{map.name}</CardTitle>
-                                <CardDescription>
-                                    Utilities: 10
+                                <CardDescription className="text-lg">
+                                    Utilities: {map.number_of_utilities}
                                 </CardDescription>
                             </CardHeader>
                         </Card>

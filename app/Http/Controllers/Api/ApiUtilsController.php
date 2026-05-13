@@ -29,7 +29,7 @@ class ApiUtilsController extends Controller
 
     public function getUtilityCoordinates($map){
         $mapId = Map::where('name', $map)->first()->id;
-        $utilityCoordinates = UtilityCoordinate::query()->with(['start_utility_coordinates', 'end_utility_coordinates', 'utilities'])->where('map_id', $mapId)->get();
+        $utilityCoordinates = UtilityCoordinate::query()->with(['start_utility_coordinates', 'end_utility_coordinates', 'utilities', 'map'])->where('map_id', $mapId)->get();
         return UtilityCoordinateResource::collection($utilityCoordinates);
     }
 }

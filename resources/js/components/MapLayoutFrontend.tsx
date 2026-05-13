@@ -2,32 +2,47 @@ import {Circle, Image, Layer, Line, Stage} from "react-konva";
 import React, {useEffect, useRef, useState} from "react";
 import {MarkerMap} from "@/components/MarkerMap";
 
+const COORD_SPACE = 1024;
+
 export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordinates}) {
     const [activeCircles, setActiveCircles] = useState([]);
     const [img, setImg] = useState<HTMLImageElement | null>(null);
-    const [stageSize, setStageSize] = useState({width: 1024, height: 1024});
+    const [stageSize, setStageSize] = useState({width: COORD_SPACE, height: COORD_SPACE});
+    const [scale, setScale] = useState(1);
     const containerRef = useRef<HTMLDivElement>(null);
-    const aspectRatioRef = useRef(1);
+    const imgAspectRef = useRef(1); // naturalHeight / naturalWidth
+    function fitStage() {
+        if (!containerRef.current) return;
+        const { offsetWidth: maxW, offsetHeight: maxH } = containerRef.current;
+        const imgAspect = imgAspectRef.current;
+
+        let w = maxW;
+        let h = maxW * imgAspect;
+
+        if (h > maxH) {
+            h = maxH;
+            w = maxH / imgAspect;
+        }
+        const s = w / COORD_SPACE;
+
+        setStageSize({ width: w, height: h });
+        setScale(s);
+    }
+
     useEffect(() => {
         if (!mapImage) return;
         const image = new window.Image();
         image.src = `/storage/${mapImage}`;
         image.onload = () => {
             setImg(image);
-            aspectRatioRef.current = image.naturalHeight / image.naturalWidth;
-            if (containerRef.current) {
-                const width = containerRef.current.offsetWidth;
-                setStageSize({width, height: width * aspectRatioRef.current});
-            }
+            imgAspectRef.current = image.naturalHeight / image.naturalWidth;
+            fitStage();
         };
     }, [mapImage]);
 
     useEffect(() => {
         if (!containerRef.current) return;
-        const observer = new ResizeObserver(entries => {
-            const width = entries[0].contentRect.width;
-            setStageSize({width, height: width * aspectRatioRef.current});
-        });
+        const observer = new ResizeObserver(() => fitStage());
         observer.observe(containerRef.current);
         return () => observer.disconnect();
     }, []);
@@ -37,34 +52,36 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
             const matchingStarts = startCoordinates.filter(
                 (s) => s.end_utility_id === endCoor.end_utility_id
             );
-
-            const circles = matchingStarts.map((start) => ({
-                start,
-                end: endCoor,
-            }));
-
-            setActiveCircles(circles);
+            setActiveCircles(matchingStarts.map((start) => ({ start, end: endCoor })));
         };
     }
 
     function handleOutsideClick(event: React.MouseEvent<MouseEvent>) {
-        const clickedOutside = event.target.className === "Image"
-        if (clickedOutside) {
+        if (event.target.className === "Image") {
             setActiveCircles([]);
         }
     }
 
     return (
-        <div ref={containerRef} className="w-full">
-            <Stage width={stageSize.width} height={stageSize.height} onClick={handleOutsideClick}>
+        <div
+            ref={containerRef}
+            className="w-full h-full flex items-center justify-center overflow-hidden"
+        >
+            <Stage
+                width={stageSize.width}
+                height={stageSize.height}
+                onClick={handleOutsideClick}
+                scaleX={scale}
+                scaleY={scale}
+            >
                 <Layer>
                     <Image
                         className="Image"
                         image={img ?? undefined}
-                        width={stageSize.width}
-                        height={stageSize.height}
+                        width={COORD_SPACE}
+                        height={COORD_SPACE * imgAspectRef.current}
                     />
-                    {endCoordinates && endCoordinates.map((coor, index) => (
+                    {endCoordinates?.map((coor, index) => (
                         <Circle
                             key={index}
                             x={coor.x}
@@ -78,15 +95,6 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
                     ))}
                     {activeCircles.map((line, index) => (
                         <MarkerMap props={line} key={index}/>
-                        // <Circle
-                        //     key={`start-${index}`}
-                        //     x={Number(line.start.x)}
-                        //     y={Number(line.start.y)}
-                        //     radius={16}
-                        //     fill="white"
-                        //     stroke="black"
-                        //     strokeWidth={2}
-                        // />
                     ))}
                     {activeCircles.map((line, index) => (
                         <Line
@@ -97,8 +105,7 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
                         />
                     ))}
                 </Layer>
-
             </Stage>
         </div>
-    )
+    );
 }

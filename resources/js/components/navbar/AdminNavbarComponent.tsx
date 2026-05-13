@@ -1,15 +1,8 @@
-import {
-    Menubar,
-    MenubarContent,
-    MenubarGroup,
-    MenubarItem,
-    MenubarMenu,
-    MenubarTrigger
-} from "@/components/ui/menubar";
 import React from "react";
 import {useAuth} from "@/AuthContext";
 import {useNavigate} from "@tanstack/react-router";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Menubar, MenubarContent, MenubarGroup, MenubarItem, MenubarMenu, MenubarTrigger} from "@/components/ui/menubar";
 
 export default function AdminNavbarComponent() {
     const {logout} = useAuth();

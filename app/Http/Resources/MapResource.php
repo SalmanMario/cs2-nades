@@ -20,6 +20,7 @@ class MapResource extends JsonResource
             'image' => $this->image,
             'map_no_callouts' => $this->map_no_callouts,
             'map_callouts' => $this->map_callouts,
+            'number_of_utilities' => $this->utilities->count(),
         ];
     }
 }

@@ -15,6 +15,7 @@ class UtilityCoordinateResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'utility_id' => $this->utilities->id,
             'team_id' => $this->utilities->team_id,
             'type' => $this->utility_type->name,
             'image' => $this->utility_type->image,

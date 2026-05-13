@@ -22,7 +22,7 @@ class DashboardController extends Controller
     }
 
     public function getMaps(){
-        $maps = Map::query()->get();
+        $maps = Map::query()->withCount('utilities')->get();
         return MapResource::collection($maps);
     }
 }

@@ -3,6 +3,7 @@ import {useQueryApi} from "@/hooks/use-query";
 import MapLayoutFrontend from "@/components/MapLayoutFrontend";
 import FrontendLayout from "@/layouts/FrontendLayout";
 import {useEffect, useState} from "react";
+import MapViewLayout from "@/layouts/MapViewLayout";
 
 export const Route = createFileRoute('/maps/$mapName/')({
     component: RouteComponent,
@@ -13,13 +14,13 @@ function RouteComponent() {
     const [endCoords, setEndCoords] = useState([]);
     const [startCoords, setStartCoords] = useState([])
 
-    const {data: map} = useQueryApi({
-        queryKey: ['map'],
+    const {data: map, isLoading: mapLoading} = useQueryApi({
+        queryKey: ['map', mapName],
         method: 'GET',
         url: `/getMap/${mapName}`,
     })
-    const {data: utilityCoordinates} = useQueryApi({
-        queryKey: ['utilityCoordinates'],
+    const {data: utilityCoordinates, isLoading: utilityLoading} = useQueryApi({
+        queryKey: ['utilityCoordinates', mapName],
         method: 'GET',
         url: `/getUtilityCoordinates/${mapName}`,
     })
@@ -36,10 +37,10 @@ function RouteComponent() {
                     x: utility.existing_end_coords_x,
                     y: utility.existing_end_coords_y,
                 }))
-
             );
             setStartCoords(
                 utilityCoordinates.data.map((utility) => ({
+                    utility_id: utility.utility_id,
                     team_id: utility.team_id,
                     start_utility_id: utility.id_existing_start_coords,
                     end_utility_id: utility.id_existing_end_coords,
@@ -51,9 +52,16 @@ function RouteComponent() {
             );
         }
     }, [utilityCoordinates]);
+
+    if (mapLoading || utilityLoading) return <div>Loading...</div>;
+
     return (
-        <FrontendLayout>
-            <MapLayoutFrontend mapImage={map?.data?.map_no_callouts} endCoordinates={endCoords} startCoordinates={startCoords}/>
-        </FrontendLayout>
+        <MapViewLayout>
+            <MapLayoutFrontend
+                mapImage={map?.data?.map_no_callouts}
+                endCoordinates={endCoords}
+                startCoordinates={startCoords}
+            />
+        </MapViewLayout>
     )
 }
