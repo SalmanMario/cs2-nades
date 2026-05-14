@@ -14,22 +14,28 @@ use App\Models\Team;
 
 class ApiUtilsController extends Controller
 {
-    public function getNades(){
+    public function getNades()
+    {
         return NadeResource::collection(UtilityType::all());
     }
 
-    public function getTeams(){
+    public function getTeams()
+    {
         return TeamResource::collection(Team::all());
     }
 
-    public function getMap($map){
+    public function getMap($map)
+    {
         $findMap = Map::where('name', $map)->first();
         return MapResource::make($findMap);
     }
 
-    public function getUtilityCoordinates($map){
+    public function getUtilityCoordinates($map)
+    {
         $mapId = Map::where('name', $map)->first()->id;
-        $utilityCoordinates = UtilityCoordinate::query()->with(['start_utility_coordinates', 'end_utility_coordinates', 'utilities', 'map'])->where('map_id', $mapId)->get();
+        $utilityCoordinates = UtilityCoordinate::query()->with(['start_utility_coordinates', 'end_utility_coordinates', 'utilities', 'map'])
+            ->where('map_id', $mapId)
+            ->get();
         return UtilityCoordinateResource::collection($utilityCoordinates);
     }
 }

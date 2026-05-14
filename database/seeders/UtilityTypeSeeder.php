@@ -15,7 +15,7 @@ class UtilityTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        $storagePath = Storage::path('/public/images/nade-img');
+        $storagePath = Storage::path('/public/images/nades-img');
         if (!File::exists($storagePath)) {
             File::makeDirectory($storagePath, 0775, true);
         }
@@ -24,7 +24,7 @@ class UtilityTypeSeeder extends Seeder
             UtilityType::query()->updateOrCreate([
                 'name' => $nade->value,
             ], [
-                'image' => 'images/nades-img/'.$nade->value.'.png',
+                'image' => '/images/nades-img/'.$nade->value.'.png',
             ]);
         }
 

@@ -3,6 +3,7 @@ import {Image, Layer, Stage, Circle, Line} from "react-konva";
 import React, {useState, useEffect, useRef} from "react";
 import Konva from "konva";
 import KonvaEventObject = Konva.KonvaEventObject;
+import {parseNumber} from "@/hooks/helper";
 
 type MapLayoutBackendProps = {
     mapImage: string,
@@ -106,8 +107,8 @@ export default function MapLayoutBackend({
                         />
                         {startCoordinates && (
                             <Circle
-                                x={startCoordinates.x}
-                                y={startCoordinates.y}
+                                x={parseNumber(startCoordinates.x)}
+                                y={parseNumber(startCoordinates.y)}
                                 radius={16}
                                 fill="white"
                                 stroke="black"
@@ -116,8 +117,8 @@ export default function MapLayoutBackend({
                         )}
                         {endCoordinates && (
                             <Circle
-                                x={endCoordinates.x}
-                                y={endCoordinates.y}
+                                x={parseNumber(endCoordinates.x)}
+                                y={parseNumber(endCoordinates.y)}
                                 radius={16}
                                 fill="green"
                                 stroke="black"

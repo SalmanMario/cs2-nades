@@ -3,6 +3,7 @@ export type UtilityTable = {
     grenade_name: string
     team_type: string
     utility_type: string,
+    utility_image: string,
     start_coords_x: number,
     start_coords_y: number,
     start_coords_title_from: string,
@@ -11,7 +12,15 @@ export type UtilityTable = {
     end_coords_title_to: string,
     technique_type: string
     movement_type: string
+    team_image: string,
     actions?: any,
+}
+
+export interface UtilityResponse {
+    data: UtilityTable[],
+    total_utilities: number,
+    total_utilities_t: number,
+    total_utilities_ct: number,
 }
 
 export type UtilityForm = {
@@ -21,18 +30,21 @@ export type UtilityForm = {
     team_type_id: string,
     technique_type: string,
     movement_type: string,
+    key_type: string,
     title_from: string,
     title_to: string,
-    start_coords_x: string,
-    start_coords_y: string,
+    id_existing_start_coords: string,
+    id_existing_end_coords: string,
+    start_coords_x: number,
+    start_coords_y: number,
     start_coords_title_from: string,
-    existing_start_coords_x: string,
-    existing_start_coords_y: string,
-    end_coords_x: string,
-    end_coords_y: string,
+    existing_start_coords_x: number,
+    existing_start_coords_y: number,
+    end_coords_x: number,
+    end_coords_y: number,
     end_coords_title_to: string,
-    existing_end_coords_x: string,
-    existing_end_coords_y: string,
+    existing_end_coords_x: number,
+    existing_end_coords_y: number,
     image_lineup: File[],
     video_lineup: File[],
 }

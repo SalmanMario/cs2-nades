@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Utility extends Model
 {
     use softDeletes;
-    protected $fillable = ['utility_name', 'technique_type', 'movement_type', 'utility_type_id', 'team_type_id', 'grenade_name', 'map_id', 'utility_coordinate_id', 'team_type', 'team_id'];
+    protected $fillable = ['utility_name', 'technique_type', 'movement_type', 'utility_type_id', 'team_type_id', 'grenade_name', 'map_id', 'utility_coordinate_id', 'team_type', 'team_id', 'key_type'];
 
     public function attachments(): HasMany
     {

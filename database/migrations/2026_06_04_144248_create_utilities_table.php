@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Map::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(UtilityCoordinate::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(\App\Models\Team::class)->constrained()->cascadeOnDelete();
+            $table->enum('key_type', \App\Enum\KeyEnum::cases());
             $table->enum('technique_type', \App\Enum\TechniqueEnum::cases());
             $table->enum('movement_type', \App\Enum\MovementEnum::cases());
         });

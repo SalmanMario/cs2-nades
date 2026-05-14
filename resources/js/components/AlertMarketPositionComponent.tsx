@@ -6,8 +6,8 @@ export default function AlertMarketPositionComponent({position} : {position: {x:
             <Alert>
                 <AlertTitle>Marker Position</AlertTitle>
                 <AlertDescription>
-                    <p>Position X: {position.x}</p>
-                    <p>Position Y: {position.y}</p>
+                    <p>Position X: {position.x.toFixed(2)}</p>
+                    <p>Position Y: {position.y.toFixed(2)}</p>
                 </AlertDescription>
             </Alert>
         </div>

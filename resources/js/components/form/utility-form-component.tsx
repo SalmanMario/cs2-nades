@@ -18,6 +18,8 @@ import 'filepond/dist/filepond.min.css';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import {FilePondFile, FilePondInitialFile} from "filepond";
 import {useNavigate} from "@tanstack/react-router";
+import {CustomPayload} from "vite";
+import {parseNumber} from "@/hooks/helper";
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType);
 
@@ -49,10 +51,11 @@ export default function UtilityFormComponent({utility = null, mapName}: {
             team_type_id: "",
             technique_type: "",
             movement_type: "",
-            existing_start_coords_x: "",
-            existing_start_coords_y: "",
-            existing_end_coords_x: "",
-            existing_end_coords_y: "",
+            existing_start_coords_x: undefined,
+            existing_start_coords_y: undefined,
+            existing_end_coords_x: undefined,
+            existing_end_coords_y: undefined,
+            key_type: "",
         }
     });
 
@@ -64,43 +67,41 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         setVideoLineup(files as unknown as FilePondInitialFile[]);
     };
 
-    const handleMutation = useMutationApi<UtilityForm, UtilityFormErrors, FormData>({
+    const handleMutation = useMutationApi<UtilityForm, UtilityFormErrors>({
         url: utility ? `/utilities/${utility.id}` : '/utilities',
         method: isEditing,
     })
 
     const onSubmit = (utility: UtilityForm) => {
-        const formData = new FormData();
-        formData.append('map_name', mapName);
-        formData.append("grenade_name", utility.grenade_name);
-        formData.append("utility_type_id", utility.utility_type_id);
-        formData.append("team_type_id", utility.team_type_id);
-        formData.append("technique_type", utility.technique_type);
-        formData.append("movement_type", utility.movement_type);
-        formData.append("title_from", utility.title_from);
-        formData.append("title_to", utility.title_to);
-        formData.append("start_coords_x", utility.start_coords_x);
-        formData.append("start_coords_y", utility.start_coords_y);
-        formData.append("existing_start_coords_x", utility.existing_start_coords_x);
-        formData.append("existing_start_coords_y", utility.existing_start_coords_y);
-        formData.append("end_coords_x", utility.end_coords_x);
-        formData.append("end_coords_y", utility.end_coords_y);
-        formData.append("existing_end_coords_x", utility.existing_end_coords_x);
-        formData.append("existing_end_coords_y", utility.existing_end_coords_y);
+        const payload = {
+            map_name: mapName,
+            grenade_name: utility.grenade_name,
+            utility_type_id: utility.utility_type_id,
+            team_type_id: utility.team_type_id,
+            technique_type: utility.technique_type,
+            key_type: utility.key_type,
+            movement_type: utility.movement_type,
+            title_from: utility.title_from,
+            title_to: utility.title_to,
+            start_coords_x: parseNumber(utility.start_coords_x),
+            start_coords_y: parseNumber(utility.start_coords_y),
+            existing_start_coords_x: parseNumber(utility.existing_start_coords_x),
+            existing_start_coords_y: parseNumber(utility.existing_start_coords_y),
+            end_coords_x: parseNumber(utility.end_coords_x),
+            end_coords_y: parseNumber(utility.end_coords_y),
+            existing_end_coords_x: parseNumber(utility.existing_end_coords_x),
+            existing_end_coords_y: parseNumber(utility.existing_end_coords_y),
 
-        (imageLineup as unknown as FilePondFile[]).forEach((file) => {
-            if (file.serverId) {
-                formData.append("image_lineup_ids[]", file.serverId);
-            }
-        });
+            image_lineup_ids: (imageLineup as unknown as FilePondFile[])
+                .filter(f => f.serverId)
+                .map(f => f.serverId),
 
-        (videoLineup as unknown as FilePondFile[]).forEach((file) => {
-            if (file.serverId) {
-                formData.append("video_lineup_ids[]", file.serverId);
-            }
-        })
+            video_lineup_ids: (videoLineup as unknown as FilePondFile[])
+                .filter(f => f.serverId)
+                .map(f => f.serverId),
+        };
 
-        handleMutation.mutate(formData, {
+        handleMutation.mutate(payload, {
             onSuccess: () => {
                 reset();
                 navigate({
@@ -178,11 +179,19 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         url: '/getTeams',
     })
 
-    const {data: utilityCoordinates} = useQueryApi({
+    const {data: utilityCoordinates} = useQueryApi<{data: UtilityForm[]}>({
         queryKey: ['utilityCoordinates'],
         method: 'GET',
         url: `/getUtilityCoordinates/${mapName}`,
     })
+
+    const uniqueStartCoords = utilityCoordinates?.data ? [...new Map(
+        utilityCoordinates.data.map((coords) => [coords.existing_start_coords_x + '-' + coords.existing_start_coords_y, coords])
+    ).values()] : [];
+
+    const uniqueEndCoords = utilityCoordinates?.data ? [...new Map(
+        utilityCoordinates.data.map((coords) => [coords.existing_end_coords_x + '-' + coords.existing_end_coords_y, coords])
+    ).values()] : [];
 
     return (
         <AdminLayout>
@@ -219,7 +228,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3 mb-5">
                     <div>
                         <SelectForm name="technique_type" label="Technique" placeholder="technique" control={control}>
                             <SelectItem value="LEFT_CLICK">Left Click</SelectItem>
@@ -234,15 +243,38 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                         <SelectForm name="movement_type" label="Movement" placeholder="movement" control={control}>
                             <SelectItem value="STATIONARY">Stationary</SelectItem>
                             <SelectItem value="WALKING">Walking</SelectItem>
-                            <SelectItem value="JUMPING">Jumping</SelectItem>
                             <SelectItem value="RUNNING">Running</SelectItem>
+                            <SelectItem value="JUMPING">Jumping</SelectItem>
+                            <SelectItem value="JUMPING_RUNNING">Jump Running</SelectItem>
                             <SelectItem value="CROUCHING">Crouching</SelectItem>
                             <SelectItem value="CROUCHED_WALKING">Crouched Walking</SelectItem>
+                            <SelectItem value="CROUCHED_JUMPING">Crouched Jumping</SelectItem>
                         </SelectForm>
                         {errors.movement_type &&
                             <p className="text-red-500 text-sm mt-1">{errors.movement_type.message}</p>}
                     </div>
 
+                    <div>
+                        <SelectForm name="key_type" label="Key" placeholder="Key" control={control}>
+                            <SelectItem value="TAP_A">Tap A</SelectItem>
+                            <SelectItem value="HOLD_A">Hold A</SelectItem>
+                            <SelectItem value="TAP_D">Tap D</SelectItem>
+                            <SelectItem value="HOLD_D">Hold D</SelectItem>
+                            <SelectItem value="TAP_W">Tap W</SelectItem>
+                            <SelectItem value="TAP_W_A">Tap W + A</SelectItem>
+                            <SelectItem value="TAP_W_D">Tap W + D</SelectItem>
+                            <SelectItem value="HOLD_W">Hold W</SelectItem>
+                            <SelectItem value="HOLD_W_A">Hold W + A</SelectItem>
+                            <SelectItem value="HOLD_W_D">Hold W + D</SelectItem>
+                            <SelectItem value="TAP_S">Tap S</SelectItem>
+                            <SelectItem value="HOLD_S">Hold S</SelectItem>
+                        </SelectForm>
+                        {errors.key_type &&
+                            <p className="text-red-500 text-sm mt-1">{errors.key_type.message}</p>}
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
                         <Label htmlFor="title_from" className="">From</Label>
                         <Input type="text" id="title_from" className="mt-2" {...register('title_from')}/>
@@ -263,24 +295,24 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div>
                                     <Label htmlFor="start_coords_x" className="">Start Coords X</Label>
-                                    <Input type="text" id="start_coords_x" disabled
-                                           className="mt-2" {...register('start_coords_x')}/>
+                                    <Input type="number" id="start_coords_x" disabled
+                                           className="mt-2" {...register('start_coords_x', {valueAsNumber: true})}/>
                                     {errors.start_coords_x &&
                                         <p className="text-red-500 text-sm mt-1">{errors.start_coords_x.message}</p>}
                                 </div>
 
                                 <div>
                                     <Label htmlFor="start_coords_y" className="">Start Coords Y</Label>
-                                    <Input type="text" id="start_coords_y" disabled
-                                           className="mt-2" {...register('start_coords_y')}/>
+                                    <Input type="number" id="start_coords_y" disabled
+                                           className="mt-2" {...register('start_coords_y', {valueAsNumber: true})}/>
                                     {errors.start_coords_y &&
                                         <p className="text-red-500 text-sm mt-1">{errors.start_coords_y.message}</p>}
                                 </div>
 
                                 <div>
                                     <SelectForm name="existing_start_coords_x" label="Existing Start Coords X"
-                                                placeholder="existing_start_coords_x" control={control}>
-                                        {utilityCoordinates?.data?.map((coords) => (
+                                                placeholder="Existing Start Coords X" control={control}>
+                                        {uniqueStartCoords?.map((coords) => (
                                             <SelectItem key={coords.id_existing_start_coords} value={String(coords.existing_start_coords_x)}>
                                                 {coords.existing_start_coords_x} - {coords.title_from}
                                             </SelectItem>
@@ -292,8 +324,8 @@ export default function UtilityFormComponent({utility = null, mapName}: {
 
                                 <div>
                                     <SelectForm name="existing_start_coords_y" label="Existing Start Coords Y"
-                                                placeholder="existing_start_coords_y" control={control}>
-                                        {utilityCoordinates?.data?.map((coords) => (
+                                                placeholder="Existing Start Coords Y" control={control}>
+                                        {uniqueStartCoords?.map((coords) => (
                                             <SelectItem key={coords.id_existing_start_coords} value={String(coords.existing_start_coords_y)}>
                                                 {coords.existing_start_coords_y} - {coords.title_from}
                                             </SelectItem>
@@ -313,24 +345,24 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div>
                                     <Label htmlFor="end_coords_x" className="">End Coords X</Label>
-                                    <Input type="text" id="end_coords_x" disabled
-                                           className="mt-2" {...register('end_coords_x')}/>
+                                    <Input type="number" id="end_coords_x" disabled
+                                           className="mt-2" {...register('end_coords_x', {valueAsNumber: true})}/>
                                     {errors.end_coords_x &&
                                         <p className="text-red-500 text-sm mt-1">{errors.end_coords_x.message}</p>}
                                 </div>
 
                                 <div>
                                     <Label htmlFor="end_coords_y" className="">End Coords Y</Label>
-                                    <Input type="text" id="end_coords_y" disabled
-                                           className="mt-2" {...register('end_coords_y')}/>
+                                    <Input type="number" id="end_coords_y" disabled
+                                           className="mt-2" {...register('end_coords_y', {valueAsNumber: true})}/>
                                     {errors.end_coords_y &&
                                         <p className="text-red-500 text-sm mt-1">{errors.end_coords_y.message}</p>}
                                 </div>
 
                                 <div>
                                     <SelectForm name="existing_end_coords_x" label="Existing End Coords X"
-                                                placeholder="existing_end_coords_x" control={control}>
-                                        {utilityCoordinates?.data?.map((coords) => (
+                                                placeholder="Existing End Coords X" control={control}>
+                                        {uniqueEndCoords.map((coords) => (
                                             <SelectItem key={coords.id_existing_end_coords} value={String(coords.existing_end_coords_x)}>
                                                 {coords.existing_end_coords_x} - {coords.title_to}
                                             </SelectItem>
@@ -342,8 +374,8 @@ export default function UtilityFormComponent({utility = null, mapName}: {
 
                                 <div>
                                     <SelectForm name="existing_end_coords_y" label="Existing End Coords Y"
-                                                placeholder="existing_end_coords_y" control={control}>
-                                        {utilityCoordinates?.data?.map((coords) => (
+                                                placeholder="Existing End Coords Y" control={control}>
+                                        {uniqueEndCoords?.map((coords) => (
                                             <SelectItem key={coords.id_existing_end_coords} value={String(coords.existing_end_coords_y)}>
                                                 {coords.existing_end_coords_y} - {coords.title_to}
                                             </SelectItem>
@@ -448,13 +480,13 @@ export default function UtilityFormComponent({utility = null, mapName}: {
 
                                               onStartCoordsChange={(coords: { x: number, y: number }) => {
                                                   setStartCoordinates(coords)
-                                                  setValue('start_coords_x', String(coords.x))
-                                                  setValue('start_coords_y', String(coords.y))
+                                                  setValue('start_coords_x', parseNumber(coords.x))
+                                                  setValue('start_coords_y', parseNumber(coords.y))
                                               }}
                                               onEndCoordsChange={(coords: { x: number, y: number }) => {
                                                   setEndCoordinates(coords);
-                                                  setValue('end_coords_x', String(coords.x));
-                                                  setValue('end_coords_y', String(coords.y));
+                                                  setValue('end_coords_x', parseNumber(coords.y));
+                                                  setValue('end_coords_y', parseNumber(coords.y));
                                               }}
                             />
                         </AccordionContent>

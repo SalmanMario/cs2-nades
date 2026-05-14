@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('start_utility_coordinates', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('x');
-            $table->string('y');
+            $table->decimal('x', 6,);
+            $table->decimal('y', 6,);
             $table->string('title_from');
         });
     }
