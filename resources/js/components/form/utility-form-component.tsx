@@ -485,7 +485,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                                               }}
                                               onEndCoordsChange={(coords: { x: number, y: number }) => {
                                                   setEndCoordinates(coords);
-                                                  setValue('end_coords_x', parseNumber(coords.y));
+                                                  setValue('end_coords_x', parseNumber(coords.x));
                                                   setValue('end_coords_y', parseNumber(coords.y));
                                               }}
                             />
