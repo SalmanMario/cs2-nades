@@ -10,7 +10,6 @@ export function MarkerMap({props}) {
         img.src = `/storage/${props.start.utility_image}`;
         img.onload = () => setImage(img);
     }, [props]);
-    console.log(props.start.utility_id)
     return (
         <Image
             image={image!}

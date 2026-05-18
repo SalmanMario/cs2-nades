@@ -113,7 +113,6 @@ class UtilityController extends Controller
      */
     public function show(string $id)
     {
-        //
     }
 
     /**

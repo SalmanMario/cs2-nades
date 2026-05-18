@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enum\AttachmentType;
 use App\Enum\TeamEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UtilityCoordinateResource;
@@ -41,6 +42,26 @@ class ApiUtilsController extends Controller
             ->where('map_id', $mapId)
             ->get();
         return UtilityCoordinateResource::collection($utilityCoordinates);
+    }
+
+    public function getUtility($map, $utility)
+    {
+        $mapId = Map::where('name', $map)->first()->id;
+        $utility = Utility::query()->with(['team', 'utilityCoordinates.start_utility_coordinates', 'utilityCoordinates.end_utility_coordinates', 'attachments'])->where('map_id', $mapId)->where('id', $utility)->first();
+        return response()->json([
+            'created_at' => $utility->created_at,
+            'updated_at' => $utility->updated_at,
+            'title' => $utility->utilityCoordinates->start_utility_coordinates->title_from . ' - ' . $utility->utilityCoordinates->end_utility_coordinates->title_to,
+            'type' => $utility->utilityCoordinates->utility_type->name,
+            'team' => $utility->team->name,
+            'team_image' => $utility->team->image,
+            'team_type' => $utility->team->name,
+            'technique' => $utility->technique_type,
+            'movement' => $utility->movement_type,
+            'key' => $utility->key_type,
+            'video' => $utility->attachments->where('type', AttachmentType::VIDEO_LINEUP->value)->where('attachmentable_id', $utility->id)->first(),
+            'image' => $utility->attachments->where('type', AttachmentType::IMAGE_LINEUP->value)->where('attachmentable_id', $utility->id)
+        ]);
     }
 
     public function getUtilityStats(){

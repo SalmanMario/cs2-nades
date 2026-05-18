@@ -12,6 +12,7 @@ Route::get('/getMaps', [\App\Http\Controllers\DashboardController::class, 'getMa
 Route::get('/getNades', [ApiUtilsController::class, 'getNades'])->name('getNades');
 Route::get('/getTeams', [ApiUtilsController::class, 'getTeams'])->name('getTeams');
 Route::get('/getUtilityStats', [ApiUtilsController::class, 'getUtilityStats'])->name('getUtilityStats');
+Route::get('/getUtility/{map}/{id}', [ApiUtilsController::class, 'getUtility'])->name('getUtility');
 Route::get('/getUtilityCoordinates/{mapName}', [ApiUtilsController::class, 'getUtilityCoordinates'])->name('getUtilityCoordinates');
 Route::get('/getMap/{map}', [ApiUtilsController::class, 'getMap'])->name('getMap');
 Route::post('/attachment/upload', [ApiAttachmentController::class, 'store'])->name('attachment.store');

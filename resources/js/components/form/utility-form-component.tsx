@@ -112,7 +112,6 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                 }).then();
             },
             onError: (error) => {
-                console.log(error);
                 Object.entries(error.errors).forEach(([field, message]) => {
                     setError(field as keyof UtilityForm, {message: message[0]})
                 })

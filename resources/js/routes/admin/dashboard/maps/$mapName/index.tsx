@@ -4,7 +4,7 @@ import {DataTable} from "@/components/mapsTable/data-table";
 import {utilitiesColumns} from "@/components/mapsTable/utilities-columns";
 import {Button} from "@/components/ui/button";
 import {useQueryApi} from "@/hooks/use-query";
-import {UtilityResponse, UtilityTable} from "../../../../../types/utility";
+import {UtilityResponse} from "@/types/utility";
 import UtilityCounter from "@/components/UtilityCounter";
 
 export const Route = createFileRoute('/admin/dashboard/maps/$mapName/')({
