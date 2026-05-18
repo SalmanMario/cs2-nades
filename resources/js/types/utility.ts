@@ -16,6 +16,13 @@ export type UtilityTable = {
     actions?: any,
 }
 
+export type UtilityStatsResponse = {
+    total_utilities: number,
+    total_utilities_t: number,
+    total_utilities_ct: number,
+    total_utilities_any: number,
+}
+
 export interface UtilityResponse {
     data: UtilityTable[],
     total_utilities: number,

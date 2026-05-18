@@ -11,6 +11,7 @@ Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])-
 Route::get('/getMaps', [\App\Http\Controllers\DashboardController::class, 'getMaps'])->name('getMaps');
 Route::get('/getNades', [ApiUtilsController::class, 'getNades'])->name('getNades');
 Route::get('/getTeams', [ApiUtilsController::class, 'getTeams'])->name('getTeams');
+Route::get('/getUtilityStats', [ApiUtilsController::class, 'getUtilityStats'])->name('getUtilityStats');
 Route::get('/getUtilityCoordinates/{mapName}', [ApiUtilsController::class, 'getUtilityCoordinates'])->name('getUtilityCoordinates');
 Route::get('/getMap/{map}', [ApiUtilsController::class, 'getMap'])->name('getMap');
 Route::post('/attachment/upload', [ApiAttachmentController::class, 'store'])->name('attachment.store');
