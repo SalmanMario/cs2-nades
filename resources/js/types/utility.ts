@@ -1,17 +1,16 @@
+import {Coords, ExistingCoords} from "@/types/coords";
+import {Movement, Technique, Utility, Team, Key} from "@/types/utils";
+
 export type UtilityTable = {
     id: string
     grenade_name: string
-    team_type: string
-    utility_type: string,
+    team_type: Team
+    utility_type: Utility,
     utility_image: string,
-    start_coords_x: number,
-    start_coords_y: number,
-    start_coords_title_from: string,
-    end_coords_x: number,
-    end_coords_y: number,
-    end_coords_title_to: string,
-    technique_type: string
-    movement_type: string
+    start_coords: Coords,
+    end_coords: Coords,
+    technique_type: Technique
+    movement_type: Movement
     team_image: string,
     actions?: any,
 }
@@ -21,6 +20,22 @@ export type UtilityStatsResponse = {
     total_utilities_t: number,
     total_utilities_ct: number,
     total_utilities_any: number,
+}
+
+export type SingleUtilityResponse = {
+    type: string,
+    title: string,
+    video:
+        {
+            path: string,
+        },
+    team_image: string,
+    team_type:Team,
+    movement:Movement,
+    technique:Technique,
+    key:string,
+    created_at: string,
+    updated_at: string,
 }
 
 export interface UtilityResponse {
@@ -35,23 +50,15 @@ export type UtilityForm = {
     grenade_name: string,
     utility_type_id: string,
     team_type_id: string,
-    technique_type: string,
-    movement_type: string,
-    key_type: string,
+    technique_type: Technique,
+    movement_type: Movement,
+    key_type: Key,
     title_from: string,
     title_to: string,
-    id_existing_start_coords: string,
-    id_existing_end_coords: string,
-    start_coords_x: number,
-    start_coords_y: number,
-    start_coords_title_from: string,
-    existing_start_coords_x: number,
-    existing_start_coords_y: number,
-    end_coords_x: number,
-    end_coords_y: number,
-    end_coords_title_to: string,
-    existing_end_coords_x: number,
-    existing_end_coords_y: number,
+    start_coords: Coords,
+    end_coords: Coords,
+    existing_start_coords: ExistingCoords,
+    existing_end_coords: ExistingCoords,
     image_lineup: File[],
     video_lineup: File[],
 }

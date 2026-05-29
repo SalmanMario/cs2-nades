@@ -6,6 +6,7 @@ import {Clock, Pencil} from "lucide-react";
 import {formatDate} from "@/hooks/helper";
 import FrontendNavbarComponent from "@/components/navbar/FrontendNavbarComponent";
 import FooterComponent from "@/components/FooterComponent";
+import {SingleUtilityResponse} from "@/types/utility";
 
 export const Route = createFileRoute('/maps/$mapName/$utilityId/')({
     component: RouteComponent,
@@ -14,9 +15,8 @@ export const Route = createFileRoute('/maps/$mapName/$utilityId/')({
 function RouteComponent() {
     const {mapName, utilityId} = Route.useParams();
     const [showVideo, setShowVideo] = useState(true);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    const {data: utility, isLoading} = useQueryApi({
+    const {data: utility, isLoading} = useQueryApi<SingleUtilityResponse>({
         queryKey: ['utility', utilityId],
         method: 'GET',
         url: `/getUtility/${mapName}/${utilityId}`,

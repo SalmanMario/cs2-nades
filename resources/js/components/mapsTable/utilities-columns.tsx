@@ -123,14 +123,14 @@ export const utilitiesColumns = (navigate: NavigateFn, mapName: string): ColumnD
             )
         },
         cell: ({row}) => {
-            const {start_coords_x, start_coords_y, start_coords_title_from} = row.original;
+            const {start_coords} = row.original;
             return (
                 <div>
                     <div className="flex justify-center">
-                        <span className="font-bold">X: {start_coords_x}</span>
-                        <span className="ms-5 font-bold">Y: {start_coords_y}</span>
+                        <span className="font-bold">X: {start_coords.x}</span>
+                        <span className="ms-5 font-bold">Y: {start_coords.y}</span>
                     </div>
-                    <p className="text-center mt-3">{start_coords_title_from}</p>
+                    <p className="text-center mt-3">{start_coords.title}</p>
                 </div>
             )
         }
@@ -145,14 +145,14 @@ export const utilitiesColumns = (navigate: NavigateFn, mapName: string): ColumnD
             )
         },
         cell: ({row}) => {
-            const {end_coords_x, end_coords_y, end_coords_title_to} = row.original;
+            const {end_coords} = row.original;
             return (
                 <div>
                     <div className="flex justify-center">
-                        <span className="font-bold">X: {end_coords_x}</span>
-                        <span className="ms-5 font-bold">Y: {end_coords_y}</span>
+                        <span className="font-bold">X: {end_coords.x}</span>
+                        <span className="ms-5 font-bold">Y: {end_coords.y}</span>
                     </div>
-                    <p className="text-center mt-3">{end_coords_title_to}</p>
+                    <p className="text-center mt-3">{end_coords.title}</p>
                 </div>
             )
         }

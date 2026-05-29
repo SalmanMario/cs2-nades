@@ -1,16 +1,24 @@
 import {Circle, Image, Layer, Line, Stage} from "react-konva";
 import React, {useEffect, useRef, useState} from "react";
+import Konva from "konva";
 import {MarkerMap} from "@/components/MarkerMap";
+import {Coords} from "@/types/coords";
+import {UtilityCoordinates} from "@/routes/maps/$mapName";
 
 const COORD_SPACE = 1024;
 
-export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordinates}) {
-    const [activeCircles, setActiveCircles] = useState([]);
+type ActiveCircle = {
+    start: UtilityCoordinates;
+    end: UtilityCoordinates;
+};
+
+export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordinates}: {mapImage: string, endCoordinates: UtilityCoordinates[], startCoordinates: UtilityCoordinates[]}) {
+    const [activeCircles, setActiveCircles] = useState<ActiveCircle[]>([]);
     const [img, setImg] = useState<HTMLImageElement | null>(null);
     const [stageSize, setStageSize] = useState({width: COORD_SPACE, height: COORD_SPACE});
     const [scale, setScale] = useState(1);
     const containerRef = useRef<HTMLDivElement>(null);
-    const imgAspectRef = useRef(1); // naturalHeight / naturalWidth
+    const imgAspectRef = useRef(1);
     function fitStage() {
         if (!containerRef.current) return;
         const { offsetWidth: maxW, offsetHeight: maxH } = containerRef.current;
@@ -47,16 +55,16 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
         return () => observer.disconnect();
     }, []);
 
-    function handleClickEndCoords(endCoor) {
+    function handleClickEndCoords(endCoor: UtilityCoordinates) {
         return () => {
             const matchingStarts = startCoordinates.filter(
                 (s) => s.end_utility_id === endCoor.end_utility_id
             );
-            setActiveCircles(matchingStarts.map((start) => ({ start, end: endCoor })));
+            setActiveCircles(matchingStarts.map((start: UtilityCoordinates) => ({ start, end: endCoor })));
         };
     }
 
-    function handleOutsideClick(event: React.MouseEvent<MouseEvent>) {
+    function handleOutsideClick(event: Konva.KonvaEventObject<MouseEvent>) {
         if (event.target.className === "Image") {
             setActiveCircles([]);
         }
@@ -81,20 +89,20 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
                         width={COORD_SPACE}
                         height={COORD_SPACE * imgAspectRef.current}
                     />
-                    {endCoordinates?.map((coor, index) => (
+                    {endCoordinates?.map((coords, index: number) => (
                         <Circle
                             key={index}
-                            x={coor.x}
-                            y={coor.y}
+                            x={coords.x}
+                            y={coords.y}
                             radius={16}
-                            fill={coor.team_id === 1 ? "orange" : "blue"}
+                            fill={coords.team_id === 1 ? "orange" : "blue"}
                             stroke="black"
                             strokeWidth={2}
-                            onClick={handleClickEndCoords(coor)}
+                            onClick={handleClickEndCoords(coords)}
                         />
                     ))}
-                    {activeCircles.map((line, index) => (
-                        <MarkerMap props={line} key={index}/>
+                    {activeCircles.map((props, index) => (
+                        <MarkerMap props={props} key={index}/>
                     ))}
                     {activeCircles.map((line, index) => (
                         <Line

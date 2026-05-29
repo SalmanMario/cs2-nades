@@ -9,8 +9,6 @@ use App\Http\Resources\UtilityCoordinateResource;
 use App\Http\Resources\MapResource;
 use App\Http\Resources\NadeResource;
 use App\Http\Resources\TeamResource;
-use App\Http\Resources\UtilityCounterResource;
-use App\Http\Resources\UtilityResource;
 use App\Models\Map;
 use App\Models\Utility;
 use App\Models\UtilityCoordinate;

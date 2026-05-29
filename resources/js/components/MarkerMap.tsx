@@ -1,13 +1,20 @@
 import {Image} from "react-konva";
 import {useState, useEffect} from "react";
 import {useNavigate} from "@tanstack/react-router";
+import {Route, UtilityCoordinates} from "@/routes/maps/$mapName";
 
-export function MarkerMap({props}) {
+type MarkerProps = {
+    start: UtilityCoordinates,
+    end: UtilityCoordinates,
+}
+
+export function MarkerMap({props} : {props: MarkerProps}) {
     const [image, setImage] = useState<HTMLImageElement | undefined>();
+    const {mapName} = Route.useParams();
     const navigate = useNavigate();
     useEffect(() => {
         const img = new window.Image();
-        img.src = `/storage/${props.start.utility_image}`;
+        img.src = `/storage/${props.start.image}`;
         img.onload = () => setImage(img);
     }, [props]);
     return (
@@ -23,9 +30,10 @@ export function MarkerMap({props}) {
                 navigate({
                     to: "/maps/$mapName/$utilityId",
                     params: {
-                        utilityId: props.start.utility_id,
+                        utilityId: String(props.start.utility_id),
+                        mapName: mapName
                     }
-                })
+                }).then();
             }}
         />
     )

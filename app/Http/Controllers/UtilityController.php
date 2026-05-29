@@ -53,32 +53,32 @@ class UtilityController extends Controller
     {
         $mapId = Map::where('name', $request->map_name)->first()->id;
 
-        if ($request->start_coords_x && $request->start_coords_y) {
+        if ($request->start_coords['x'] && $request->start_coords['y']) {
             $startCoords = StartUtilityCoordinate::query()->create([
-                'x' => $request->start_coords_x,
-                'y' => $request->start_coords_y,
-                'title_from' => $request->title_from,
+                'x' => $request->start_coords['x'],
+                'y' => $request->start_coords['y'],
+                'title_from' => $request->start_coords['title'],
             ]);
         }
 
-        if ($request->end_coords_x && $request->end_coords_y) {
+        if ($request->end_coords['x'] && $request->end_coords['y']) {
             $endCoords = EndUtilityCoordinate::query()->create([
-                'x' => $request->end_coords_x,
-                'y' => $request->end_coords_y,
-                'title_to' => $request->title_to,
+                'x' => $request->end_coords['x'],
+                'y' => $request->end_coords['y'],
+                'title_to' => $request->end_coords['title'],
             ]);
         }
 
-        if ($request->existing_start_coords_x && $request->existing_start_coords_y) {
+        if ($request->existing_start_coords['x'] && $request->existing_start_coords['y']) {
             $startCoords = StartUtilityCoordinate::query()->with(['utility_coordinates' => function ($query) use ($mapId) {
                 $query->where('map_id', $mapId);
-            }])->where('x', $request->existing_start_coords_x)->where('y', $request->existing_start_coords_y)->first();
+            }])->where('x', $request->existing_start_coords['x'])->where('y', $request->existing_start_coords['y'])->first();
         }
 
-        if ($request->existing_end_coords_x && $request->existing_end_coords_y) {
+        if ($request->existing_end_coords['x'] && $request->existing_end_coords['y']) {
             $endCoords = EndUtilityCoordinate::query()->with(['utility_coordinates' => function ($query) use ($mapId) {
                 $query->where('map_id', $mapId);
-            }])->where('x', $request->existing_end_coords_x)->where('y', $request->existing_end_coords_y)->first();
+            }])->where('x', $request->existing_end_coords['x'])->where('y', $request->existing_end_coords['y'])->first();
         }
 
         $coordinates = UtilityCoordinate::query()->create([
@@ -131,26 +131,27 @@ class UtilityController extends Controller
     {
         $utility = Utility::with(['team', 'utilityCoordinates.utility_type', 'utilityCoordinates.start_utility_coordinates', 'utilityCoordinates.end_utility_coordinates', 'attachments'])->find($id);
 
-        if ($request->start_coords_x && $request->start_coords_y) {
+        if ($request->start_coords['x'] && $request->start_coords['y']) {
             $startCoords = StartUtilityCoordinate::query()->firstOrCreate([
-                'x' => $request->start_coords_x,
-                'y' => $request->start_coords_y,
+                'x' => $request->start_coords['x'],
+                'y' => $request->start_coords['y'],
             ], [
-                'title_from' => $request->title_from,
+                'title_from' => $request->start_coords['title'],
             ]);
-        } else if ($request->existing_start_coords_x && $request->existing_start_coords_y) {
-            $startCoords = StartUtilityCoordinate::query()->where('x', $request->existing_start_coords_x)->where('y', $request->existing_start_coords_y)->first();
+        } else if ($request->existing_start_coords['x'] && $request->existing_start_coords['y']) {
+            $startCoords = StartUtilityCoordinate::query()->where('x', $request->existing_start_coords['x'])
+                ->where('y', $request->existing_start_coords['y'])->first();
         }
 
-        if ($request->end_coords_x && $request->end_coords_y) {
+        if ($request->end_coords['x'] && $request->end_coords['y']) {
             $endCoords = EndUtilityCoordinate::query()->firstOrCreate([
-                'x' => $request->end_coords_x,
-                'y' => $request->end_coords_y,
+                'x' => $request->end_coords['x'],
+                'y' => $request->end_coords['y'],
             ], [
-                'title_to' => $request->title_to,
+                'title_to' => $request->end_coords['title'],
             ]);
-        } else if ($request->existing_end_coords_x && $request->existing_end_coords_y) {
-            $endCoords = EndUtilityCoordinate::query()->where('x', $request->existing_end_coords_x)->where('y', $request->existing_end_coords_y)->first();
+        } else if ($request->existing_end_coords['x'] && $request->existing_end_coords['y']) {
+            $endCoords = EndUtilityCoordinate::query()->where('x', $request->existing_end_coords['y'])->where('y', $request->existing_end_coords['y'])->first();
         }
 
         $utility->utilityCoordinates->update([
