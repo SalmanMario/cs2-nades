@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enum\AttachmentType;
 use App\Http\Requests\UtilityRequest;
 use App\Http\Resources\UtilityResource;
+use App\Models\Attachment;
 use App\Models\EndUtilityCoordinate;
 use App\Models\Map;
 use App\Models\StartUtilityCoordinate;
@@ -167,10 +168,14 @@ class UtilityController extends Controller
             'movement_type' => $request->movement_type,
         ]);
 
-        if ($request->hasFile('image_lineup'))
-            $this->attachmentService->process($request->file('image_lineup'), AttachmentType::IMAGE_LINEUP->value, $utility);
-        if ($request->hasFile('video_lineup'))
-            $this->attachmentService->process($request->file('video_lineup'), AttachmentType::VIDEO_LINEUP->value, $utility);
+        if ($request->image_lineup_ids)
+            $this->attachmentService->process($request->image_lineup_ids, AttachmentType::IMAGE_LINEUP->value, $utility);
+        if ($request->video_lineup_ids)
+            $this->attachmentService->process($request->video_lineup_ids, AttachmentType::VIDEO_LINEUP->value, $utility);
+
+        $retainImgIds = array_merge($request->image_lineup_ids, $request->video_lineup_ids);
+        $attachmentsToDelete = $utility->attachments->whereNotIn('id', $retainImgIds);
+        $attachmentsToDelete->each(fn($attachment) => $attachment->delete());
 
         return response()->json(['message' => 'Utility updated successfully'], 200);
     }

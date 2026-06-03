@@ -39,6 +39,7 @@
         "@tanstack/router-devtools": "^1.151.3",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "embla-carousel-react": "^8.6.0",
         "filepond": "^4.32.12",
         "filepond-plugin-file-validate-type": "^1.2.9",
         "filepond-plugin-image-preview": "^4.6.12",

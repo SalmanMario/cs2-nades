@@ -33,6 +33,9 @@ export type SingleUtilityResponse = {
     team_type:Team,
     movement:Movement,
     technique:Technique,
+    image: {
+        path: string,
+    }
     key:string,
     created_at: string,
     updated_at: string,

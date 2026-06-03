@@ -2,11 +2,12 @@ import {createFileRoute} from '@tanstack/react-router'
 import {useQueryApi} from "@/hooks/use-query";
 import {useState} from "react";
 import {Button} from "@/components/ui/button";
-import {Clock, Pencil} from "lucide-react";
+import {Clock, CrosshairIcon, MinusIcon, Pencil, PlusIcon, RotateCwIcon} from "lucide-react";
 import {formatDate} from "@/hooks/helper";
 import FrontendNavbarComponent from "@/components/navbar/FrontendNavbarComponent";
 import FooterComponent from "@/components/FooterComponent";
 import {SingleUtilityResponse} from "@/types/utility";
+import {Carousel, CarouselContent, CarouselItem} from "@/components/ui/carousel";
 
 export const Route = createFileRoute('/maps/$mapName/$utilityId/')({
     component: RouteComponent,
@@ -15,6 +16,13 @@ export const Route = createFileRoute('/maps/$mapName/$utilityId/')({
 function RouteComponent() {
     const {mapName, utilityId} = Route.useParams();
     const [showVideo, setShowVideo] = useState(true);
+    const [scale, setScale] = useState(1);
+    const [position, setPosition] = useState({x: 0, y: 0});
+    const [crosshairGap, setCrosshairGap] = useState(7);
+    const [lineThickness, setlineThickness] = useState(5);
+    const [showCrosshair, setShowCrosshair] = useState(false);
+    const lineWidth = 680;
+    const lineHeight = 400;
 
     const {data: utility, isLoading} = useQueryApi<SingleUtilityResponse>({
         queryKey: ['utility', utilityId],
@@ -23,24 +31,137 @@ function RouteComponent() {
     })
     if (isLoading) return <div>Loading...</div>;
 
+    const handleZoomIn = () => {
+        setScale(scale + 0.5)
+    }
+
+    const handleZoomOut = () => {
+        if (scale > 1) {
+            setScale(scale - 0.5)
+        }
+    }
+
+    const resetZoom = () => {
+        setScale(1)
+    }
+
+    const handleCrosshair = () => {
+        setShowCrosshair(!showCrosshair);
+    }
+
     const toggleVideo = () => setShowVideo(!showVideo);
     return (
         <div className="flex flex-col min-h-screen">
             <FrontendNavbarComponent/>
             <div className="m-10 flex-1">
                 <h1 className="text-3xl mb-6">{mapName} {utility.type}: {utility.title}</h1>
-                <div className="grid grid-cols-3 gap-5 items-start">
-                    <div className="col-span-2">
-                        <div className="relative">
-                            {showVideo ? (
+                <div className="grid grid-cols-12 gap-5 items-start">
+                    <div className="col-span-9">
+                        {showVideo ? (
+                            <div>
                                 <video className="h-100 w-full" src={"/" + utility.video.path} controls/>
-                            ) : (
-                                <h1>TODO IMG</h1>
-                            )}
-                        </div>
+                            </div>
+                        ) : (
+                            <div className="overflow-hidden flex items-center justify-center cursor-grab">
+                                <Carousel>
+                                    <CarouselContent>
+                                        {Object.entries(utility.image).map(([key, value]: [string, any]) => (
+                                            <CarouselItem
+                                                className="relative flex items-center justify-center overflow-hidden"
+                                                key={key}>
+                                                <img
+                                                    src={"/" + value.path}
+                                                    alt={value.title}
+                                                    style={{
+                                                        transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
+                                                        transformOrigin: 'center center',
+                                                        transition: 'transform 0.2s ease',
+                                                    }}
+                                                    className="max-w-full max-h-full object-contain"
+                                                />
+
+                                                {showCrosshair && (
+                                                    <>
+                                                        {/*Horizontal*/}
+                                                        <div className="absolute bg-white" style={{
+                                                            width: lineWidth,
+                                                            height: lineThickness,
+                                                            top: `calc(50% - ${lineThickness / 2}px)`,
+                                                            left: `calc(50% - ${crosshairGap + lineWidth}px)`,
+                                                        }}/>
+                                                        <div className="absolute bg-white" style={{
+                                                            width: lineWidth,
+                                                            height: lineThickness,
+                                                            top: `calc(50% - ${lineThickness / 2}px)`,
+                                                            left: `calc(50% + ${crosshairGap}px)`
+                                                        }}/>
+                                                        {/*Vertical*/}
+                                                        <div className="absolute bg-white" style={{
+                                                            height: lineHeight,
+                                                            width: lineThickness,
+                                                            left: `calc(50% - ${lineThickness / 2}px)`,
+                                                            top: `calc(50% - ${crosshairGap + lineHeight}px)`
+                                                        }}/>
+                                                        <div className="absolute bg-white" style={{
+                                                            height: lineHeight,
+                                                            width: lineThickness,
+                                                            left: `calc(50% - ${lineThickness / 2}px)`,
+                                                            top: `calc(50% + ${crosshairGap}px)`
+                                                        }}/>
+                                                    </>
+                                                )}
+                                                <div
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-10">
+                                                    <Button variant="default" intent="white"
+                                                            onClick={() => handleZoomIn(key)}>
+                                                        <PlusIcon fontSize="small"/>
+                                                    </Button>
+                                                    <Button variant="default" intent="white"
+                                                            onClick={() => handleZoomOut(key)}>
+                                                        <MinusIcon fontSize="small"/>
+                                                    </Button>
+                                                    <Button variant="default" intent="white"
+                                                            onClick={() => resetZoom(key)}>
+                                                        <RotateCwIcon fontSize="small"/>
+                                                    </Button>
+                                                    <Button variant="default" intent="white" onClick={handleCrosshair}>
+                                                        <CrosshairIcon fontSize="small"/>
+                                                    </Button>
+                                                </div>
+                                            </CarouselItem>
+                                        ))}
+                                    </CarouselContent>
+                                    {showCrosshair && (
+                                        <div
+                                            className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/50 px-4 py-2 rounded-lg">
+                                            <span className="text-white text-sm">Gap</span>
+                                            <input
+                                                type="range" min={0} max={60} value={crosshairGap}
+                                                onChange={(e) => setCrosshairGap(Number(e.target.value))}
+                                                className="w-32"
+                                            />
+                                            <span className="text-white text-sm w-6">{crosshairGap}</span>
+                                        </div>
+                                    )}
+
+                                    {showCrosshair && (
+                                        <div
+                                            className="absolute bottom-15 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/50 px-4 py-2 rounded-lg">
+                                            <span className="text-white text-sm">Line Thickness</span>
+                                            <input
+                                                type="range" min={1} step={2} max={15} value={lineThickness}
+                                                onChange={(e) => setlineThickness(Number(e.target.value))}
+                                                className="w-32"
+                                            />
+                                            <span className="text-white text-sm w-6">{lineThickness}</span>
+                                        </div>
+                                    )}
+                                </Carousel>
+                            </div>
+                        )}
                     </div>
 
-                    <div className="flex flex-col">
+                    <div className="col-span-3">
                         <Button variant="outline" intent="success" onClick={toggleVideo} className="mb-6">
                             {showVideo ? "Show Lineup" : "Show Video"}
                         </Button>
