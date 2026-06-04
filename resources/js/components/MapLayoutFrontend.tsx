@@ -13,7 +13,7 @@ type ActiveCircle = {
     end: UtilityCoordinates;
 };
 
-export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordinates}: {mapImage: string, endCoordinates: UtilityCoordinates[], startCoordinates: UtilityCoordinates[]}) {
+export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordinates, teamType}: {mapImage: string, endCoordinates: UtilityCoordinates[], startCoordinates: UtilityCoordinates[], teamType: number}) {
     const [activeCircles, setActiveCircles] = useState<ActiveCircle[]>([]);
     const [img, setImg] = useState<HTMLImageElement | null>(null);
     const [stageSize, setStageSize] = useState({width: COORD_SPACE, height: COORD_SPACE});
@@ -55,6 +55,10 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
         observer.observe(containerRef.current);
         return () => observer.disconnect();
     }, []);
+
+    useEffect(() => {
+        setActiveCircles([]);
+    }, [endCoordinates, teamType]);
 
     function handleClickEndCoords(endCoor: UtilityCoordinates) {
         return () => {
