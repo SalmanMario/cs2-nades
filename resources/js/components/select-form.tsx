@@ -25,7 +25,7 @@ export function SelectForm(props: SelectFormProps) {
                     name={props.name}
                     control={props.control}
                     render={({field}) => (
-                        <Select onValueChange={(val) => field.onChange(val === "none" ? null : val)} value={field.value}>
+                        <Select key={field.value ?? ""} onValueChange={(val) => field.onChange(val === "none" ? null : val)} value={field.value}>
                             <SelectTrigger className="mt-2">
                                 <SelectValue placeholder={"Select a " + props.placeholder}/>
                             </SelectTrigger>

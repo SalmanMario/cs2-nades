@@ -3,7 +3,7 @@ import MapsComponent from "@/components/MapsComponent";
 import React from "react";
 import AdminLayout from "@/layouts/AdminLayout";
 
-export const Route = createFileRoute('/admin/dashboard/maps/')({
+export const Route = createFileRoute('/admin/_auth/dashboard/maps/')({
     component: RouteComponent,
 })
 

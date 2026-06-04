@@ -11,19 +11,23 @@ class ApiAttachmentController extends Controller
 {
     public function store(Request $request)
     {
-        $file = $request->file('image_lineup') ?? $request->file('video_lineup');
-        $storagePath = storage_path('app/public/images/utilities-img');
-        if (!File::exists($storagePath)) {
-            File::makeDirectory($storagePath, 0775, true);
-        }
+        try {
+            $file = $request->file('image_lineup') ?? $request->file('video_lineup');
+            $storagePath = storage_path('app/public/images/utilities-img');
+            if (!File::exists($storagePath)) {
+                File::makeDirectory($storagePath, 0775, true);
+            }
 
-        $fileName = uniqid().'.'.$file->getClientOriginalExtension();
-        $file->storeAs('public/images/utilities-img', $fileName);
-        $attachment = Attachment::create([
-            'filename' => $fileName,
-            'path' => 'storage/images/utilities-img/'.$fileName,
-        ]);
-        return response()->json(['id' => $attachment->id], 201);
+            $fileName = uniqid().'.'.$file->getClientOriginalExtension();
+            $file->storeAs('public/images/utilities-img', $fileName);
+            $attachment = Attachment::create([
+                'filename' => $fileName,
+                'path' => 'storage/images/utilities-img/'.$fileName,
+            ]);
+            return response()->json(['id' => $attachment->id], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function show(Attachment $attachment)

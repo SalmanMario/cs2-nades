@@ -9,22 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminAuthRouteImport } from './routes/admin/_auth'
 import { Route as MapsMapNameIndexRouteImport } from './routes/maps/$mapName/index'
-import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
 import { Route as MapsMapNameUtilityIdIndexRouteImport } from './routes/maps/$mapName/$utilityId/index'
-import { Route as AdminDashboardMapsIndexRouteImport } from './routes/admin/dashboard/maps/index'
-import { Route as AdminDashboardMapsMapNameIndexRouteImport } from './routes/admin/dashboard/maps/$mapName/index'
-import { Route as AdminDashboardMapsMapNameCreateRouteImport } from './routes/admin/dashboard/maps/$mapName/create'
-import { Route as AdminDashboardMapsMapNameIdEditRouteImport } from './routes/admin/dashboard/maps/$mapName/$id/edit'
+import { Route as AdminAuthDashboardIndexRouteImport } from './routes/admin/_auth/dashboard/index'
+import { Route as AdminAuthDashboardMapsIndexRouteImport } from './routes/admin/_auth/dashboard/maps/index'
+import { Route as AdminAuthDashboardMapsMapNameIndexRouteImport } from './routes/admin/_auth/dashboard/maps/$mapName/index'
+import { Route as AdminAuthDashboardMapsMapNameCreateRouteImport } from './routes/admin/_auth/dashboard/maps/$mapName/create'
+import { Route as AdminAuthDashboardMapsMapNameIdEditRouteImport } from './routes/admin/_auth/dashboard/maps/$mapName/$id/edit'
 
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -35,14 +30,14 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAuthRoute = AdminAuthRouteImport.update({
+  id: '/admin/_auth',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MapsMapNameIndexRoute = MapsMapNameIndexRouteImport.update({
   id: '/maps/$mapName/',
   path: '/maps/$mapName/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
-  id: '/admin/dashboard/',
-  path: '/admin/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MapsMapNameUtilityIdIndexRoute =
@@ -51,128 +46,122 @@ const MapsMapNameUtilityIdIndexRoute =
     path: '/maps/$mapName/$utilityId/',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AdminDashboardMapsIndexRoute = AdminDashboardMapsIndexRouteImport.update({
-  id: '/admin/dashboard/maps/',
-  path: '/admin/dashboard/maps/',
-  getParentRoute: () => rootRouteImport,
+const AdminAuthDashboardIndexRoute = AdminAuthDashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => AdminAuthRoute,
 } as any)
-const AdminDashboardMapsMapNameIndexRoute =
-  AdminDashboardMapsMapNameIndexRouteImport.update({
-    id: '/admin/dashboard/maps/$mapName/',
-    path: '/admin/dashboard/maps/$mapName/',
-    getParentRoute: () => rootRouteImport,
+const AdminAuthDashboardMapsIndexRoute =
+  AdminAuthDashboardMapsIndexRouteImport.update({
+    id: '/dashboard/maps/',
+    path: '/dashboard/maps/',
+    getParentRoute: () => AdminAuthRoute,
   } as any)
-const AdminDashboardMapsMapNameCreateRoute =
-  AdminDashboardMapsMapNameCreateRouteImport.update({
-    id: '/admin/dashboard/maps/$mapName/create',
-    path: '/admin/dashboard/maps/$mapName/create',
-    getParentRoute: () => rootRouteImport,
+const AdminAuthDashboardMapsMapNameIndexRoute =
+  AdminAuthDashboardMapsMapNameIndexRouteImport.update({
+    id: '/dashboard/maps/$mapName/',
+    path: '/dashboard/maps/$mapName/',
+    getParentRoute: () => AdminAuthRoute,
   } as any)
-const AdminDashboardMapsMapNameIdEditRoute =
-  AdminDashboardMapsMapNameIdEditRouteImport.update({
-    id: '/admin/dashboard/maps/$mapName/$id/edit',
-    path: '/admin/dashboard/maps/$mapName/$id/edit',
-    getParentRoute: () => rootRouteImport,
+const AdminAuthDashboardMapsMapNameCreateRoute =
+  AdminAuthDashboardMapsMapNameCreateRouteImport.update({
+    id: '/dashboard/maps/$mapName/create',
+    path: '/dashboard/maps/$mapName/create',
+    getParentRoute: () => AdminAuthRoute,
+  } as any)
+const AdminAuthDashboardMapsMapNameIdEditRoute =
+  AdminAuthDashboardMapsMapNameIdEditRouteImport.update({
+    id: '/dashboard/maps/$mapName/$id/edit',
+    path: '/dashboard/maps/$mapName/$id/edit',
+    getParentRoute: () => AdminAuthRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/admin': typeof AdminAuthRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
-  '/admin/dashboard/': typeof AdminDashboardIndexRoute
   '/maps/$mapName/': typeof MapsMapNameIndexRoute
-  '/admin/dashboard/maps/': typeof AdminDashboardMapsIndexRoute
+  '/admin/dashboard/': typeof AdminAuthDashboardIndexRoute
   '/maps/$mapName/$utilityId/': typeof MapsMapNameUtilityIdIndexRoute
-  '/admin/dashboard/maps/$mapName/create': typeof AdminDashboardMapsMapNameCreateRoute
-  '/admin/dashboard/maps/$mapName/': typeof AdminDashboardMapsMapNameIndexRoute
-  '/admin/dashboard/maps/$mapName/$id/edit': typeof AdminDashboardMapsMapNameIdEditRoute
+  '/admin/dashboard/maps/': typeof AdminAuthDashboardMapsIndexRoute
+  '/admin/dashboard/maps/$mapName/create': typeof AdminAuthDashboardMapsMapNameCreateRoute
+  '/admin/dashboard/maps/$mapName/': typeof AdminAuthDashboardMapsMapNameIndexRoute
+  '/admin/dashboard/maps/$mapName/$id/edit': typeof AdminAuthDashboardMapsMapNameIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/admin': typeof AdminAuthRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
-  '/admin/dashboard': typeof AdminDashboardIndexRoute
   '/maps/$mapName': typeof MapsMapNameIndexRoute
-  '/admin/dashboard/maps': typeof AdminDashboardMapsIndexRoute
+  '/admin/dashboard': typeof AdminAuthDashboardIndexRoute
   '/maps/$mapName/$utilityId': typeof MapsMapNameUtilityIdIndexRoute
-  '/admin/dashboard/maps/$mapName/create': typeof AdminDashboardMapsMapNameCreateRoute
-  '/admin/dashboard/maps/$mapName': typeof AdminDashboardMapsMapNameIndexRoute
-  '/admin/dashboard/maps/$mapName/$id/edit': typeof AdminDashboardMapsMapNameIdEditRoute
+  '/admin/dashboard/maps': typeof AdminAuthDashboardMapsIndexRoute
+  '/admin/dashboard/maps/$mapName/create': typeof AdminAuthDashboardMapsMapNameCreateRoute
+  '/admin/dashboard/maps/$mapName': typeof AdminAuthDashboardMapsMapNameIndexRoute
+  '/admin/dashboard/maps/$mapName/$id/edit': typeof AdminAuthDashboardMapsMapNameIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/admin/_auth': typeof AdminAuthRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
-  '/admin/dashboard/': typeof AdminDashboardIndexRoute
   '/maps/$mapName/': typeof MapsMapNameIndexRoute
-  '/admin/dashboard/maps/': typeof AdminDashboardMapsIndexRoute
+  '/admin/_auth/dashboard/': typeof AdminAuthDashboardIndexRoute
   '/maps/$mapName/$utilityId/': typeof MapsMapNameUtilityIdIndexRoute
-  '/admin/dashboard/maps/$mapName/create': typeof AdminDashboardMapsMapNameCreateRoute
-  '/admin/dashboard/maps/$mapName/': typeof AdminDashboardMapsMapNameIndexRoute
-  '/admin/dashboard/maps/$mapName/$id/edit': typeof AdminDashboardMapsMapNameIdEditRoute
+  '/admin/_auth/dashboard/maps/': typeof AdminAuthDashboardMapsIndexRoute
+  '/admin/_auth/dashboard/maps/$mapName/create': typeof AdminAuthDashboardMapsMapNameCreateRoute
+  '/admin/_auth/dashboard/maps/$mapName/': typeof AdminAuthDashboardMapsMapNameIndexRoute
+  '/admin/_auth/dashboard/maps/$mapName/$id/edit': typeof AdminAuthDashboardMapsMapNameIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
+    | '/admin'
     | '/admin/login'
-    | '/admin/dashboard/'
     | '/maps/$mapName/'
-    | '/admin/dashboard/maps/'
+    | '/admin/dashboard/'
     | '/maps/$mapName/$utilityId/'
+    | '/admin/dashboard/maps/'
     | '/admin/dashboard/maps/$mapName/create'
     | '/admin/dashboard/maps/$mapName/'
     | '/admin/dashboard/maps/$mapName/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
+    | '/admin'
     | '/admin/login'
-    | '/admin/dashboard'
     | '/maps/$mapName'
-    | '/admin/dashboard/maps'
+    | '/admin/dashboard'
     | '/maps/$mapName/$utilityId'
+    | '/admin/dashboard/maps'
     | '/admin/dashboard/maps/$mapName/create'
     | '/admin/dashboard/maps/$mapName'
     | '/admin/dashboard/maps/$mapName/$id/edit'
   id:
     | '__root__'
     | '/'
-    | '/about'
+    | '/admin/_auth'
     | '/admin/login'
-    | '/admin/dashboard/'
     | '/maps/$mapName/'
-    | '/admin/dashboard/maps/'
+    | '/admin/_auth/dashboard/'
     | '/maps/$mapName/$utilityId/'
-    | '/admin/dashboard/maps/$mapName/create'
-    | '/admin/dashboard/maps/$mapName/'
-    | '/admin/dashboard/maps/$mapName/$id/edit'
+    | '/admin/_auth/dashboard/maps/'
+    | '/admin/_auth/dashboard/maps/$mapName/create'
+    | '/admin/_auth/dashboard/maps/$mapName/'
+    | '/admin/_auth/dashboard/maps/$mapName/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
+  AdminAuthRoute: typeof AdminAuthRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
-  AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
   MapsMapNameIndexRoute: typeof MapsMapNameIndexRoute
-  AdminDashboardMapsIndexRoute: typeof AdminDashboardMapsIndexRoute
   MapsMapNameUtilityIdIndexRoute: typeof MapsMapNameUtilityIdIndexRoute
-  AdminDashboardMapsMapNameCreateRoute: typeof AdminDashboardMapsMapNameCreateRoute
-  AdminDashboardMapsMapNameIndexRoute: typeof AdminDashboardMapsMapNameIndexRoute
-  AdminDashboardMapsMapNameIdEditRoute: typeof AdminDashboardMapsMapNameIdEditRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -187,18 +176,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/_auth': {
+      id: '/admin/_auth'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/maps/$mapName/': {
       id: '/maps/$mapName/'
       path: '/maps/$mapName'
       fullPath: '/maps/$mapName/'
       preLoaderRoute: typeof MapsMapNameIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/dashboard/': {
-      id: '/admin/dashboard/'
-      path: '/admin/dashboard'
-      fullPath: '/admin/dashboard/'
-      preLoaderRoute: typeof AdminDashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/maps/$mapName/$utilityId/': {
@@ -208,48 +197,73 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MapsMapNameUtilityIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/dashboard/maps/': {
-      id: '/admin/dashboard/maps/'
-      path: '/admin/dashboard/maps'
+    '/admin/_auth/dashboard/': {
+      id: '/admin/_auth/dashboard/'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard/'
+      preLoaderRoute: typeof AdminAuthDashboardIndexRouteImport
+      parentRoute: typeof AdminAuthRoute
+    }
+    '/admin/_auth/dashboard/maps/': {
+      id: '/admin/_auth/dashboard/maps/'
+      path: '/dashboard/maps'
       fullPath: '/admin/dashboard/maps/'
-      preLoaderRoute: typeof AdminDashboardMapsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AdminAuthDashboardMapsIndexRouteImport
+      parentRoute: typeof AdminAuthRoute
     }
-    '/admin/dashboard/maps/$mapName/': {
-      id: '/admin/dashboard/maps/$mapName/'
-      path: '/admin/dashboard/maps/$mapName'
+    '/admin/_auth/dashboard/maps/$mapName/': {
+      id: '/admin/_auth/dashboard/maps/$mapName/'
+      path: '/dashboard/maps/$mapName'
       fullPath: '/admin/dashboard/maps/$mapName/'
-      preLoaderRoute: typeof AdminDashboardMapsMapNameIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AdminAuthDashboardMapsMapNameIndexRouteImport
+      parentRoute: typeof AdminAuthRoute
     }
-    '/admin/dashboard/maps/$mapName/create': {
-      id: '/admin/dashboard/maps/$mapName/create'
-      path: '/admin/dashboard/maps/$mapName/create'
+    '/admin/_auth/dashboard/maps/$mapName/create': {
+      id: '/admin/_auth/dashboard/maps/$mapName/create'
+      path: '/dashboard/maps/$mapName/create'
       fullPath: '/admin/dashboard/maps/$mapName/create'
-      preLoaderRoute: typeof AdminDashboardMapsMapNameCreateRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AdminAuthDashboardMapsMapNameCreateRouteImport
+      parentRoute: typeof AdminAuthRoute
     }
-    '/admin/dashboard/maps/$mapName/$id/edit': {
-      id: '/admin/dashboard/maps/$mapName/$id/edit'
-      path: '/admin/dashboard/maps/$mapName/$id/edit'
+    '/admin/_auth/dashboard/maps/$mapName/$id/edit': {
+      id: '/admin/_auth/dashboard/maps/$mapName/$id/edit'
+      path: '/dashboard/maps/$mapName/$id/edit'
       fullPath: '/admin/dashboard/maps/$mapName/$id/edit'
-      preLoaderRoute: typeof AdminDashboardMapsMapNameIdEditRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AdminAuthDashboardMapsMapNameIdEditRouteImport
+      parentRoute: typeof AdminAuthRoute
     }
   }
 }
 
+interface AdminAuthRouteChildren {
+  AdminAuthDashboardIndexRoute: typeof AdminAuthDashboardIndexRoute
+  AdminAuthDashboardMapsIndexRoute: typeof AdminAuthDashboardMapsIndexRoute
+  AdminAuthDashboardMapsMapNameCreateRoute: typeof AdminAuthDashboardMapsMapNameCreateRoute
+  AdminAuthDashboardMapsMapNameIndexRoute: typeof AdminAuthDashboardMapsMapNameIndexRoute
+  AdminAuthDashboardMapsMapNameIdEditRoute: typeof AdminAuthDashboardMapsMapNameIdEditRoute
+}
+
+const AdminAuthRouteChildren: AdminAuthRouteChildren = {
+  AdminAuthDashboardIndexRoute: AdminAuthDashboardIndexRoute,
+  AdminAuthDashboardMapsIndexRoute: AdminAuthDashboardMapsIndexRoute,
+  AdminAuthDashboardMapsMapNameCreateRoute:
+    AdminAuthDashboardMapsMapNameCreateRoute,
+  AdminAuthDashboardMapsMapNameIndexRoute:
+    AdminAuthDashboardMapsMapNameIndexRoute,
+  AdminAuthDashboardMapsMapNameIdEditRoute:
+    AdminAuthDashboardMapsMapNameIdEditRoute,
+}
+
+const AdminAuthRouteWithChildren = AdminAuthRoute._addFileChildren(
+  AdminAuthRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
+  AdminAuthRoute: AdminAuthRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
-  AdminDashboardIndexRoute: AdminDashboardIndexRoute,
   MapsMapNameIndexRoute: MapsMapNameIndexRoute,
-  AdminDashboardMapsIndexRoute: AdminDashboardMapsIndexRoute,
   MapsMapNameUtilityIdIndexRoute: MapsMapNameUtilityIdIndexRoute,
-  AdminDashboardMapsMapNameCreateRoute: AdminDashboardMapsMapNameCreateRoute,
-  AdminDashboardMapsMapNameIndexRoute: AdminDashboardMapsMapNameIndexRoute,
-  AdminDashboardMapsMapNameIdEditRoute: AdminDashboardMapsMapNameIdEditRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

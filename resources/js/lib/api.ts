@@ -9,6 +9,14 @@ const api = axios.create({
     },
 });
 
+export const getXsrfToken = () =>
+    decodeURIComponent(
+        document.cookie
+            .split('; ')
+            .find(row => row.startsWith('XSRF-TOKEN='))
+            ?.split('=')[1] ?? ''
+    );
+
 api.defaults.xsrfCookieName = "XSRF-TOKEN";
 api.defaults.xsrfHeaderName = "X-XSRF-TOKEN";
 

@@ -14,14 +14,16 @@ import MapLayoutBackend from "@/components/MapLayoutBackend";
 import {FilePond, registerPlugin} from 'react-filepond';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+import FilePondPluginMediaPreview from 'filepond-plugin-media-preview';
 import 'filepond/dist/filepond.min.css';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import 'filepond-plugin-media-preview/dist/filepond-plugin-media-preview.min.css';
 import {FilePondFile, FilePondInitialFile} from "filepond";
 import {useNavigate} from "@tanstack/react-router";
-import {CustomPayload} from "vite";
 import {parseNumber} from "@/hooks/helper";
+import {getXsrfToken} from "@/lib/api";
 
-registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType);
+registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType, FilePondPluginMediaPreview);
 
 export default function UtilityFormComponent({utility = null, mapName}: {
     utility: UtilityForm | null,
@@ -48,7 +50,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         defaultValues: {
             grenade_name: "",
             utility_type_id: "",
-            team_type_id: "",
+            team_type_id: undefined,
             technique_type: undefined,
             movement_type: undefined,
             key_type: undefined,
@@ -67,8 +69,6 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         url: utility ? `/utilities/${utility.id}` : '/utilities',
         method: isEditing,
     })
-
-    console.log(utility)
 
     const onSubmit = (utility: UtilityForm) => {
         const payload = {
@@ -416,7 +416,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                                         url: '/attachment/upload',
                                         method: 'POST',
                                         headers: {
-                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '',
+                                            'X-XSRF-TOKEN': getXsrfToken(),
                                         },
                                         onload: (response) => {
                                             const data = JSON.parse(response);
@@ -449,7 +449,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                                         url: '/attachment/upload',
                                         method: 'POST',
                                         headers: {
-                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '',
+                                            'X-XSRF-TOKEN': getXsrfToken(),
                                         },
                                         onload: (response) => {
                                             const data = JSON.parse(response);

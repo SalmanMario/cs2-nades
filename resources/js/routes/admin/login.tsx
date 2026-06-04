@@ -1,13 +1,24 @@
-import {createFileRoute, useNavigate} from '@tanstack/react-router'
+import {createFileRoute, redirect, useNavigate} from '@tanstack/react-router'
 import {Input} from "@/components/ui/input";
 import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {Label} from "@/components/ui/label";
 import {Button} from "@/components/ui/button";
 import React from "react";
 import {useAuth} from "@/AuthContext";
+import api from "@/lib/api";
 
 export const Route = createFileRoute('/admin/login')({
     component: RouteComponent,
+    beforeLoad: async ({context}) => {
+        const auth: AuthContext = (context as { auth: AuthContext }).auth;
+        const user: Login = auth.user ?? (await auth.loadUser());
+
+        if (user) {
+            throw redirect({to: "/admin/dashboard"});
+        }
+
+        return {user};
+    },
 })
 
 function RouteComponent() {
@@ -19,7 +30,7 @@ function RouteComponent() {
     const submit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         await login({email, password});
-        navigate({to: '/admin/dashboard'})
+        await navigate({to: '/admin/dashboard'})
     }
 
     return (

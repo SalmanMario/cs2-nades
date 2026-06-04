@@ -5,17 +5,7 @@ import {UtilityChart} from "@/components/UtilityChart";
 import {useQueryApi} from "@/hooks/use-query";
 import {UtilityStatsResponse} from "@/types/utility";
 
-export const Route = createFileRoute('/admin/dashboard/')({
-    beforeLoad: async ({context}) => {
-        const auth: AuthContext = (context as { auth: AuthContext }).auth;
-        const user: Login = auth.user ?? (await auth.loadUser());
-
-        if (!user) {
-            throw redirect({to: "/admin/login"});
-        }
-
-        return {user};
-    },
+export const Route = createFileRoute('/admin/_auth/dashboard/')({
     component: RouteComponent,
 })
 

@@ -8,9 +8,8 @@ export default function AdminNavbarComponent() {
     const {logout} = useAuth();
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        logout();
-        navigate({to: "/admin/login"})
+    const handleLogout = async () => {
+        await logout();
     }
 
     const home = () => {

@@ -7,7 +7,7 @@ import {useQueryApi} from "@/hooks/use-query";
 import {UtilityResponse} from "@/types/utility";
 import UtilityCounter from "@/components/UtilityCounter";
 
-export const Route = createFileRoute('/admin/dashboard/maps/$mapName/')({
+export const Route = createFileRoute('/admin/_auth/dashboard/maps/$mapName/')({
     component: RouteComponent
 })
 
