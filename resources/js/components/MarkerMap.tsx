@@ -10,6 +10,7 @@ type MarkerProps = {
 
 export function MarkerMap({props} : {props: MarkerProps}) {
     const [image, setImage] = useState<HTMLImageElement | undefined>();
+    const [isHovered, setIsHovered] = useState<boolean>(false);
     const {mapName} = Route.useParams();
     const navigate = useNavigate();
     useEffect(() => {
@@ -22,8 +23,24 @@ export function MarkerMap({props} : {props: MarkerProps}) {
             image={image!}
             x={Number(props.start.x)}
             y={Number(props.start.y)}
+            onMouseEnter={(e) => {
+                const stage = e.target.getStage();
+                if (stage) {
+                    stage.container().style.cursor = "pointer"
+                    setIsHovered(true);
+                }
+            }}
+            onMouseLeave={(e) => {
+                const stage = e.target.getStage();
+                if (stage) {
+                    stage.container().style.cursor = "default";
+                    setIsHovered(false);
+                }
+            }}
             width={50}
             height={50}
+            scaleX={isHovered ? 1.25 : 1}
+            scaleY={isHovered ? 1.25 : 1}
             offsetX={25}
             offsetY={25}
             onClick={() => {

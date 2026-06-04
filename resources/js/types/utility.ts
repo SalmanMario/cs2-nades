@@ -23,7 +23,7 @@ export type UtilityStatsResponse = {
 }
 
 export type SingleUtilityResponse = {
-    type: string,
+    type: Utility,
     title: string,
     video:
         {

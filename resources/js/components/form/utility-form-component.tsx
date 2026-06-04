@@ -45,6 +45,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         reset,
         setValue,
         setError,
+        clearErrors,
         formState: {errors}
     } = useForm<UtilityForm>({
         defaultValues: {
@@ -82,12 +83,12 @@ export default function UtilityFormComponent({utility = null, mapName}: {
             start_coords: {
                 x: utility.start_coords.x,
                 y: utility.start_coords.y,
-                title: utility.start_coords.title,
+                title: utility.title_from,
             },
             end_coords: {
                 x: utility.end_coords.x,
                 y: utility.end_coords.y,
-                title: utility.start_coords.title,
+                title: utility.title_to,
             },
             existing_start_coords: {
                 x: utility.existing_start_coords?.x,
@@ -118,7 +119,6 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                 }).then();
             },
             onError: (error) => {
-                console.log(error)
                 Object.entries(error.errors).forEach(([field, message]) => {
                     setError(field as keyof UtilityForm, {message: message[0]})
                 })
@@ -201,7 +201,10 @@ export default function UtilityFormComponent({utility = null, mapName}: {
 
     return (
         <AdminLayout>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={(e) => {
+                clearErrors();
+                handleSubmit(onSubmit)(e);
+            }}>
                 <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                     <div>
                         <Label htmlFor="grenade-name" className="">Grenade Name</Label>

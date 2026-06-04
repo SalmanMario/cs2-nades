@@ -4,6 +4,7 @@ import Konva from "konva";
 import {MarkerMap} from "@/components/MarkerMap";
 import {Coords} from "@/types/coords";
 import {UtilityCoordinates} from "@/routes/maps/$mapName";
+import AnimatedCircle from "@/components/AnimatedCircle";
 
 const COORD_SPACE = 1024;
 
@@ -84,22 +85,12 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
             >
                 <Layer>
                     <Image
-                        className="Image"
                         image={img ?? undefined}
                         width={COORD_SPACE}
                         height={COORD_SPACE * imgAspectRef.current}
                     />
                     {endCoordinates?.map((coords, index: number) => (
-                        <Circle
-                            key={index}
-                            x={coords.x}
-                            y={coords.y}
-                            radius={16}
-                            fill={coords.team_id === 1 ? "orange" : "blue"}
-                            stroke="black"
-                            strokeWidth={2}
-                            onClick={handleClickEndCoords(coords)}
-                        />
+                        <AnimatedCircle coords={coords} index={index} handleClickEndCoords={handleClickEndCoords(coords)} />
                     ))}
                     {activeCircles.map((props, index) => (
                         <MarkerMap props={props} key={index}/>

@@ -10,3 +10,7 @@ export function formatDate(dateString: string) {
         day: 'numeric',
     });
 }
+
+export function firstToUpperCase(s: string) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}

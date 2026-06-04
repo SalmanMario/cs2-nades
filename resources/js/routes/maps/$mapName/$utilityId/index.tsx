@@ -1,9 +1,19 @@
-import {createFileRoute} from '@tanstack/react-router'
+import {createFileRoute, useNavigate} from '@tanstack/react-router'
 import {useQueryApi} from "@/hooks/use-query";
 import {useState} from "react";
 import {Button} from "@/components/ui/button";
-import {Clock, CrosshairIcon, MinusIcon, Pencil, PlusIcon, RotateCwIcon} from "lucide-react";
-import {formatDate} from "@/hooks/helper";
+import {
+    Clock,
+    CrosshairIcon,
+    LightbulbIcon,
+    MinusIcon,
+    Pencil,
+    PlusIcon,
+    RotateCwIcon,
+    Footprints,
+    ArrowLeft
+} from "lucide-react";
+import {firstToUpperCase, formatDate} from "@/hooks/helper";
 import FrontendNavbarComponent from "@/components/navbar/FrontendNavbarComponent";
 import FooterComponent from "@/components/FooterComponent";
 import {SingleUtilityResponse} from "@/types/utility";
@@ -17,10 +27,11 @@ function RouteComponent() {
     const {mapName, utilityId} = Route.useParams();
     const [showVideo, setShowVideo] = useState(true);
     const [scale, setScale] = useState(1);
-    const [position, setPosition] = useState({x: 0, y: 0});
+    const [position] = useState({x: 0, y: 0});
     const [crosshairGap, setCrosshairGap] = useState(7);
     const [lineThickness, setlineThickness] = useState(5);
     const [showCrosshair, setShowCrosshair] = useState(false);
+    const navigate = useNavigate();
     const lineWidth = 680;
     const lineHeight = 400;
 
@@ -49,116 +60,131 @@ function RouteComponent() {
         setShowCrosshair(!showCrosshair);
     }
 
+    const handleGoBack = () => {
+        navigate({
+            to: "/maps/$mapName",
+            params: {
+                mapName
+            }
+        }).then()
+    }
+
     const toggleVideo = () => setShowVideo(!showVideo);
     return (
         <div className="flex flex-col min-h-screen">
             <FrontendNavbarComponent/>
-            <div className="m-10 flex-1">
-                <h1 className="text-3xl mb-6">{mapName} {utility.type}: {utility.title}</h1>
+            <div className="mx-10 flex-1">
+                <div className="flex items-center mb-6">
+                    <span onClick={handleGoBack} className="cursor-pointer flex items-center gap-2 me-3">
+                        <ArrowLeft/>
+                        <span className="text-3xl">{firstToUpperCase(mapName)} {utility.type}: </span>
+                    </span>
+                    <h1 className="text-3xl">{utility.title}</h1>
+                </div>
                 <div className="grid grid-cols-12 gap-5 items-start">
                     <div className="col-span-9">
-                        {showVideo ? (
-                            <div>
-                                <video className="h-100 w-full" src={"/" + utility.video.path} controls/>
-                            </div>
-                        ) : (
-                            <div className="overflow-hidden flex items-center justify-center cursor-grab">
-                                <Carousel>
-                                    <CarouselContent>
-                                        {Object.entries(utility.image).map(([key, value]: [string, any]) => (
-                                            <CarouselItem
-                                                className="relative flex items-center justify-center overflow-hidden"
-                                                key={key}>
-                                                <img
-                                                    src={"/" + value.path}
-                                                    alt={value.title}
-                                                    style={{
-                                                        transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
-                                                        transformOrigin: 'center center',
-                                                        transition: 'transform 0.2s ease',
-                                                    }}
-                                                    className="max-w-full max-h-full object-contain"
+                        <div className="aspect-video w-full">
+                            {showVideo ? (
+                                <video className="h-full w-full" src={"/" + utility.video?.path} controls/>
+                            ) : (
+                                <div className="overflow-hidden flex items-center justify-center cursor-grab">
+                                    <Carousel>
+                                        <CarouselContent>
+                                            {Object.entries(utility.image).map(([key, value]: [string, any]) => (
+                                                <CarouselItem
+                                                    className="relative flex items-center justify-center overflow-hidden"
+                                                    key={key}>
+                                                    <img
+                                                        src={"/" + value?.path}
+                                                        alt={value.title}
+                                                        style={{
+                                                            transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
+                                                            transformOrigin: 'center center',
+                                                            transition: 'transform 0.2s ease',
+                                                        }}
+                                                    />
+
+                                                    {showCrosshair && (
+                                                        <>
+                                                            {/*Horizontal*/}
+                                                            <div className="absolute bg-white" style={{
+                                                                width: lineWidth,
+                                                                height: lineThickness,
+                                                                top: `calc(50% - ${lineThickness / 2}px)`,
+                                                                left: `calc(50% - ${crosshairGap + lineWidth}px)`,
+                                                            }}/>
+                                                            <div className="absolute bg-white" style={{
+                                                                width: lineWidth,
+                                                                height: lineThickness,
+                                                                top: `calc(50% - ${lineThickness / 2}px)`,
+                                                                left: `calc(50% + ${crosshairGap}px)`
+                                                            }}/>
+                                                            {/*Vertical*/}
+                                                            <div className="absolute bg-white" style={{
+                                                                height: lineHeight,
+                                                                width: lineThickness,
+                                                                left: `calc(50% - ${lineThickness / 2}px)`,
+                                                                top: `calc(50% - ${crosshairGap + lineHeight}px)`
+                                                            }}/>
+                                                            <div className="absolute bg-white" style={{
+                                                                height: lineHeight,
+                                                                width: lineThickness,
+                                                                left: `calc(50% - ${lineThickness / 2}px)`,
+                                                                top: `calc(50% + ${crosshairGap}px)`
+                                                            }}/>
+                                                        </>
+                                                    )}
+                                                    <div
+                                                        className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-10">
+                                                        <Button variant="default" intent="white"
+                                                                onClick={handleZoomIn}>
+                                                            <PlusIcon fontSize="small"/>
+                                                        </Button>
+                                                        <Button variant="default" intent="white"
+                                                                onClick={handleZoomOut}>
+                                                            <MinusIcon fontSize="small"/>
+                                                        </Button>
+                                                        <Button variant="default" intent="white"
+                                                                onClick={resetZoom}>
+                                                            <RotateCwIcon fontSize="small"/>
+                                                        </Button>
+                                                        <Button variant="default" intent="white"
+                                                                onClick={handleCrosshair}>
+                                                            <CrosshairIcon fontSize="small"/>
+                                                        </Button>
+                                                    </div>
+                                                </CarouselItem>
+                                            ))}
+                                        </CarouselContent>
+                                        {showCrosshair && (
+                                            <div
+                                                className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/50 px-4 py-2 rounded-lg">
+                                                <span className="text-white text-sm">Gap</span>
+                                                <input
+                                                    type="range" min={0} max={60} value={crosshairGap}
+                                                    onChange={(e) => setCrosshairGap(Number(e.target.value))}
+                                                    className="w-32"
                                                 />
+                                                <span className="text-white text-sm w-6">{crosshairGap}</span>
+                                            </div>
+                                        )}
 
-                                                {showCrosshair && (
-                                                    <>
-                                                        {/*Horizontal*/}
-                                                        <div className="absolute bg-white" style={{
-                                                            width: lineWidth,
-                                                            height: lineThickness,
-                                                            top: `calc(50% - ${lineThickness / 2}px)`,
-                                                            left: `calc(50% - ${crosshairGap + lineWidth}px)`,
-                                                        }}/>
-                                                        <div className="absolute bg-white" style={{
-                                                            width: lineWidth,
-                                                            height: lineThickness,
-                                                            top: `calc(50% - ${lineThickness / 2}px)`,
-                                                            left: `calc(50% + ${crosshairGap}px)`
-                                                        }}/>
-                                                        {/*Vertical*/}
-                                                        <div className="absolute bg-white" style={{
-                                                            height: lineHeight,
-                                                            width: lineThickness,
-                                                            left: `calc(50% - ${lineThickness / 2}px)`,
-                                                            top: `calc(50% - ${crosshairGap + lineHeight}px)`
-                                                        }}/>
-                                                        <div className="absolute bg-white" style={{
-                                                            height: lineHeight,
-                                                            width: lineThickness,
-                                                            left: `calc(50% - ${lineThickness / 2}px)`,
-                                                            top: `calc(50% + ${crosshairGap}px)`
-                                                        }}/>
-                                                    </>
-                                                )}
-                                                <div
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-10">
-                                                    <Button variant="default" intent="white"
-                                                            onClick={() => handleZoomIn(key)}>
-                                                        <PlusIcon fontSize="small"/>
-                                                    </Button>
-                                                    <Button variant="default" intent="white"
-                                                            onClick={() => handleZoomOut(key)}>
-                                                        <MinusIcon fontSize="small"/>
-                                                    </Button>
-                                                    <Button variant="default" intent="white"
-                                                            onClick={() => resetZoom(key)}>
-                                                        <RotateCwIcon fontSize="small"/>
-                                                    </Button>
-                                                    <Button variant="default" intent="white" onClick={handleCrosshair}>
-                                                        <CrosshairIcon fontSize="small"/>
-                                                    </Button>
-                                                </div>
-                                            </CarouselItem>
-                                        ))}
-                                    </CarouselContent>
-                                    {showCrosshair && (
-                                        <div
-                                            className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/50 px-4 py-2 rounded-lg">
-                                            <span className="text-white text-sm">Gap</span>
-                                            <input
-                                                type="range" min={0} max={60} value={crosshairGap}
-                                                onChange={(e) => setCrosshairGap(Number(e.target.value))}
-                                                className="w-32"
-                                            />
-                                            <span className="text-white text-sm w-6">{crosshairGap}</span>
-                                        </div>
-                                    )}
-
-                                    {showCrosshair && (
-                                        <div
-                                            className="absolute bottom-15 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/50 px-4 py-2 rounded-lg">
-                                            <span className="text-white text-sm">Line Thickness</span>
-                                            <input
-                                                type="range" min={1} step={2} max={15} value={lineThickness}
-                                                onChange={(e) => setlineThickness(Number(e.target.value))}
-                                                className="w-32"
-                                            />
-                                            <span className="text-white text-sm w-6">{lineThickness}</span>
-                                        </div>
-                                    )}
-                                </Carousel>
-                            </div>
-                        )}
+                                        {showCrosshair && (
+                                            <div
+                                                className="absolute bottom-15 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-black/50 px-4 py-2 rounded-lg">
+                                                <span className="text-white text-sm">Line Thickness</span>
+                                                <input
+                                                    type="range" min={1} step={2} max={15} value={lineThickness}
+                                                    onChange={(e) => setlineThickness(Number(e.target.value))}
+                                                    className="w-32"
+                                                />
+                                                <span className="text-white text-sm w-6">{lineThickness}</span>
+                                            </div>
+                                        )}
+                                    </Carousel>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="col-span-3">
@@ -175,11 +201,17 @@ function RouteComponent() {
                         </div>
                         <div className="my-4">
                             <p className="mb-2">Technique:</p>
-                            <p className="ms-3">{utility.technique}</p>
+                            <div className="flex items-center gap-2 ms-3">
+                                <LightbulbIcon/>
+                                <span>{utility.technique}</span>
+                            </div>
                         </div>
                         <div className="my-4">
                             <p className="mb-2">Movement:</p>
-                            <p className="ms-3">{utility.movement}</p>
+                            <div className="flex items-center gap-2 ms-3">
+                                <Footprints/>
+                                <span>{utility.movement}</span>
+                            </div>
                         </div>
                         {utility?.key && <div className="my-4">
                             <p className="mb-2">Key:</p>
@@ -204,14 +236,14 @@ function RouteComponent() {
             </div>
             <div className="m-10">
                 <h1 className="text-3xl mb-6">Explore Utilities</h1>
-                <div className="grid grid-cols-12 gap-10">
-                    <div className="col-span-12 md:col-span-6 lg:col-span-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div>
                         <div className="border-orange-500 border h-50"></div>
                     </div>
-                    <div className="col-span-12 md:col-span-6 lg:col-span-4">
+                    <div>
                         <div className="border-orange-500 border h-50"></div>
                     </div>
-                    <div className="col-span-12 md:col-span-6 lg:col-span-4">
+                    <div>
                         <div className="border-orange-500 border h-50"></div>
                     </div>
                 </div>

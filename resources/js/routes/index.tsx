@@ -1,5 +1,5 @@
 import {createFileRoute, useNavigate} from '@tanstack/react-router'
-import MapsComponent from "@/components/MapsComponent";
+import CardMap from "@/components/CardMap";
 import FrontendLayout from "@/layouts/FrontendLayout";
 
 export const Route = createFileRoute('/')({
@@ -10,7 +10,7 @@ function Index() {
     const navigate = useNavigate();
     return (
         <FrontendLayout>
-            <MapsComponent onCardClick={(mapName) => navigate({
+            <CardMap onCardClick={(mapName) => navigate({
                 to: "/maps/$mapName",
                 params: {
                     mapName

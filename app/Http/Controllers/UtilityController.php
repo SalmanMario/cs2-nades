@@ -70,13 +70,13 @@ class UtilityController extends Controller
             ]);
         }
 
-        if ($request->existing_start_coords['x'] && $request->existing_start_coords['y']) {
+        if ($request->existing_start_coords && $request->existing_start_coords['x'] && $request->existing_start_coords['y']) {
             $startCoords = StartUtilityCoordinate::query()->with(['utility_coordinates' => function ($query) use ($mapId) {
                 $query->where('map_id', $mapId);
             }])->where('x', $request->existing_start_coords['x'])->where('y', $request->existing_start_coords['y'])->first();
         }
 
-        if ($request->existing_end_coords['x'] && $request->existing_end_coords['y']) {
+        if ($request->existing_end_coords && $request->existing_end_coords['x'] && $request->existing_end_coords['y']) {
             $endCoords = EndUtilityCoordinate::query()->with(['utility_coordinates' => function ($query) use ($mapId) {
                 $query->where('map_id', $mapId);
             }])->where('x', $request->existing_end_coords['x'])->where('y', $request->existing_end_coords['y'])->first();

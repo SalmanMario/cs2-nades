@@ -1,5 +1,5 @@
 import {createFileRoute, useNavigate} from '@tanstack/react-router'
-import MapsComponent from "@/components/MapsComponent";
+import CardMap from "@/components/CardMap";
 import React from "react";
 import AdminLayout from "@/layouts/AdminLayout";
 
@@ -11,7 +11,7 @@ function RouteComponent() {
     const navigate = useNavigate();
     return <div>
         <AdminLayout>
-            <MapsComponent onCardClick={(mapName) => navigate({
+            <CardMap onCardClick={(mapName) => navigate({
                 to: "/admin/dashboard/maps/$mapName",
                 params: {
                     mapName
