@@ -2,13 +2,14 @@ import {Circle} from "react-konva";
 import React, {useState} from "react";
 import {Coords} from "@/types/coords";
 
-export default function AnimatedCircle({coords, index, handleClickEndCoords}: {coords: Coords, index: number, handleClickEndCoords: (coords: Coords) => void}) {
+export default function AnimatedCircle({coords, index, handleClickEndCoords, isHidden}: {coords: Coords, index: number, handleClickEndCoords: (coords: Coords) => void, isHidden: boolean}) {
     const [isHovered, setHovered] = useState(false);
     return (
         <Circle
             key={index}
             x={coords.x}
             y={coords.y}
+            visible={!isHidden}
             scaleX={isHovered ? 1.25 : 1}
             scaleY={isHovered ? 1.25 : 1}
             radius={16}

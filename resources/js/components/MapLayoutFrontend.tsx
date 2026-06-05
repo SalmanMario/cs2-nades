@@ -1,10 +1,10 @@
-import {Circle, Image, Layer, Line, Stage} from "react-konva";
+import {Image, Layer, Line, Stage} from "react-konva";
 import React, {useEffect, useRef, useState} from "react";
 import Konva from "konva";
 import {MarkerMap} from "@/components/MarkerMap";
-import {Coords} from "@/types/coords";
 import {UtilityCoordinates} from "@/routes/maps/$mapName";
 import AnimatedCircle from "@/components/AnimatedCircle";
+import MapSidebar from "@/components/MapSidebar";
 
 const COORD_SPACE = 1024;
 
@@ -15,6 +15,7 @@ type ActiveCircle = {
 
 export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordinates, teamType}: {mapImage: string, endCoordinates: UtilityCoordinates[], startCoordinates: UtilityCoordinates[], teamType: number}) {
     const [activeCircles, setActiveCircles] = useState<ActiveCircle[]>([]);
+    const [activeEndId, setActiveEndId] = useState<number | null>(null);
     const [img, setImg] = useState<HTMLImageElement | null>(null);
     const [stageSize, setStageSize] = useState({width: COORD_SPACE, height: COORD_SPACE});
     const [scale, setScale] = useState(1);
@@ -58,6 +59,7 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
 
     useEffect(() => {
         setActiveCircles([]);
+        setActiveEndId(null);
     }, [endCoordinates, teamType]);
 
     function handleClickEndCoords(endCoor: UtilityCoordinates) {
@@ -65,6 +67,7 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
             const matchingStarts = startCoordinates.filter(
                 (s) => s.end_utility_id === endCoor.end_utility_id
             );
+            setActiveEndId(endCoor.end_utility_id);
             setActiveCircles(matchingStarts.map((start: UtilityCoordinates) => ({ start, end: endCoor })));
         };
     }
@@ -72,6 +75,7 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
     function handleOutsideClick(event: Konva.KonvaEventObject<MouseEvent>) {
         if (event.target.className === "Image") {
             setActiveCircles([]);
+            setActiveEndId(null);
         }
     }
 
@@ -94,7 +98,9 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
                         height={COORD_SPACE * imgAspectRef.current}
                     />
                     {endCoordinates?.map((coords, index: number) => (
-                        <AnimatedCircle coords={coords} index={index} handleClickEndCoords={handleClickEndCoords(coords)} />
+                        <AnimatedCircle coords={coords} index={index} handleClickEndCoords={handleClickEndCoords(coords)}
+                                        isHidden={activeEndId !== null && coords.end_utility_id !== activeEndId}
+                        />
                     ))}
                     {activeCircles.map((props, index) => (
                         <MarkerMap props={props} key={index}/>

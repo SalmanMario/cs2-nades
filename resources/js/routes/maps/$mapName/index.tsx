@@ -4,7 +4,7 @@ import MapLayoutFrontend from "@/components/MapLayoutFrontend";
 import {useEffect, useState} from "react";
 import MapViewLayout from "@/layouts/MapViewLayout";
 import {ExistingCoords} from "@/types/coords";
-import {Button} from "@/components/ui/button";
+import MapSidebar from "@/components/MapSidebar";
 
 export const Route = createFileRoute('/maps/$mapName/')({
     component: RouteComponent,
@@ -27,9 +27,8 @@ function RouteComponent() {
     const {mapName} = Route.useParams();
     const [endCoords, setEndCoords] = useState<UtilityCoordinates[]>([]);
     const [startCoords, setStartCoords] = useState<UtilityCoordinates[]>([])
-    const [grenadeType, setGrenadeType] = useState("SMOKE");
-    const [teamType, setTeamType] = useState(1);
-    const [test1, setTest1] = useState<UtilityCoordinates[]>([]);
+    const [grenadeType, setGrenadeType] = useState("ANY");
+    const [teamType, setTeamType] = useState(3);
 
     const {data: map, isLoading: mapLoading} = useQueryApi<{ data: MapResponse }>({
         queryKey: ['map', mapName],
@@ -77,33 +76,49 @@ function RouteComponent() {
 
     if (mapLoading || utilityLoading) return <div>Loading...</div>;
 
-    const changeGrenadeType = (grenadeType: string) => {
-        setGrenadeType(grenadeType);
-    }
-
     const filterEndCoords = (endCoordinates: UtilityCoordinates[]) => {
-        return endCoordinates.filter((e) => e.type === grenadeType && e.team_id === teamType);
+        let filteredCoords;
+        if (!grenadeType) return endCoordinates;
+
+        grenadeType === "ANY" ? filteredCoords = endCoordinates : filteredCoords = endCoordinates.filter((e) => e.type === grenadeType);
+
+        if (teamType === 1) {
+            return filteredCoords.filter((e) => e.team_id === 1);
+        } else if (teamType === 2) {
+            return filteredCoords.filter((e) => e.team_id === 2);
+        } else {
+            return filteredCoords;
+        }
     }
 
     const filterStartCoords = (startCoordinates: UtilityCoordinates[]) => {
-        return startCoordinates.filter((e) => e.type === grenadeType && e.team_id === teamType)
+        let filteredCoords;
+        if (!grenadeType) return startCoordinates;
+
+        grenadeType === "ANY" ? filteredCoords = startCoordinates : filteredCoords = startCoordinates.filter((e) => e.type === grenadeType);
+
+        if (teamType === 1) {
+            return filteredCoords.filter((e) => e.team_id === 1);
+        } else if (teamType === 2) {
+            return filteredCoords.filter((e) => e.team_id === 2);
+        } else {
+            return filteredCoords;
+        }
     }
 
     return (
-        <MapViewLayout>
-            <Button variant="outline" intent="info" onClick={() => changeGrenadeType("SMOKE")}>Smoke</Button>
-            <Button variant="outline" intent="info" onClick={() => changeGrenadeType("HE_GRENADE")}>Grenade</Button>
-            <Button variant="outline" intent="info" onClick={() => changeGrenadeType("FLASH")}>Flashbang</Button>
-            <Button variant="outline" intent="info" onClick={() => changeGrenadeType("INCENDIARY")}>Molotov</Button>
-            <Button variant="outline" intent="info" onClick={() => setTeamType(1)}>T</Button>
-            <Button variant="outline" intent="info" onClick={() => setTeamType(2)}>CT</Button>
-            <MapLayoutFrontend
-                mapImage={map?.data?.map_no_callouts}
-                endCoordinates={filterEndCoords(endCoords)}
-                startCoordinates={filterStartCoords(startCoords)}
-                teamType={teamType}
-            />
-        </MapViewLayout>
-
+        <div className="flex h-screen w-full">
+            <MapSidebar onGrenadeTypeChange={setGrenadeType} onTeamTypeChange={setTeamType} grenadeType={grenadeType} teamType={teamType}/>
+            <div className="flex-1 min-w-0">
+                <MapViewLayout>
+                    <MapLayoutFrontend
+                        mapImage={map?.data?.map_no_callouts}
+                        endCoordinates={filterEndCoords(endCoords)}
+                        startCoordinates={filterStartCoords(startCoords)}
+                        teamType={teamType}
+                    />
+                </MapViewLayout>
+            </div>
+        </div>
     )
 }

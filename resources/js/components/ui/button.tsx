@@ -23,6 +23,7 @@ const buttonVariants = cva(
                 'danger': "",
                 'warning': "",
                 'white': "",
+                "grey": "",
             },
             size: {
                 default: "h-9 px-4 py-2",
@@ -32,6 +33,11 @@ const buttonVariants = cva(
             },
         },
         compoundVariants: [
+            {
+                variant: "default",
+                intent: "grey",
+                className: "bg-gray-700 text-white hover:bg-gray-600"
+            },
             {
                 variant: "default",
                 intent: "info",

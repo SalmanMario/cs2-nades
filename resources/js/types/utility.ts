@@ -1,6 +1,12 @@
 import {Coords, ExistingCoords} from "@/types/coords";
 import {Movement, Technique, Utility, Team, Key} from "@/types/utils";
 
+export type UtilityType = {
+    id: string,
+    name: string,
+    image: string,
+}
+
 export type UtilityTable = {
     id: string
     grenade_name: string
