@@ -4,7 +4,6 @@ import Konva from "konva";
 import {MarkerMap} from "@/components/MarkerMap";
 import {UtilityCoordinates} from "@/routes/maps/$mapName";
 import AnimatedCircle from "@/components/AnimatedCircle";
-import MapSidebar from "@/components/MapSidebar";
 
 const COORD_SPACE = 1024;
 

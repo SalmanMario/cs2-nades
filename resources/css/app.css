@@ -138,3 +138,7 @@
 .sidebar-custom {
     width: 22rem;
 }
+
+[data-sidebar=sidebar] ::-webkit-scrollbar {
+    display: none;
+}
