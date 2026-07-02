@@ -52,7 +52,7 @@ export default function MapLayoutBackend({
     useEffect(() => {
         if (!mapImage) return;
         const image = new window.Image();
-        image.src = `/storage/${mapImage}`;
+        image.src = mapImage;
         image.onload = () => {
             setImg(image);
             imgAspectRef.current = image.naturalHeight / image.naturalWidth;

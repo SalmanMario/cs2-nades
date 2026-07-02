@@ -1,12 +1,18 @@
 import {useQuery} from "@tanstack/react-query";
+const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-export function useQueryApi<TData>({queryKey, url, method ,options} : {queryKey: string | string[], url: string, method:string ,options?: any}) {
+export function useQueryApi<TData>({queryKey, url, method, body, enabled ,options} : {queryKey: string | string[], url: string, method:string, body?: any, enabled?: boolean, options?: any}) {
     const {data, isLoading, error} = useQuery<TData>({
         queryKey: [queryKey],
         queryFn: async () => {
 
             const response = await fetch(url, {
                 method: method,
+                headers: {
+                    ...(body ? { "Content-Type": "application/json" } : {}),
+                    ...(csrf ? { "X-CSRF-TOKEN": csrf } : {}),
+                },
+                body: body ? JSON.stringify(body) : undefined,
             });
 
             const result = await response.json();
@@ -17,6 +23,7 @@ export function useQueryApi<TData>({queryKey, url, method ,options} : {queryKey:
 
             return result;
         },
+        enabled: enabled,
         ...options,
     })
 

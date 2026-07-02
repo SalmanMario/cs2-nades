@@ -15,7 +15,7 @@ export function MarkerMap({props} : {props: MarkerProps}) {
     const navigate = useNavigate();
     useEffect(() => {
         const img = new window.Image();
-        img.src = `/storage/${props.start.image}`;
+        img.src = props.start.image;
         img.onload = () => setImage(img);
     }, [props]);
     return (

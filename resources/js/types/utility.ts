@@ -36,6 +36,7 @@ export type SingleUtilityResponse = {
             path: string,
         },
     team_image: string,
+    mapId: number,
     team_type:Team,
     movement:Movement,
     technique:Technique,
@@ -45,6 +46,7 @@ export type SingleUtilityResponse = {
     key:string,
     created_at: string,
     updated_at: string,
+    coords: Coords,
 }
 
 export interface UtilityResponse {
@@ -75,4 +77,20 @@ export type UtilityForm = {
 export type UtilityFormErrors = {
     UtilityForm: UtilityForm
     errors: Record<string, string[]>
+}
+
+export type SimilarUtilityResponse = {
+    attachments: Record<string, Attachment>,
+    grenade_name: string,
+    utility_name: string,
+    id: number,
+    map_image: string,
+    map_name: string,
+    team_image: string,
+    team: string
+}
+
+type Attachment = {
+    path: string,
+    filename: string,
 }

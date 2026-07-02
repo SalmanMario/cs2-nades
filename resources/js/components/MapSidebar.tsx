@@ -53,14 +53,14 @@ export default function MapSidebar({onGrenadeTypeChange, onTeamTypeChange, grena
                         <div className="flex flex-col gap-8">
                             {utilities?.data.map((utility) => (
                                 <Button key={utility.id} variant="default" intent="grey"
-                                        className={[grenadeType === utility.name ? "bg-gray-200 text-black" : "", "mx-3 justify-start"]}
+                                        className={`mx-3 justify-start ${grenadeType === utility.name ? 'bg-gray-200 text-black' : ''}`}
                                         onClick={() => onGrenadeTypeChange(utility.name)}>
-                                    <img src={`/storage/${utility.image}`} alt={utility.name} className="w-7 h-7 mr-3"/>
+                                    <img src={utility.image} alt={utility.name} className="w-7 h-7 mr-3"/>
                                         {utility.name}
                                 </Button>
                             ))}
                             <Button variant="default" intent="grey"
-                                    className={[grenadeType === "ANY" ? "bg-gray-200 text-black" : "", "mb-5 mx-3 justify-start"]}
+                                    className={`mb-5 mx-3 justify-start ${grenadeType === "ANY" ? 'bg-gray-200 text-black' : ''}`}
                                     onClick={() => onGrenadeTypeChange("ANY")}>
                                 <BoxesIcon className="mr-3"/>
                                 {"ANY"}
@@ -74,7 +74,7 @@ export default function MapSidebar({onGrenadeTypeChange, onTeamTypeChange, grena
                                 <Button key={team.id} variant="default" intent="grey"
                                         className={teamType === Number(team.id) ? "bg-gray-200 text-black" : ""}
                                         onClick={() => onTeamTypeChange(Number(team.id))}>
-                                    <img src={`/storage/${team.image}`} alt={team.name} className="w-7 h-7 mr-2"/>
+                                    <img src={team.image} alt={team.name} className="w-7 h-7 mr-2"/>
                                     {team.name}
                                 </Button>
                             ))}
@@ -91,7 +91,7 @@ export default function MapSidebar({onGrenadeTypeChange, onTeamTypeChange, grena
                                                 mapName: map.name.toLowerCase()
                                             }
                                         })}>
-                                    <img src={`/storage/${map.image}`} alt={map.name} className="w-7 h-7 mr-2"/>
+                                    <img src={map.image} alt={map.name} className="w-7 h-7 mr-2"/>
                                     {map.name}
                                 </Button>
                             ))}

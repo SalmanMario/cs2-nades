@@ -22,7 +22,7 @@ class ApiAttachmentController extends Controller
             $file->storeAs('public/images/utilities-img', $fileName);
             $attachment = Attachment::create([
                 'filename' => $fileName,
-                'path' => 'storage/images/utilities-img/'.$fileName,
+                'path' => '/storage/images/utilities-img/'.$fileName,
             ]);
             return response()->json(['id' => $attachment->id], 201);
         } catch (\Exception $e) {

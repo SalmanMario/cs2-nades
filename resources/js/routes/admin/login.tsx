@@ -32,6 +32,10 @@ function RouteComponent() {
         await navigate({to: '/admin/dashboard'})
     }
 
+    const goToFrontend = async () => {
+        await navigate({to: '/'})
+    }
+
     return (
         <form onSubmit={submit}>
             <div className="flex justify-center">
@@ -49,6 +53,9 @@ function RouteComponent() {
                             <Label htmlFor="password">Password</Label>
                             <Input name="password" id="password" value={password}
                                    onChange={(e) => setPassword(e.target.value)} type="password"/>
+                        </div>
+                        <div>
+                            <p className="text-center mt-5 cursor-pointer" onClick={goToFrontend}>Go to main page</p>
                         </div>
                     </CardContent>
                     <CardFooter className="flex justify-center">

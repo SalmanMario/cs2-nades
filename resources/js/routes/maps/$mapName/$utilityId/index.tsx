@@ -11,13 +11,15 @@ import {
     PlusIcon,
     RotateCwIcon,
     Footprints,
-    ArrowLeft
+    ArrowLeft,
+    Keyboard
 } from "lucide-react";
 import {firstToUpperCase, formatDate} from "@/hooks/helper";
 import FrontendNavbarComponent from "@/components/navbar/FrontendNavbarComponent";
 import FooterComponent from "@/components/FooterComponent";
-import {SingleUtilityResponse} from "@/types/utility";
+import {SimilarUtilityResponse, SingleUtilityResponse} from "@/types/utility";
 import {Carousel, CarouselContent, CarouselItem} from "@/components/ui/carousel";
+import {Card, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 
 export const Route = createFileRoute('/maps/$mapName/$utilityId/')({
     component: RouteComponent,
@@ -40,6 +42,18 @@ function RouteComponent() {
         method: 'GET',
         url: `/getUtility/${mapName}/${utilityId}`,
     })
+
+    const {data: getSimilarUtilities} = useQueryApi<SimilarUtilityResponse[]>({
+        queryKey: ['getSimilarUtilitiesByCoords'],
+        method: 'POST',
+        url: `/getSimilarUtilitiesByCoords/${utility?.mapId}`,
+        body: {
+            coords: utility?.coords,
+            utilityId: utilityId
+        },
+        enabled: !!utility,
+    })
+
     if (isLoading) return <div>Loading...</div>;
 
     const handleZoomIn = () => {
@@ -85,7 +99,7 @@ function RouteComponent() {
                     <div className="col-span-9">
                         <div className="aspect-video w-full">
                             {showVideo ? (
-                                <video className="h-full w-full" src={"/" + utility.video?.path} controls/>
+                                <video className="h-full w-full" src={utility.video?.path} controls/>
                             ) : (
                                 <div className="overflow-hidden flex items-center justify-center cursor-grab">
                                     <Carousel>
@@ -95,7 +109,7 @@ function RouteComponent() {
                                                     className="relative flex items-center justify-center overflow-hidden"
                                                     key={key}>
                                                     <img
-                                                        src={"/" + value?.path}
+                                                        src={value?.path}
                                                         alt={value.title}
                                                         style={{
                                                             transform: `scale(${scale}) translate(${position.x}px, ${position.y}px)`,
@@ -215,7 +229,10 @@ function RouteComponent() {
                         </div>
                         {utility?.key && <div className="my-4">
                             <p className="mb-2">Key:</p>
-                            <p className="ms-3">{utility.key}</p>
+                            <div className="flex items-center gap-2 ms-3">
+                                <Keyboard />
+                                <span>{utility.key}</span>
+                            </div>
                         </div>}
                         <div className="my-4">
                             <p className="mb-2">Created at:</p>
@@ -236,16 +253,40 @@ function RouteComponent() {
             </div>
             <div className="m-10">
                 <h1 className="text-3xl mb-6">Explore Utilities</h1>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                    <div>
-                        <div className="border-orange-500 border h-50"></div>
-                    </div>
-                    <div>
-                        <div className="border-orange-500 border h-50"></div>
-                    </div>
-                    <div>
-                        <div className="border-orange-500 border h-50"></div>
-                    </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                    {getSimilarUtilities && (
+                        getSimilarUtilities.map((utility) => (
+                            <Card
+                                className={`relative mx-auto w-full max-w-lg border-2 pt-0 ${
+                                    utility.team === 'CT' ? 'border-blue-500' : 'border-orange-500'
+                                }`}
+                            >
+                                <CardHeader>
+                                    <CardTitle>{utility.grenade_name}</CardTitle>
+                                </CardHeader>
+                                <div className="absolute inset-0 z-30 aspect-video "/>
+                                <img
+                                    src={utility.attachments[0]?.path}
+                                    className="relative z-20 aspect-video w-full object-cover"
+                                />
+                                <CardFooter className="flex items-center px-2 py-4 justify-between">
+                                    <span className="flex items-center gap-2">
+                                        <img className={'w-10'}
+                                             src={utility?.map_image}
+                                             alt={'test'}
+                                        />
+                                        <p>{utility?.map_name}</p>
+                                    </span>
+                                    <span className="flex items-center gap-2">
+                                        <p>{utility.utility_name}</p>
+                                         <img className={'w-10'}
+                                              src={utility?.team_image}
+                                              alt={'test'}
+                                         />
+                                    </span>
+                                </CardFooter>
+                            </Card>
+                        )))}
                 </div>
             </div>
             <FooterComponent/>

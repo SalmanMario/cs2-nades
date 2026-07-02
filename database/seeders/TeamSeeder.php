@@ -24,7 +24,7 @@ class TeamSeeder extends Seeder
             Team::query()->updateOrCreate([
                 'name' => $team->value,
             ], [
-                'image' => '/images/teams-img/' . $team->value . '_side.png',
+                'image' => '/storage/images/teams-img/' . $team->value . '_side.png',
             ]);
         }
 

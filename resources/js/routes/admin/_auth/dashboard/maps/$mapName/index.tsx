@@ -24,7 +24,6 @@ function RouteComponent() {
         navigate({to: "/admin/dashboard/maps/$mapName/create", params: {mapName}}).then()
     }
     if (isLoading) return <div>Loading...</div>
-    console.log(utilities)
     return <div>
         <AdminLayout>
             <Button variant="outline" className="mb-5" onClick={goToCreate}>Create Utility</Button>

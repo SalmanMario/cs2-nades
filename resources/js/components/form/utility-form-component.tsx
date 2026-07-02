@@ -191,13 +191,44 @@ export default function UtilityFormComponent({utility = null, mapName}: {
         url: `/getUtilityCoordinates/${mapName}`,
     })
 
-    const uniqueStartCoords = utilityCoordinates?.data ? [...new Map(
-        utilityCoordinates.data.map((coords) => [coords.existing_start_coords.x + '-' + coords.existing_start_coords.y, coords])
-    ).values()] : [];
+    const uniqueStartCoords = utilityCoordinates?.data
+        ? [...new Map(
+            utilityCoordinates.data
+                .filter((test) => {
+                    if (!utility) return true;
+                    const startCoordsX = utility.start_coords.x;
+                    const startCoordsY = utility.start_coords.y;
+                    return !(
+                        test.existing_start_coords.x === startCoordsX &&
+                        test.existing_start_coords.y === startCoordsY
+                    );
+                })
+                .map((coords) => [
+                    coords.existing_start_coords.x + '-' + coords.existing_start_coords.y,
+                    coords
+                ])
+        ).values()]
+        : [];
 
-    const uniqueEndCoords = utilityCoordinates?.data ? [...new Map(
-        utilityCoordinates.data.map((coords) => [coords.existing_end_coords.x + '-' + coords.existing_end_coords.y, coords])
-    ).values()] : [];
+    const uniqueEndCoords = utilityCoordinates?.data
+        ? [...new Map(
+            utilityCoordinates.data
+                .filter((test) => {
+                    if (!utility) return true;
+                    const endCoordsX = utility.end_coords.x;
+                    const endCoordsY = utility.end_coords.y;
+                    return !(
+                        test.existing_end_coords.x === endCoordsX &&
+                        test.existing_end_coords.y === endCoordsY
+                    );
+                })
+                .map((coords) => [
+                    coords.existing_end_coords.x + '-' + coords.existing_end_coords.y,
+                    coords
+                ])
+        ).values()]
+        : [];
+
 
     return (
         <AdminLayout>
@@ -319,7 +350,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                                 </div>
 
                                 <div>
-                                    <SelectForm name="existing_start_coords_x" label="Existing Start Coords X"
+                                    <SelectForm name="existing_start_coords.x" label="Existing Start Coords X"
                                                 placeholder="Existing Start Coords X" control={control}>
                                         {uniqueStartCoords?.map((coords) => (
                                             <SelectItem key={coords.existing_start_coords.id} value={String(coords.existing_start_coords.x)}>
@@ -332,7 +363,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                                 </div>
 
                                 <div>
-                                    <SelectForm name="existing_start_coords_y" label="Existing Start Coords Y"
+                                    <SelectForm name="existing_start_coords.y" label="Existing Start Coords Y"
                                                 placeholder="Existing Start Coords Y" control={control}>
                                         {uniqueStartCoords?.map((coords) => (
                                             <SelectItem key={coords.existing_start_coords.id} value={String(coords.existing_start_coords.y)}>
@@ -369,7 +400,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                                 </div>
 
                                 <div>
-                                    <SelectForm name="existing_end_coords_x" label="Existing End Coords X"
+                                    <SelectForm name="existing_end_coords.x" label="Existing End Coords X"
                                                 placeholder="Existing End Coords X" control={control}>
                                         {uniqueEndCoords.map((coords) => (
                                             <SelectItem key={coords.existing_end_coords.x} value={String(coords.existing_end_coords.x)}>
@@ -382,7 +413,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                                 </div>
 
                                 <div>
-                                    <SelectForm name="existing_end_coords_y" label="Existing End Coords Y"
+                                    <SelectForm name="existing_end_coords.y" label="Existing End Coords Y"
                                                 placeholder="Existing End Coords Y" control={control}>
                                         {uniqueEndCoords?.map((coords) => (
                                             <SelectItem key={coords.existing_end_coords.id} value={String(coords.existing_end_coords.y)}>

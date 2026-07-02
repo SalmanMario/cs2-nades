@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enum\AttachmentType;
 use App\Enum\TeamEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SimilarUtilitiesResource;
 use App\Http\Resources\UtilityCoordinateResource;
 use App\Http\Resources\MapResource;
 use App\Http\Resources\NadeResource;
@@ -14,6 +15,7 @@ use App\Models\Utility;
 use App\Models\UtilityCoordinate;
 use App\Models\UtilityType;
 use App\Models\Team;
+use Illuminate\Http\Request;
 
 class ApiUtilsController extends Controller
 {
@@ -50,7 +52,18 @@ class ApiUtilsController extends Controller
             'created_at' => $utility->created_at,
             'updated_at' => $utility->updated_at,
             'title' => $utility->utilityCoordinates->start_utility_coordinates->title_from . ' - ' . $utility->utilityCoordinates->end_utility_coordinates->title_to,
+            'coords' => [
+                'start_coords' => [
+                    'x' => $utility->utilityCoordinates->start_utility_coordinates->x,
+                    'y' => $utility->utilityCoordinates->start_utility_coordinates->y,
+                ],
+                'end_coords' => [
+                    'x' => $utility->utilityCoordinates->end_utility_coordinates->x,
+                    'y' => $utility->utilityCoordinates->end_utility_coordinates->y
+                ],
+            ],
             'type' => $utility->utilityCoordinates->utility_type->name,
+            'mapId' => $mapId,
             'team' => $utility->team->name,
             'team_image' => $utility->team->image,
             'team_type' => $utility->team->name,
@@ -60,6 +73,35 @@ class ApiUtilsController extends Controller
             'video' => $utility->attachments->where('type', AttachmentType::VIDEO_LINEUP->value)->where('attachmentable_id', $utility->id)->first(),
             'image' => $utility->attachments->where('type', AttachmentType::IMAGE_LINEUP->value)->where('attachmentable_id', $utility->id)
         ]);
+    }
+
+    public function getSimilarUtilitiesByCoords(Request $request,$mapId){
+        $utilityId = (int)$request->utilityId;
+        $mapStartCoords = $request->coords['start_coords'];
+        $mapEndCoords = $request->coords['end_coords'];
+        $utilities = Utility::query()->with(['utilityCoordinates', 'utilityCoordinates.start_utility_coordinates', 'utilityCoordinates.end_utility_coordinates', 'attachments'])
+            ->where('map_id', $mapId)
+            ->whereNotIn('id', [$utilityId])
+            ->get();
+
+        $closest = $utilities->sortBy(function (Utility $utility) use ($mapStartCoords, $mapEndCoords) {
+            $start = $utility->utilityCoordinates->start_utility_coordinates;
+            $end = $utility->utilityCoordinates->end_utility_coordinates;
+
+            $startDist = sqrt(
+                ($start->x - $mapStartCoords['x']) ** 2 +
+                ($start->y - $mapEndCoords['y']) ** 2
+            );
+
+            $endDist = sqrt(
+                ($end->x - $mapEndCoords['x']) ** 2 +
+                ($end->y - $mapEndCoords['y']) ** 2
+            );
+
+            return $startDist + $endDist;
+        })->take(3)->values();
+
+        return response()->json(SimilarUtilitiesResource::collection($closest));
     }
 
     public function getUtilityStats(){

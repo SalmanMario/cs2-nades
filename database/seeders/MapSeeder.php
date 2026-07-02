@@ -49,9 +49,9 @@ class MapSeeder extends Seeder
             Map::query()->updateOrCreate([
                 'name' => $map,
             ], [
-                'image' => '/images/maps-img/'.$map.'.png',
-                'map_callouts' => '/images/maps-callouts-img/'.$map.'_callouts.png',
-                'map_no_callouts' => '/images/maps-callouts-img/'.$map.'_no_callouts.png',
+                'image' => '/storage/images/maps-img/'.$map.'.png',
+                'map_callouts' => '/storage/images/maps-callouts-img/'.$map.'_callouts.png',
+                'map_no_callouts' => '/storage/images/maps-callouts-img/'.$map.'_no_callouts.png',
             ]);
         }
     }

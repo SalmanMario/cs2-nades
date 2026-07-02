@@ -131,6 +131,8 @@ class UtilityController extends Controller
     public function update(UtilityRequest $request, string $id)
     {
         $utility = Utility::with(['team', 'utilityCoordinates.utility_type', 'utilityCoordinates.start_utility_coordinates', 'utilityCoordinates.end_utility_coordinates', 'attachments'])->find($id);
+        $startCoords = null;
+        $endCoords = null;
 
         if ($request->start_coords['x'] && $request->start_coords['y']) {
             $startCoords = StartUtilityCoordinate::query()->firstOrCreate([
@@ -139,7 +141,9 @@ class UtilityController extends Controller
             ], [
                 'title_from' => $request->start_coords['title'],
             ]);
-        } else if ($request->existing_start_coords['x'] && $request->existing_start_coords['y']) {
+        }
+
+        if ($request->existing_start_coords && $request->existing_start_coords['x'] && $request->existing_start_coords['y']) {
             $startCoords = StartUtilityCoordinate::query()->where('x', $request->existing_start_coords['x'])
                 ->where('y', $request->existing_start_coords['y'])->first();
         }
@@ -151,14 +155,15 @@ class UtilityController extends Controller
             ], [
                 'title_to' => $request->end_coords['title'],
             ]);
-        } else if ($request->existing_end_coords['x'] && $request->existing_end_coords['y']) {
-            $endCoords = EndUtilityCoordinate::query()->where('x', $request->existing_end_coords['y'])->where('y', $request->existing_end_coords['y'])->first();
+        }
+        if ($request->existing_end_coords && $request->existing_end_coords['x'] && $request->existing_end_coords['y']) {
+            $endCoords = EndUtilityCoordinate::query()->where('x', $request->existing_end_coords['x'])->where('y', $request->existing_end_coords['y'])->first();
         }
 
         $utility->utilityCoordinates->update([
             'utility_type_id' => $request->utility_type_id,
-            'start_utility_coordinate_id' => $startCoords->id ?? $utility->utilityCoordinates->start_utility_coordinate_id,
-            'end_utility_coordinate_id' => $endCoords->id ?? $utility->utilityCoordinates->end_utility_coordinate_id,
+            'start_utility_coordinate_id' => $startCoords->id,
+            'end_utility_coordinate_id' => $endCoords->id,
         ]);
 
         $utility->update([

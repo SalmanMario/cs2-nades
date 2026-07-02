@@ -1,7 +1,7 @@
 export interface Coords {
     x: number
     y: number
-    title: string
+    title:string
     team_id: number
 }
 
