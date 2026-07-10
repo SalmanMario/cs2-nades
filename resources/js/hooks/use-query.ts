@@ -3,7 +3,7 @@ const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('co
 
 export function useQueryApi<TData>({queryKey, url, method, body, enabled ,options} : {queryKey: string | string[], url: string, method:string, body?: any, enabled?: boolean, options?: any}) {
     const {data, isLoading, error} = useQuery<TData>({
-        queryKey: [queryKey],
+        queryKey: Array.isArray(queryKey) ? queryKey : [queryKey],
         queryFn: async () => {
 
             const response = await fetch(url, {

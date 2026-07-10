@@ -22,6 +22,7 @@ import {FilePondFile, FilePondInitialFile} from "filepond";
 import {useNavigate} from "@tanstack/react-router";
 import {parseNumber} from "@/hooks/helper";
 import {getXsrfToken} from "@/lib/api";
+import {useQueryClient} from "@tanstack/react-query";
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType, FilePondPluginMediaPreview);
 
@@ -29,6 +30,8 @@ export default function UtilityFormComponent({utility = null, mapName}: {
     utility: UtilityForm | null,
     mapName: string
 }) {
+    const queryClient = useQueryClient();
+
     const [isEditingStartCoordinates, setIsEditingStartCoordinates] = useState(false);
     const [isEditingEndCoordinates, setIsEditingEndCoordinates] = useState(false);
     const [startCoordinates, setStartCoordinates] = useState<{ x: number; y: number } | undefined>(undefined);
@@ -99,17 +102,18 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                 y: utility.existing_end_coords?.y,
             },
 
-            image_lineup_ids: (imageLineup as unknown as FilePondFile[])
-                .filter(f => f.serverId)
-                .map(f => f.serverId),
+            image_lineup_ids: (imageLineup as unknown as (FilePondFile & FilePondInitialFile)[])
+                .map(f => f.serverId ?? f.source)
+                .filter(Boolean),
 
-            video_lineup_ids: (videoLineup as unknown as FilePondFile[])
-                .filter(f => f.serverId)
-                .map(f => f.serverId),
+            video_lineup_ids: (videoLineup as unknown as (FilePondFile & FilePondInitialFile)[])
+                .map(f => f.serverId ?? f.source)
+                .filter(Boolean),
         };
 
         handleMutation.mutate(payload, {
             onSuccess: () => {
+                queryClient.invalidateQueries({queryKey: ['utility', String(utility.id)]});
                 reset();
                 navigate({
                     to: "/admin/dashboard/maps/$mapName",
@@ -141,7 +145,9 @@ export default function UtilityFormComponent({utility = null, mapName}: {
             })
 
             setImageLineup(
-                Object.values(utility.image_lineup ?? {}).map((image: any) => ({
+                Object.values(utility.image_lineup ?? {})
+                    .sort((a: any, b: any) => a.order - b.order)
+                    .map((image: any) => ({
                     source: String(image.id),
                     options: {type: 'local'}
                 }))
@@ -434,6 +440,7 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                         <AccordionTrigger>Image Lineup</AccordionTrigger>
                         <AccordionContent className="space-y-4">
                             <FilePond
+                                allowReorder={true}
                                 name="image_lineup"
                                 files={imageLineup}
                                 onupdatefiles={handleImageUpdate}
@@ -441,6 +448,32 @@ export default function UtilityFormComponent({utility = null, mapName}: {
                                 maxFiles={10}
                                 labelIdle='Drag & Drop your images or <span class="filepond--label-action">Browse</span>'
                                 allowMultiple={true}
+                                onreorderfiles={(files: FilePondFile[]) => {
+                                    const ids = files
+                                        .filter(f => f.serverId)
+                                        .map(f => f.serverId);
+
+                                    setImageLineup(
+                                        ids.map((id) => ({
+                                            source: String(id),
+                                            options: {type: 'local'}
+                                        }))
+                                    );
+
+                                    if (utility?.id) {
+
+                                        fetch(`/attachment/reorder`, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'X-XSRF-TOKEN': getXsrfToken(),
+                                            },
+                                            body: JSON.stringify({ids, type: 'image'}),
+                                        }).then(() => {
+                                            queryClient.invalidateQueries({queryKey: ['utility', String(utility.id)]});
+                                        });
+                                    }
+                                }}
                                 server={{
                                     load: {
                                         url: '/attachment/',

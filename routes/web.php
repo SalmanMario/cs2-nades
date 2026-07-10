@@ -17,6 +17,7 @@ Route::get('/getUtility/{map}/{id}', [ApiUtilsController::class, 'getUtility'])-
 Route::get('/getUtilityCoordinates/{mapName}', [ApiUtilsController::class, 'getUtilityCoordinates'])->name('getUtilityCoordinates');
 Route::get('/getMap/{map}', [ApiUtilsController::class, 'getMap'])->name('getMap');
 Route::post('/attachment/upload', [ApiAttachmentController::class, 'store'])->name('attachment.store');
+Route::post('/attachment/reorder', [ApiAttachmentController::class, 'reorder'])->name('attachment.reorder');
 Route::get('/attachment/{attachment}', [ApiAttachmentController::class, 'show'])->name('attachment.show');
 
 Route::get('/utilities/{mapName}', [UtilityController::class, 'index']);

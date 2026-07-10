@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('type')->nullable();
             $table->string('filename', 255);
             $table->string('path', 255);
+            $table->string('order', 1);
         });
     }
 

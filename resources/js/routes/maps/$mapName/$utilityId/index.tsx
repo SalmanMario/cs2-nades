@@ -44,7 +44,7 @@ function RouteComponent() {
     })
 
     const {data: getSimilarUtilities} = useQueryApi<SimilarUtilityResponse[]>({
-        queryKey: ['getSimilarUtilitiesByCoords'],
+        queryKey: ['getSimilarUtilitiesByCoords', String(utility?.mapId), utilityId],
         method: 'POST',
         url: `/getSimilarUtilitiesByCoords/${utility?.mapId}`,
         body: {
@@ -79,6 +79,16 @@ function RouteComponent() {
             to: "/maps/$mapName",
             params: {
                 mapName
+            }
+        }).then()
+    }
+
+    const goToUtility = ($utilityId: string) => {
+        navigate({
+            to: "/maps/$mapName/$utilityId",
+            params:{
+                mapName: mapName,
+                utilityId: $utilityId
             }
         }).then()
     }
@@ -257,9 +267,11 @@ function RouteComponent() {
                     {getSimilarUtilities && (
                         getSimilarUtilities.map((utility) => (
                             <Card
-                                className={`relative mx-auto w-full max-w-lg border-2 pt-0 ${
+                                key={utility.id}
+                                className={`relative mx-auto w-full max-w-lg border-2 pt-0 px-0 cursor-pointer ${
                                     utility.team === 'CT' ? 'border-blue-500' : 'border-orange-500'
                                 }`}
+                                onClick={() => goToUtility(String(utility.id))}
                             >
                                 <CardHeader>
                                     <CardTitle>{utility.grenade_name}</CardTitle>

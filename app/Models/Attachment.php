@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Attachment extends Model
 {
-    protected $fillable = ['attachmentable_id', 'attachmentable_type', 'filename', 'type', 'path'];
+    protected $fillable = ['attachmentable_id', 'attachmentable_type', 'filename', 'type', 'path', 'order'];
     use softDeletes;
     public function attachmentable(): MorphTo
     {
