@@ -27,6 +27,7 @@ export function MarkerMap({props} : {props: MarkerProps}) {
                 const stage = e.target.getStage();
                 if (stage) {
                     stage.container().style.cursor = "pointer"
+                    stage.container().style.padding = "10px";
                     setIsHovered(true);
                 }
             }}
@@ -34,6 +35,7 @@ export function MarkerMap({props} : {props: MarkerProps}) {
                 const stage = e.target.getStage();
                 if (stage) {
                     stage.container().style.cursor = "default";
+                    stage.container().style.padding = "0px";
                     setIsHovered(false);
                 }
             }}

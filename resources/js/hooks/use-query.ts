@@ -1,16 +1,40 @@
 import {useQuery} from "@tanstack/react-query";
 const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-export function useQueryApi<TData>({queryKey, url, method, body, enabled ,options} : {queryKey: string | string[], url: string, method:string, body?: any, enabled?: boolean, options?: any}) {
-    const {data, isLoading, error} = useQuery<TData>({
+export function useQueryApi<TData>({
+                                       queryKey,
+                                       url,
+                                       method,
+                                       body,
+                                       params,
+                                       enabled,
+                                       options
+                                   }: {
+    queryKey: string | string[],
+    url: string,
+    method: string,
+    body?: any,
+    params?: Record<string, string | number | undefined>,
+    enabled?: boolean,
+    options?: any
+}) {
+    const {data, isLoading, isFetching, error} = useQuery<TData>({
         queryKey: Array.isArray(queryKey) ? queryKey : [queryKey],
         queryFn: async () => {
+            let finalUrl = url;
 
-            const response = await fetch(url, {
+            if (params) {
+                const search = new URLSearchParams(
+                    Object.entries(params).filter(([_, v]) => v !== undefined && v !== "") as [string, string][]
+                ).toString();
+                if (search) finalUrl += `?${search}`;
+            }
+
+            const response = await fetch(finalUrl, {
                 method: method,
                 headers: {
-                    ...(body ? { "Content-Type": "application/json" } : {}),
-                    ...(csrf ? { "X-CSRF-TOKEN": csrf } : {}),
+                    ...(body ? {"Content-Type": "application/json"} : {}),
+                    ...(csrf ? {"X-CSRF-TOKEN": csrf} : {}),
                 },
                 body: body ? JSON.stringify(body) : undefined,
             });
@@ -27,6 +51,5 @@ export function useQueryApi<TData>({queryKey, url, method, body, enabled ,option
         ...options,
     })
 
-    return {data, isLoading, error}
+    return {data, isLoading, isFetching, error}
 }
-
