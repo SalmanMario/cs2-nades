@@ -10,7 +10,7 @@ class Map extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name', 'image', 'map_callouts', 'map_no_callouts'];
+    protected $fillable = ['name', 'image', 'map_callouts', 'map_no_callouts', 'map_card_image'];
 
     public function utilities(): HasMany
     {

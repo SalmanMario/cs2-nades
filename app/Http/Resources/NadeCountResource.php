@@ -2,15 +2,12 @@
 
 namespace App\Http\Resources;
 
-use App\Enum\NadeEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MapResource extends JsonResource
+class NadeCountResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
-     *
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
@@ -19,10 +16,7 @@ class MapResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'image' => $this->image,
-            'map_no_callouts' => $this->map_no_callouts,
-            'map_callouts' => $this->map_callouts,
-            'map_card_image' => $this->map_card_image,
-            'number_of_utilities' => $this->utilities->count(),
+            'count' => $this->count,
         ];
     }
 }

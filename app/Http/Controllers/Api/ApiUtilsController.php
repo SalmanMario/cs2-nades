@@ -10,7 +10,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\SearchResultResource;
 use App\Http\Resources\SimilarUtilitiesResource;
 use App\Http\Resources\UtilityCoordinateResource;
-use App\Http\Resources\MapResource;
 use App\Http\Resources\NadeResource;
 use App\Http\Resources\TeamResource;
 use App\Models\Map;
@@ -31,12 +30,6 @@ class ApiUtilsController extends Controller
     public function getTeams()
     {
         return TeamResource::collection(Team::all());
-    }
-
-    public function getMap($map)
-    {
-        $findMap = Map::where('name', $map)->first();
-        return MapResource::make($findMap);
     }
 
     public function getUtilityCoordinates($map)

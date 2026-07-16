@@ -17,6 +17,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->string('name', 25);
             $table->string("image", 255);
+            $table->string("map_card_image", 255);
             $table->string("map_no_callouts", 255);
             $table->string("map_callouts", 255);
         });

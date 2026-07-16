@@ -6,12 +6,15 @@ import {useQueryApi} from "@/hooks/use-query";
 import {Card} from "@/components/ui/card";
 import {useNavigate} from "@tanstack/react-router";
 
-export default function DialogSearch({showSearchDialog, setShowSearchDialog}) {
+export default function DialogSearch({showSearchDialog, setShowSearchDialog}: {
+    showSearchDialog: boolean;
+    setShowSearchDialog: (showSearchDialog: boolean) => void;
+}) {
     const [searchTerm, setSearchTerm] = useState("");
-    const timeoutRef = useRef(null);
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     const navigate = useNavigate();
 
-    const {data: results, isFetching} = useQueryApi({
+    const {data: results, isFetching} = useQueryApi<SearchResult[]>({
         queryKey: ['search', searchTerm],
         url: "/search",
         method: 'GET',
@@ -21,21 +24,21 @@ export default function DialogSearch({showSearchDialog, setShowSearchDialog}) {
         enabled: searchTerm.trim().length > 0,
     });
 
-    function debounce(func, delay) {
-        return (...args) => {
+    function debounce<T extends (...args: any[]) => void>(func: T, delay: number) {
+        return (...args: Parameters<T>) => {
             clearTimeout(timeoutRef.current);
             timeoutRef.current = setTimeout(() => func(...args), delay);
         };
     }
 
     const handleSearch = useCallback(
-        debounce((value) => {
+        debounce((value: string) => {
             setSearchTerm(value);
         }, 500),
         []
     );
 
-    const navigateToGrenade = ($mapName, $utilityId) => {
+    const navigateToGrenade = ($mapName: string, $utilityId: string) => {
         navigate({
             to: '/maps/$mapName/$utilityId',
             params: {
@@ -77,7 +80,7 @@ export default function DialogSearch({showSearchDialog, setShowSearchDialog}) {
                         {results?.map((item) => (
                             <Card
                                 key={item.id}
-                                onClick={() => navigateToGrenade(item.map_name,item.id)}
+                                onClick={() => navigateToGrenade(item.map_name, String(item.id))}
                                 className="group cursor-pointer relative w-full overflow-hidden border-white/10 bg-[#101215] p-0 shadow-lg shadow-black/40 transition-all duration-300 hover:-translate-y-1 hover:border-amber-500/40 hover:shadow-amber-500/10"
                             >
                                 <div className="relative aspect-video w-full overflow-hidden">

@@ -39,11 +39,17 @@ class MapSeeder extends Seeder
             File::makeDirectory($mapCalloutsPath, 0775, true);
         }
 
+        $cardImagePath = Storage::path('/public/images/maps-card-img');
+        if (!File::exists($cardImagePath)) {
+            File::makeDirectory($cardImagePath, 0775, true);
+        }
+
         foreach ($initialPath as $image){
             File::copy($image->getPathname(), $storagePath.'/'.$image->getFilename());
         }
 
         File::copyDirectory('database/seeders/images/maps-callouts-img', $mapCalloutsPath);
+        File::copyDirectory('database/seeders/images/maps-card-img', $cardImagePath);
 
         foreach ($maps as $map){
             Map::query()->updateOrCreate([
@@ -52,6 +58,7 @@ class MapSeeder extends Seeder
                 'image' => '/storage/images/maps-img/'.$map.'.png',
                 'map_callouts' => '/storage/images/maps-callouts-img/'.$map.'_callouts.png',
                 'map_no_callouts' => '/storage/images/maps-callouts-img/'.$map.'_no_callouts.png',
+                'map_card_image' => '/storage/images/maps-card-img/'.$map.'_card_image.png',
             ]);
         }
     }
