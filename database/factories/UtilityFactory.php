@@ -17,10 +17,14 @@ class UtilityFactory extends Factory
 {
     public function definition(): array
     {
+        $mapId = Map::inRandomOrder()->value('id');
+
         return [
             'grenade_name' => fake()->words(2, true),
-            'map_id' => Map::inRandomOrder()->value('id'),
-            'utility_coordinate_id' => UtilityCoordinate::factory(),
+            'map_id' => $mapId,
+            'utility_coordinate_id' => UtilityCoordinate::factory()->state([
+                'map_id' => $mapId,
+            ]),
             'team_id' => Team::inRandomOrder()->value('id'),
             'key_type' => fake()->optional()->randomElement(KeyEnum::cases())?->value,
             'technique_type' => fake()->randomElement(TechniqueEnum::cases())->value,

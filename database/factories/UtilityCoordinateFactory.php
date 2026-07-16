@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\EndUtilityCoordinate;
 use App\Models\Map;
 use App\Models\StartUtilityCoordinate;
+use App\Models\Utility;
 use App\Models\UtilityType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
