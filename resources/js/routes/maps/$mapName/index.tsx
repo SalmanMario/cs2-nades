@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import MapViewLayout from "@/layouts/MapViewLayout";
 import {ExistingCoords} from "@/types/coords";
 import MapSidebar from "@/components/MapSidebar";
+import {MapOverviewResponse} from "@/types/map";
 
 export const Route = createFileRoute('/maps/$mapName/')({
     component: RouteComponent,
@@ -30,21 +31,19 @@ function RouteComponent() {
     const [grenadeType, setGrenadeType] = useState("ANY");
     const [teamType, setTeamType] = useState(3);
 
-    const {data: map, isLoading: mapLoading} = useQueryApi<{ data: MapResponse }>({
-        queryKey: ['map', mapName],
-        method: 'GET',
-        url: `/getMap/${mapName}`,
-    })
-    const {data: utilityCoordinates, isLoading: utilityLoading} = useQueryApi<{ data: UtilityCoordinates[] }>({
-        queryKey: ['utilityCoordinates', mapName],
-        method: 'GET',
-        url: `/getUtilityCoordinates/${mapName}`,
+    const {data: info, isLoading: infoLoading} = useQueryApi<MapOverviewResponse>({
+        queryKey:['info', mapName],
+        method:"GET",
+        url:"/mapOverview",
+        params:{
+            map: mapName
+        }
     })
 
     useEffect(() => {
-        if (utilityCoordinates?.data) {
+        if (info?.utilityCoordinates) {
             setEndCoords(
-                utilityCoordinates.data.map((utility) => ({
+                info.utilityCoordinates.map((utility) => ({
                     utility_id: utility.utility_id,
                     team_id: utility.team_id,
                     start_utility_id: utility.existing_start_coords.id,
@@ -58,7 +57,7 @@ function RouteComponent() {
                 }))
             );
             setStartCoords(
-                utilityCoordinates.data.map((utility) => ({
+                info.utilityCoordinates.map((utility) => ({
                     utility_id: utility.utility_id,
                     team_id: utility.team_id,
                     start_utility_id: utility.existing_start_coords.id,
@@ -72,9 +71,9 @@ function RouteComponent() {
                 }))
             );
         }
-    }, [utilityCoordinates]);
+    }, [info]);
 
-    if (mapLoading || utilityLoading) return <div>Loading...</div>;
+    if (infoLoading) return <div>Loading...</div>;
 
     const filterEndCoords = (endCoordinates: UtilityCoordinates[]) => {
         let filteredCoords;
@@ -107,18 +106,35 @@ function RouteComponent() {
     }
 
     return (
-        <div className="flex h-screen w-full">
-            <MapSidebar onGrenadeTypeChange={setGrenadeType} onTeamTypeChange={setTeamType} grenadeType={grenadeType} teamType={teamType}/>
-            <div className="flex-1 min-w-0">
-                <MapViewLayout>
-                    <MapLayoutFrontend
-                        mapImage={map?.data?.map_no_callouts}
-                        endCoordinates={filterEndCoords(endCoords)}
-                        startCoordinates={filterStartCoords(startCoords)}
-                        teamType={teamType}
-                    />
-                </MapViewLayout>
-            </div>
-        </div>
+        <MapViewLayout
+            info={info}
+            sidebar={
+                <MapSidebar
+                    info={info}
+                    onGrenadeTypeChange={setGrenadeType}
+                    onTeamTypeChange={setTeamType}
+                    grenadeType={grenadeType}
+                    teamType={teamType}
+                />
+            }
+            rightPanel={
+                <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+                    <h3 className="text-lg font-semibold text-white">
+                        Select a lineup
+                    </h3>
+
+                    <p className="mt-2 text-zinc-400">
+                        Click a marker on the map to see its details.
+                    </p>
+                </div>
+            }
+        >
+            <MapLayoutFrontend
+                mapImage={info?.map?.map_no_callouts}
+                endCoordinates={filterEndCoords(endCoords)}
+                startCoordinates={filterStartCoords(startCoords)}
+                teamType={teamType}
+            />
+        </MapViewLayout>
     )
 }

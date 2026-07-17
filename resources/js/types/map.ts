@@ -1,3 +1,5 @@
+import {UtilityCoordinates} from "@/routes/maps/$mapName";
+
 type MapResponse = {
     id: string,
     name: string,
@@ -8,7 +10,7 @@ type MapResponse = {
     number_of_utilities: number,
 }
 
-type LayoutResponse = {
+export type LayoutResponse = {
     maps_count: number,
     lineups: number,
     maps: MapResponse[],
@@ -23,4 +25,14 @@ type MapOverview = {
     maps: MapResponse[],
     map_counts: number,
     nade_count: NadeCount[]
+}
+
+export type MapOverviewResponse = {
+    map: MapResponse,
+    maps: MapResponse[],
+    utilities: {
+        nades: Nade[],
+    },
+    utilityCoordinates: UtilityCoordinates[],
+    teams: Team[],
 }

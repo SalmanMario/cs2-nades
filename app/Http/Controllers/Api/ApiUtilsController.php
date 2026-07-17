@@ -9,19 +9,21 @@ use App\Enum\TeamEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SearchResultResource;
 use App\Http\Resources\SimilarUtilitiesResource;
-use App\Http\Resources\UtilityCoordinateResource;
 use App\Http\Resources\NadeResource;
 use App\Http\Resources\TeamResource;
 use App\Models\Map;
 use App\Models\Utility;
-use App\Models\UtilityCoordinate;
 use App\Models\UtilityType;
 use App\Models\Team;
+use App\Services\MapService;
+use App\Services\UtilityService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class ApiUtilsController extends Controller
 {
+    public function __construct(private MapService $mapService, private UtilityService $utilityService){}
+
     public function getNades()
     {
         return NadeResource::collection(UtilityType::all());
@@ -34,11 +36,8 @@ class ApiUtilsController extends Controller
 
     public function getUtilityCoordinates($map)
     {
-        $mapId = Map::where('name', $map)->first()->id;
-        $utilityCoordinates = UtilityCoordinate::query()->with(['start_utility_coordinates', 'end_utility_coordinates', 'utilities', 'map'])
-            ->where('map_id', $mapId)
-            ->get();
-        return UtilityCoordinateResource::collection($utilityCoordinates);
+        $map = $this->mapService->getMap($map);
+        return $this->utilityService->getUtilityCoordinates($map);
     }
 
     public function getUtility($map, $utility)

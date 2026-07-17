@@ -7,12 +7,7 @@ type StatCardProps = {
     color?: string;
 };
 
-export default function StatCard({
-                      label,
-                      value,
-                      image,
-                      color = "text-white",
-                  }: StatCardProps) {
+export default function StatCard({label, value, image, color = "text-white"}: StatCardProps) {
     return (
         <div className="group rounded-xl border border-zinc-800 bg-zinc-900/70 p-4 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/40 hover:bg-zinc-900">
 

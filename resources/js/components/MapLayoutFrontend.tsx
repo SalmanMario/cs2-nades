@@ -4,6 +4,7 @@ import Konva from "konva";
 import {MarkerMap} from "@/components/MarkerMap";
 import {UtilityCoordinates} from "@/routes/maps/$mapName";
 import AnimatedCircle from "@/components/AnimatedCircle";
+import {Legend} from "recharts";
 
 const COORD_SPACE = 1024;
 
@@ -22,20 +23,19 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
     const imgAspectRef = useRef(1);
     function fitStage() {
         if (!containerRef.current) return;
-        const { offsetWidth: maxW, offsetHeight: maxH } = containerRef.current;
+
         const imgAspect = imgAspectRef.current;
+        const { offsetWidth } = containerRef.current;
 
-        let w = maxW;
-        let h = maxW * imgAspect;
+        const w = offsetWidth;
+        const h = w * imgAspect;
 
-        if (h > maxH) {
-            h = maxH;
-            w = maxH / imgAspect;
-        }
-        const s = w / COORD_SPACE;
+        setStageSize({
+            width: w,
+            height: h,
+        });
 
-        setStageSize({ width: w, height: h });
-        setScale(s);
+        setScale(w / COORD_SPACE);
     }
 
     useEffect(() => {
@@ -79,41 +79,79 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
     }
 
     return (
-        <div
-            ref={containerRef}
-            className="w-full h-full flex items-center justify-center overflow-hidden"
-        >
-            <Stage
-                width={stageSize.width}
-                height={stageSize.height}
-                onClick={handleOutsideClick}
-                scaleX={scale}
-                scaleY={scale}
+        <div className="relative">
+
+            {/* Glow */}
+            <div className="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-br from-orange-500/5 via-transparent to-blue-500/5" />
+
+            {/* Legend */}
+            <div
+                className=" absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-6 rounded-2xl border border-zinc-800 bg-zinc-900/90 px-6 py-3 backdrop-blur-xl"
             >
-                <Layer>
-                    <Image
-                        image={img ?? undefined}
-                        width={COORD_SPACE}
-                        height={COORD_SPACE * imgAspectRef.current}
-                    />
-                    {endCoordinates?.map((coords, index: number) => (
-                        <AnimatedCircle coords={coords} index={index} handleClickEndCoords={handleClickEndCoords(coords)}
-                                        isHidden={activeEndId !== null && coords.end_utility_id !== activeEndId}
+                <Legend color="bg-blue-500" text="Landing" />
+                <Legend color="bg-orange-400" text="Throw" />
+            </div>
+
+            {/* Map */}
+
+            <div
+                ref={containerRef}
+                className="relative w-full overflow-hidden rounded-3xl border border-zinc-800 bg-[#111318]"
+                style={{ aspectRatio: `1 / ${imgAspectRef.current}` }}
+            >
+                <Stage
+                    width={stageSize.width}
+                    height={stageSize.height}
+                    onClick={handleOutsideClick}
+                    scaleX={scale}
+                    scaleY={scale}
+                >
+                    <Layer>
+
+                        <Image
+                            image={img ?? undefined}
+                            width={COORD_SPACE}
+                            height={COORD_SPACE * imgAspectRef.current}
                         />
-                    ))}
-                    {activeCircles.map((props, index) => (
-                        <MarkerMap props={props} key={index}/>
-                    ))}
-                    {activeCircles.map((line, index) => (
-                        <Line
-                            key={`line-${index}`}
-                            points={[line.start.x, line.start.y, line.end.x, line.end.y]}
-                            stroke="purple"
-                            strokeWidth={4}
-                        />
-                    ))}
-                </Layer>
-            </Stage>
+
+                        {endCoordinates?.map((coords, index) => (
+                            <AnimatedCircle
+                                key={coords.end_utility_id}
+                                coords={coords}
+                                index={index}
+                                handleClickEndCoords={handleClickEndCoords(coords)}
+                                isHidden={
+                                    activeEndId !== null &&
+                                    coords.end_utility_id !== activeEndId
+                                }
+                            />
+                        ))}
+
+                        {activeCircles.map((props, index) => (
+                            <MarkerMap
+                                props={props}
+                                key={index}
+                            />
+                        ))}
+
+                        {activeCircles.map((line, index) => (
+                            <Line
+                                key={index}
+                                points={[
+                                    line.start.x,
+                                    line.start.y,
+                                    line.end.x,
+                                    line.end.y,
+                                ]}
+                                stroke="#f97316"
+                                strokeWidth={5}
+                                shadowColor="#f97316"
+                                shadowBlur={15}
+                            />
+                        ))}
+                    </Layer>
+                </Stage>
+            </div>
         </div>
-    );
+    )
 }

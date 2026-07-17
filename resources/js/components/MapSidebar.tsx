@@ -1,105 +1,235 @@
-import {
-    Sidebar,
-    SidebarContent,
-    SidebarGroup,
-    SidebarGroupLabel,
-    SidebarHeader,
-    SidebarProvider
-} from "@/components/ui/sidebar";
-import {Button} from "@/components/ui/button";
-import {useQueryApi} from "@/hooks/use-query";
-import {UtilityType} from "@/types/utility";
-import {BoxesIcon} from "lucide-react";
-import {Route} from "@/routes";
-import {use} from "react";
-import {useNavigate} from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { BoxesIcon, Flame, MapIcon, Users } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { MapOverviewResponse } from "@/types/map";
 
-export default function MapSidebar({onGrenadeTypeChange, onTeamTypeChange, grenadeType, teamType}: {
-    onGrenadeTypeChange: (type: string) => void,
-    onTeamTypeChange: (type: number) => void
-    grenadeType: string,
-    teamType: number,
-}) {
+type Props = {
+    info: MapOverviewResponse;
+    onGrenadeTypeChange: (type: string) => void;
+    onTeamTypeChange: (type: number) => void;
+    grenadeType: string;
+    teamType: number;
+};
+
+export default function MapSidebar({
+                                       info,
+                                       onGrenadeTypeChange,
+                                       onTeamTypeChange,
+                                       grenadeType,
+                                       teamType,
+                                   }: Props) {
     const navigate = useNavigate();
 
-    const {data: utilities} = useQueryApi<{ data: UtilityType[] }>({
-        queryKey: ['utilities'],
-        method: 'GET',
-        url: `/getNades`,
-    })
-
-    const {data: teams} = useQueryApi<{ data: Team[] }>({
-        queryKey: ['teams'],
-        method: 'GET',
-        url: `/getTeams`,
-    })
-
-    const {data : maps} = useQueryApi<{data: MapResponse[]}>({
-        queryKey: ['maps'],
-        method: 'GET',
-        url: `/getMaps`,
-    })
-
     return (
-        <div>
-            <SidebarProvider>
-                <Sidebar className="sidebar-custom">
-                    <SidebarHeader className="text-2xl text-center font-bold mb-10">
-                        Dust 2
-                    </SidebarHeader>
-                    <SidebarContent>
-                    <SidebarGroup>
-                        <SidebarGroupLabel className="text-xl mb-5">Nades</SidebarGroupLabel>
-                        <div className="flex flex-col gap-8">
-                            {utilities?.data.map((utility) => (
-                                <Button key={utility.id} variant="default" intent="grey"
-                                        className={`mx-3 justify-start ${grenadeType === utility.name ? 'bg-gray-200 text-black' : ''}`}
-                                        onClick={() => onGrenadeTypeChange(utility.name)}>
-                                    <img src={utility.image} alt={utility.name} className="w-7 h-7 mr-3"/>
-                                        {utility.name}
-                                </Button>
-                            ))}
-                            <Button variant="default" intent="grey"
-                                    className={`mb-5 mx-3 justify-start ${grenadeType === "ANY" ? 'bg-gray-200 text-black' : ''}`}
-                                    onClick={() => onGrenadeTypeChange("ANY")}>
-                                <BoxesIcon className="mr-3"/>
-                                {"ANY"}
-                            </Button>
-                        </div>
-                    </SidebarGroup>
-                    <SidebarGroup>
-                        <SidebarGroupLabel className="text-xl mb-5">Teams</SidebarGroupLabel>
-                        <div className="flex flex-row justify-center gap-5">
-                            {teams?.data.map((team) => (
-                                <Button key={team.id} variant="default" intent="grey"
-                                        className={teamType === Number(team.id) ? "bg-gray-200 text-black" : ""}
-                                        onClick={() => onTeamTypeChange(Number(team.id))}>
-                                    <img src={team.image} alt={team.name} className="w-7 h-7 mr-2"/>
-                                    {team.name}
-                                </Button>
-                            ))}
-                        </div>
-                    </SidebarGroup>
-                    <SidebarGroup className="mt-5 mb-10">
-                        <SidebarGroupLabel className="text-xl mb-5">Maps</SidebarGroupLabel>
-                        <div className="flex flex-col justify-center gap-5">
-                            {maps?.data.map((map) => (
-                                <Button key={map.id} variant="default" intent="grey" className="mx-3 justify-start"
-                                        onClick={() => navigate({
-                                            to: "/maps/$mapName",
-                                            params:{
-                                                mapName: map.name.toLowerCase()
-                                            }
-                                        })}>
-                                    <img src={map.image} alt={map.name} className="w-7 h-7 mr-2"/>
-                                    {map.name}
-                                </Button>
-                            ))}
-                        </div>
-                    </SidebarGroup>
-                    </SidebarContent>
-                </Sidebar>
-            </SidebarProvider>
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-6 backdrop-blur-xl">
+
+            {/* HEADER */}
+
+            <div className="mb-8 flex items-center gap-4">
+
+                <img
+                    src={info?.map?.image}
+                    alt={info?.map?.name}
+                    className="h-14 w-14 object-contain"
+                />
+
+                <div>
+
+                    <h2 className="text-2xl font-bold text-white">
+                        {info?.map?.name}
+                    </h2>
+
+                    <p className="text-sm text-zinc-400">
+                        Browse lineups
+                    </p>
+
+                </div>
+
+            </div>
+
+            {/* NADES */}
+
+            <SidebarSection
+                title="Utilities"
+                icon={<Flame size={18} />}
+            >
+
+                {info?.utilities?.nades.map((utility) => (
+
+                    <Button
+                        key={utility.id}
+                        variant="ghost"
+                        onClick={() => onGrenadeTypeChange(utility.name)}
+                        className={`
+                            mb-2
+                            h-11
+                            w-full
+                            justify-start
+                            rounded-xl
+                            border
+                            transition-all
+
+                            ${
+                            grenadeType === utility.name
+                                ? "border-orange-500 bg-orange-500 text-black hover:bg-orange-400"
+                                : "border-zinc-700 bg-zinc-800/60 text-zinc-300 hover:border-orange-500 hover:bg-zinc-800"
+                        }
+                        `}
+                    >
+                        <img
+                            src={utility.image}
+                            alt={utility.name}
+                            className="mr-3 h-6 w-6"
+                        />
+
+                        {utility.name}
+                    </Button>
+
+                ))}
+
+                <Button
+                    variant="ghost"
+                    onClick={() => onGrenadeTypeChange("ANY")}
+                    className={`
+                        mt-2
+                        h-11
+                        w-full
+                        justify-start
+                        rounded-xl
+                        border
+
+                        ${
+                        grenadeType === "ANY"
+                            ? "border-orange-500 bg-orange-500 text-black hover:bg-orange-400"
+                            : "border-zinc-700 bg-zinc-800/60 text-zinc-300 hover:border-orange-500 hover:bg-zinc-800"
+                    }
+                    `}
+                >
+                    <BoxesIcon className="mr-3 h-5 w-5" />
+
+                    Any Utility
+                </Button>
+
+            </SidebarSection>
+
+            {/* TEAMS */}
+
+            <SidebarSection
+                title="Teams"
+                icon={<Users size={18} />}
+            >
+
+                <div className="grid grid-cols-2 gap-3">
+
+                    {info?.teams?.map((team) => (
+
+                        <Button
+                            key={team.id}
+                            variant="ghost"
+                            onClick={() => onTeamTypeChange(Number(team.id))}
+                            className={`
+                                h-12
+                                rounded-xl
+                                border
+
+                                ${
+                                teamType === Number(team.id)
+                                    ? "border-orange-500 bg-orange-500 text-black hover:bg-orange-400"
+                                    : "border-zinc-700 bg-zinc-800/60 text-zinc-300 hover:border-orange-500 hover:bg-zinc-800"
+                            }
+                            `}
+                        >
+                            <img
+                                src={team.image}
+                                alt={team.name}
+                                className="mr-2 h-6 w-6"
+                            />
+
+                            {team.name}
+
+                        </Button>
+
+                    ))}
+
+                </div>
+
+            </SidebarSection>
+
+            {/* MAPS */}
+
+            <SidebarSection
+                title="Maps"
+                icon={<MapIcon size={18} />}
+            >
+
+                {info?.maps?.map((map) => (
+
+                    <Button
+                        key={map.id}
+                        variant="ghost"
+                        onClick={() =>
+                            navigate({
+                                to: "/maps/$mapName",
+                                params: {
+                                    mapName: map.name.toLowerCase(),
+                                },
+                            })
+                        }
+                        className={`
+                            mb-2
+                            h-11
+                            w-full
+                            justify-start
+                            rounded-xl
+                            border
+
+                            ${
+                            map.name === info?.map?.name
+                                ? "border-orange-500 bg-orange-500 text-black hover:bg-orange-400"
+                                : "border-zinc-700 bg-zinc-800/60 text-zinc-300 hover:border-orange-500 hover:bg-zinc-800"
+                        }
+                        `}
+                    >
+                        <img
+                            src={map.image}
+                            alt={map.name}
+                            className="mr-3 h-6 w-6"
+                        />
+
+                        {map.name}
+
+                    </Button>
+
+                ))}
+
+            </SidebarSection>
+
         </div>
-    )
+    );
+}
+
+function SidebarSection({
+                            title,
+                            icon,
+                            children,
+                        }: {
+    title: string;
+    icon: React.ReactNode;
+    children: React.ReactNode;
+}) {
+    return (
+        <div className="mb-8">
+
+            <div className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-zinc-500">
+
+                {icon}
+
+                {title}
+
+            </div>
+
+            {children}
+
+        </div>
+    );
 }

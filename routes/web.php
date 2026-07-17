@@ -22,6 +22,7 @@ Route::get('/attachment/{attachment}', [ApiAttachmentController::class, 'show'])
 Route::get('/getMap/{map}', [\App\Http\Controllers\MapController::class, 'getMap'])->name('getMap');
 Route::get('/getMaps', [\App\Http\Controllers\MapController::class, 'maps'])->name('getMaps');
 Route::get('/mapsOverview', [\App\Http\Controllers\MapController::class, 'mapsOverview'])->name('mapsOverview');
+Route::get('/mapOverview', [\App\Http\Controllers\MapController::class, 'mapOverview'])->name('mapOverview');
 Route::get('/layoutOverview', [\App\Http\Controllers\MapController::class, 'layoutOverview'])->name('layoutOverview');
 
 Route::get('/utilities/{mapName}', [UtilityController::class, 'index']);
