@@ -64,8 +64,11 @@ class MapController extends Controller
 
     public function backendMapOverview($mapName){
         $map = $this->mapService->getMap($mapName);
+        $maps = $this->mapService->getMaps();
+
         return response()->json([
             'map' => MapResource::make($map),
+            'maps' => MapResource::collection($maps),
             'utilities' => $this->utilityService->getUtilitiesByMap($map),
         ]);
     }

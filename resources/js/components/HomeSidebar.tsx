@@ -4,6 +4,7 @@ import {
     Star,
 } from "lucide-react";
 import {useNavigate} from "@tanstack/react-router";
+import {MapResponse} from "@/types/map";
 
 export default function HomeSidebar({maps, nadeTypes}: { maps?: MapResponse[]; nadeTypes?: { nades: Nade[] } }) {
     const navigate = useNavigate();

@@ -57,7 +57,7 @@ export function DataTable<TData, TValue>({columns, data,}: DataTableProps<TData,
 
     return (
         <div className="overflow-hidden rounded-md border">
-            <div className="flex items-end gap-4 py-4">
+            <div className="flex ms-5 items-end gap-4 py-4">
                 <Field className="w-full max-w-sm">
                     <FieldLabel htmlFor="grenade_input">Grenade Name</FieldLabel>
                     <Input

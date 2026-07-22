@@ -86,6 +86,7 @@ export type SimilarUtilityResponse = {
 
 export type BackendMapOverview = {
     map: MapResponse
+    maps: MapResponse[],
     utilities: {
         count: Nade[],
         countByTeam: Team[],

@@ -23,10 +23,7 @@ export default function AdminNavbarComponent() {
         <div>
             <Menubar className="mb-5 h-14">
                 <MenubarMenu>
-                    <h1 className="font-bold text-4xl m-5 cursor-pointer">CS2 Nades</h1>
-                </MenubarMenu>
-                <MenubarMenu>
-                    <h1 onClick={home} className="ms-10 font-bold text-2xl cursor-pointer">Home</h1>
+                    <h1 onClick={home} className="ms-10 font-bold text-2xl cursor-pointer">Dashboard</h1>
                 </MenubarMenu>
                 <MenubarMenu>
                     <h1 onClick={maps} className="ms-10 grow font-bold text-2xl cursor-pointer">Maps</h1>

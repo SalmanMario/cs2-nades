@@ -21,12 +21,6 @@ export type LayoutResponse = {
     }
 }
 
-type MapOverview = {
-    maps: MapResponse[],
-    map_counts: number,
-    nade_count: NadeCount[]
-}
-
 export type MapOverviewResponse = {
     map: MapResponse,
     maps: MapResponse[],
