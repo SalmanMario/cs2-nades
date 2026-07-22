@@ -74,7 +74,7 @@ export default function FrontendHeader({info, setShowSearchDialog, showSearchDia
                 </div>
 
             </div>
-            <DialogSearch setShowSearchDialog={setShowSearchDialog} showSearchDialog={showSearchDialog}/>
+            <DialogSearch setShowSearchDialog={setShowSearchDialog} showSearchDialog={showSearchDialog} url="/search"/>
         </div>
     )
 }

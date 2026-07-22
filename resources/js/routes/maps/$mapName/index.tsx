@@ -1,11 +1,14 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {useQueryApi} from "@/hooks/use-query";
 import MapLayoutFrontend from "@/components/MapLayoutFrontend";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import MapViewLayout from "@/layouts/MapViewLayout";
 import {ExistingCoords} from "@/types/coords";
 import MapSidebar from "@/components/MapSidebar";
 import {MapOverviewResponse} from "@/types/map";
+import {InputGroup, InputGroupAddon, InputGroupInput} from "@/components/ui/input-group";
+import {Search} from "lucide-react";
+import DialogSearch from "@/components/DialogSearch";
 
 export const Route = createFileRoute('/maps/$mapName/')({
     component: RouteComponent,
@@ -30,6 +33,7 @@ function RouteComponent() {
     const [startCoords, setStartCoords] = useState<UtilityCoordinates[]>([])
     const [grenadeType, setGrenadeType] = useState("ANY");
     const [teamType, setTeamType] = useState(3);
+    const [showSearchDialog, setShowSearchDialog] = useState(false)
 
     const {data: info, isLoading: infoLoading} = useQueryApi<MapOverviewResponse>({
         queryKey:['info', mapName],
@@ -119,6 +123,26 @@ function RouteComponent() {
             }
             rightPanel={
                 <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+                    <h3 className="text-lg mb-3 font-semibold text-white">
+                        Search a utility
+                    </h3>
+                    <div className="max-w-3xl mb-5">
+                        <InputGroup
+                            className=" cursor-pointer rounded-xl border border-zinc-700 bg-zinc-900/80 backdrop-blur"
+                        >
+                            <InputGroupInput
+                                readOnly
+                                onClick={() => setShowSearchDialog(true)}
+                                placeholder="Search lineups for this map"
+                                className="cursor-pointer border-0 bg-transparent text-base placeholder:text-zinc-500 focus-visible:ring-0"
+                            />
+
+                            <InputGroupAddon className="border-l border-zinc-700 px-5">
+                                <Search className="h-5 w-5 text-zinc-400" />
+                            </InputGroupAddon>
+                        </InputGroup>
+                    </div>
+
                     <h3 className="text-lg font-semibold text-white">
                         Select a lineup
                     </h3>
@@ -135,6 +159,8 @@ function RouteComponent() {
                 startCoordinates={filterStartCoords(startCoords)}
                 teamType={teamType}
             />
+
+            <DialogSearch setShowSearchDialog={setShowSearchDialog} showSearchDialog={showSearchDialog} url="/search-by-map" params={{map: mapName}}/>
         </MapViewLayout>
     )
 }

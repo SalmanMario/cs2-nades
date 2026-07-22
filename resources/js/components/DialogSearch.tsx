@@ -6,21 +6,23 @@ import {useQueryApi} from "@/hooks/use-query";
 import {Card} from "@/components/ui/card";
 import {useNavigate} from "@tanstack/react-router";
 
-export default function DialogSearch({showSearchDialog, setShowSearchDialog}: {
+type DialogSearchProps = {
     showSearchDialog: boolean;
     setShowSearchDialog: (showSearchDialog: boolean) => void;
-}) {
-    const [searchTerm, setSearchTerm] = useState("");
+    url?: string;
+    params?: Record<string, string | number | undefined>;
+};
+
+export default function DialogSearch({showSearchDialog, setShowSearchDialog, url = "/search", params = {}}: DialogSearchProps) {
     const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState("");
 
     const {data: results, isFetching} = useQueryApi<SearchResult[]>({
-        queryKey: ['search', searchTerm],
-        url: "/search",
+        queryKey: ['search', url, searchTerm, JSON.stringify(params)],
+        url,
         method: 'GET',
-        params: {
-            q: searchTerm
-        },
+        params: {q: searchTerm, ...params},
         enabled: searchTerm.trim().length > 0,
     });
 

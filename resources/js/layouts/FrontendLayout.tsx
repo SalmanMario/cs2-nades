@@ -1,12 +1,9 @@
-import FooterComponent from "@/components/FooterComponent";
 import React, {useState} from "react";
-import FrontendNavbarComponent from "@/components/navbar/FrontendNavbarComponent";
-import {InputGroup, InputGroupAddon, InputGroupInput} from "@/components/ui/input-group";
-import {Search} from "lucide-react";
 import {useQueryApi} from "@/hooks/use-query";
 import FrontendHeader from "@/components/FrontendHeader";
-import DialogSearch from "@/components/DialogSearch";
 import HomeSidebar from "@/components/HomeSidebar";
+import {LayoutResponse} from "@/types/map";
+import FrontendNavbarComponent from "@/components/navbar/FrontendNavbarComponent";
 
 export default function FrontendLayout({children}: any) {
     const [showSearchDialog, setShowSearchDialog] = useState(false);
@@ -18,19 +15,22 @@ export default function FrontendLayout({children}: any) {
     })
 
     return (
-        <div className="mx-auto w-full max-w-[1900px] flex-1 px-6 py-10">
+        <div>
+            <FrontendNavbarComponent/>
+            <div className="mx-auto w-full max-w-[1900px] flex-1 px-6 py-10">
+                <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
+                    <aside className="hidden lg:block">
+                        <div className="sticky">
+                            <HomeSidebar maps={info?.maps} nadeTypes={info?.utilities}/>
+                        </div>
+                    </aside>
 
-            <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
-                <aside className="hidden lg:block">
-                    <div className="sticky">
-                        <HomeSidebar maps={info?.maps} nadeTypes={info?.utilities}/>
-                    </div>
-                </aside>
-
-                <main>
-                    <FrontendHeader info={info} setShowSearchDialog={setShowSearchDialog} showSearchDialog={showSearchDialog}/>
-                    {children}
-                </main>
+                    <main>
+                        <FrontendHeader info={info} setShowSearchDialog={setShowSearchDialog}
+                                        showSearchDialog={showSearchDialog}/>
+                        {children}
+                    </main>
+                </div>
             </div>
         </div>
     )

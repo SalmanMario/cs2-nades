@@ -119,10 +119,9 @@ export default function MapSidebar({
                 icon={<Users size={18} />}
             >
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3">
 
                     {info?.teams?.map((team) => (
-
                         <Button
                             key={team.id}
                             variant="ghost"
