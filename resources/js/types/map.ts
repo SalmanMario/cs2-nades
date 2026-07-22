@@ -1,6 +1,6 @@
 import {UtilityCoordinates} from "@/routes/maps/$mapName";
 
-type MapResponse = {
+export type MapResponse = {
     id: string,
     name: string,
     image: string,

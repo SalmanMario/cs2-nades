@@ -1,9 +1,10 @@
 import {Card} from "@/components/ui/card";
 import {useQueryApi} from "@/hooks/use-query";
 import {ArrowRight} from "lucide-react";
+import {MapOverviewResponse} from "@/types/map";
 
 export default function CardMap({onCardClick}: { onCardClick: (mapName: string) => void; }) {
-    const {data: maps, isLoading, error} = useQueryApi<MapOverview>({
+    const {data: maps, isLoading, error} = useQueryApi<MapOverviewResponse>({
         queryKey: ["mapsOverview"],
         method: "GET",
         url: "/mapsOverview",

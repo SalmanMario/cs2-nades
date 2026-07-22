@@ -48,7 +48,10 @@ export const utilitiesColumns = (navigate: NavigateFn, mapName: string): ColumnD
                     <img src={team_image} className="w-8 h-8 rounded-full ml-2"/>
                 </div>
             )
-        }
+        },
+        filterFn: (row, columnId, filterValue) => {
+            return row.getValue(columnId) === filterValue
+        },
     },
     {
         accessorKey: "utility_type",
@@ -69,7 +72,10 @@ export const utilitiesColumns = (navigate: NavigateFn, mapName: string): ColumnD
                     <img src={utility_image} className="w-8 h-8 rounded-full ml-2"/>
                 </div>
             )
-        }
+        },
+        filterFn: (row, columnId, filterValue) => {
+            return row.getValue(columnId) === filterValue
+        },
     },
     {
         accessorKey: "technique_type",

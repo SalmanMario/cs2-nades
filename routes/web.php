@@ -25,9 +25,9 @@ Route::get('/getMap/{map}', [\App\Http\Controllers\MapController::class, 'getMap
 Route::get('/getMaps', [\App\Http\Controllers\MapController::class, 'maps'])->name('getMaps');
 Route::get('/mapsOverview', [\App\Http\Controllers\MapController::class, 'mapsOverview'])->name('mapsOverview');
 Route::get('/mapOverview', [\App\Http\Controllers\MapController::class, 'mapOverview'])->name('mapOverview');
+Route::get('/backend-map-overview/{mapName}', [\App\Http\Controllers\MapController::class, 'backendMapOverview'])->name('backendMapOverview');
 Route::get('/layoutOverview', [\App\Http\Controllers\MapController::class, 'layoutOverview'])->name('layoutOverview');
 
-Route::get('/utilities/{mapName}', [UtilityController::class, 'index']);
 Route::resource('utilities', UtilityController::class)->except('index');
 
 Route::view('/{any}', 'app')->where('any', '.*');

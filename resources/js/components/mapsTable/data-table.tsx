@@ -21,6 +21,17 @@ import {
 } from "@/components/ui/table"
 import React from "react";
 import {Input} from "@/components/ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select";
+import {Label} from "@/components/ui/label";
+import {Field, FieldLabel} from "@/components/ui/field";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -38,7 +49,7 @@ export function DataTable<TData, TValue>({columns, data,}: DataTableProps<TData,
         getCoreRowModel: getCoreRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
-        state:{
+        state: {
             sorting,
             columnFilters,
         }
@@ -46,15 +57,62 @@ export function DataTable<TData, TValue>({columns, data,}: DataTableProps<TData,
 
     return (
         <div className="overflow-hidden rounded-md border">
-            <div className="flex items-center py-4">
-                <Input
-                    placeholder="Grenade name"
-                    value={(table.getColumn("grenade_name")?.getFilterValue() as string) ?? ""}
-                    onChange={(event) =>
-                        table.getColumn("grenade_name")?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                />
+            <div className="flex items-end gap-4 py-4">
+                <Field className="w-full max-w-sm">
+                    <FieldLabel htmlFor="grenade_input">Grenade Name</FieldLabel>
+                    <Input
+                        placeholder="Search by name..."
+                        value={(table.getColumn("grenade_name")?.getFilterValue() as string) ?? ""}
+                        onChange={(event) =>
+                            table.getColumn("grenade_name")?.setFilterValue(event.target.value)
+                        }
+                    />
+                </Field>
+
+                <Field className="w-48">
+                    <FieldLabel htmlFor="team_type">Team Type</FieldLabel>
+                    <Select
+                        onValueChange={(value) =>
+                            table.getColumn('team_type')?.setFilterValue(value === "All" ? undefined : value)
+                        }
+                    >
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Team"/>
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Teams</SelectLabel>
+                                <SelectItem value="All">All</SelectItem>
+                                <SelectItem value="CT">CT</SelectItem>
+                                <SelectItem value="T">T</SelectItem>
+                                <SelectItem value="ANY">ANY</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </Field>
+
+                <Field className="w-48">
+                    <FieldLabel htmlFor="utility_type">Utility Type</FieldLabel>
+                    <Select
+                        onValueChange={(value) =>
+                            table.getColumn('utility_type')?.setFilterValue(value === "All" ? undefined : value)
+                        }
+                    >
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Utility"/>
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Utility Type</SelectLabel>
+                                <SelectItem value="All">All</SelectItem>
+                                <SelectItem value="FLASH">Flash</SelectItem>
+                                <SelectItem value="INCENDIARY">Incendiary</SelectItem>
+                                <SelectItem value="HE_GRENADE">Grenade</SelectItem>
+                                <SelectItem value="SMOKE">Smoke</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </Field>
             </div>
             <Table>
                 <TableHeader>

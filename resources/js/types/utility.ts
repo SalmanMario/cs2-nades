@@ -1,5 +1,6 @@
 import {Coords, ExistingCoords} from "@/types/coords";
-import {Movement, Technique, Utility, Team, Key} from "@/types/utils";
+import {MovementEnum, TechniqueEnum, UtilityEnum, TeamEnum, KeyEnum} from "@/types/enums";
+import {MapResponse} from "@/types/map";
 
 export type UtilityType = {
     id: string,
@@ -10,13 +11,13 @@ export type UtilityType = {
 export type UtilityTable = {
     id: string
     grenade_name: string
-    team_type: Team
-    utility_type: Utility,
+    team_type: TeamEnum
+    utility_type: UtilityEnum,
     utility_image: string,
     start_coords: Coords,
     end_coords: Coords,
-    technique_type: Technique
-    movement_type: Movement
+    technique_type: TechniqueEnum
+    movement_type: MovementEnum
     team_image: string,
     actions?: any,
 }
@@ -29,7 +30,7 @@ export type UtilityStatsResponse = {
 }
 
 export type SingleUtilityResponse = {
-    type: Utility,
+    type: UtilityEnum,
     title: string,
     video:
         {
@@ -37,9 +38,9 @@ export type SingleUtilityResponse = {
         },
     team_image: string,
     mapId: number,
-    team_type:Team,
-    movement:Movement,
-    technique:Technique,
+    team_type:TeamEnum,
+    movement:MovementEnum,
+    technique:TechniqueEnum,
     image: {
         path: string,
     }
@@ -49,21 +50,14 @@ export type SingleUtilityResponse = {
     coords: Coords,
 }
 
-export interface UtilityResponse {
-    data: UtilityTable[],
-    total_utilities: number,
-    total_utilities_t: number,
-    total_utilities_ct: number,
-}
-
 export type UtilityForm = {
     id: string,
     grenade_name: string,
     utility_type_id: string,
     team_type_id: string,
-    technique_type: Technique,
-    movement_type: Movement,
-    key_type: Key,
+    technique_type: TechniqueEnum,
+    movement_type: MovementEnum,
+    key_type: KeyEnum,
     title_from: string,
     title_to: string,
     start_coords: Coords,
@@ -88,6 +82,15 @@ export type SimilarUtilityResponse = {
     map_name: string,
     team_image: string,
     team: string
+}
+
+export type BackendMapOverview = {
+    map: MapResponse
+    utilities: {
+        count: Nade[],
+        countByTeam: Team[],
+        data: UtilityTable[],
+    }
 }
 
 type Attachment = {

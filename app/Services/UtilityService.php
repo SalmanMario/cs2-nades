@@ -5,10 +5,12 @@ namespace App\Services;
 use App\Http\Resources\MapNadeCountResource;
 use App\Http\Resources\NadeCountResource;
 use App\Http\Resources\UtilityCoordinateResource;
+use App\Http\Resources\UtilityResource;
 use App\Models\Map;
 use App\Models\Utility;
 use App\Models\UtilityCoordinate;
 use App\Models\UtilityType;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UtilityService
 {
@@ -22,7 +24,7 @@ class UtilityService
         return UtilityType::query()->get(['id', 'name', 'image']);
     }
 
-    public function getNadeCountByMap($maps): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function getNadeCountByMap($maps): AnonymousResourceCollection
     {
         $utilityTypes = $this->getNadeTypes();
 
@@ -55,7 +57,35 @@ class UtilityService
         ];
     }
 
-    public function getUtilityCoordinates(Map $map): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function getUtilitiesByMap($map): array
+    {
+        $utilityTypes = $this->getNadeTypes();
+
+        $counts = $map->utilities->pluck('utilityCoordinates.utility_type_id')->countBy();
+
+        $utilities = Utility::query()->whereHas('map', function ($q) use ($map) {
+            $q->where('name', $map->name);
+        })->with('team')->get();
+
+        $countByTeam = $utilities
+            ->groupBy(fn($utility) => $utility->team->name)
+            ->map(fn($group) => [
+                'name' => $group->first()->team->name,
+                'image' => $group->first()->team->image,
+                'count' => $group->count(),
+            ])
+            ->values();
+
+        $getCount = NadeCountResource::collection($this->nadesWithCounts($utilityTypes, $counts));
+
+        return [
+            'data' => UtilityResource::collection($utilities),
+            'count' => $getCount,
+            'countByTeam' => $countByTeam,
+        ];
+    }
+
+    public function getUtilityCoordinates(Map $map): AnonymousResourceCollection
     {
         $utilityCoordinates = UtilityCoordinate::query()
             ->with(['start_utility_coordinates', 'end_utility_coordinates', 'utilities', 'map'])

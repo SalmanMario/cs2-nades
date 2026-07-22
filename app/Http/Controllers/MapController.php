@@ -61,4 +61,12 @@ class MapController extends Controller
             'lineups' => $this->utilityService->getUtilitiesCount(),
         ]);
     }
+
+    public function backendMapOverview($mapName){
+        $map = $this->mapService->getMap($mapName);
+        return response()->json([
+            'map' => MapResource::make($map),
+            'utilities' => $this->utilityService->getUtilitiesByMap($map),
+        ]);
+    }
 }

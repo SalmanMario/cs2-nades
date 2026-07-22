@@ -24,22 +24,6 @@ class UtilityController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     */
-    public function index($mapName)
-    {
-        $map = Map::where('name', $mapName)->first()->id;
-        $utilities = Utility::where('map_id', $map)
-            ->with(['team', 'utilityCoordinates.utility_type', 'utilityCoordinates.start_utility_coordinates', 'utilityCoordinates.end_utility_coordinates'])
-            ->get();
-        return UtilityResource::collection($utilities)->additional([
-            'total_utilities' => $utilities->count(),
-            'total_utilities_t' => $utilities->where("team_id", 1)->count(),
-            'total_utilities_ct' => $utilities->where("team_id", 2)->count(),
-        ]);
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create()
