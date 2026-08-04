@@ -1,4 +1,4 @@
-import type {UtilityForm, UtilityFormErrors} from "@/types/utility";
+import type {UtilityFormType, UtilityFormErrors} from "@/types/utility";
 import {useMutationApi} from "@/hooks/use-mutation";
 import React, {useEffect, useState} from "react";
 import {useQueryApi} from "@/hooks/use-query";
@@ -23,11 +23,12 @@ import {useNavigate} from "@tanstack/react-router";
 import {parseNumber} from "@/hooks/helper";
 import {getXsrfToken} from "@/lib/api";
 import {useQueryClient} from "@tanstack/react-query";
+import {MapResponse} from "@/types/map";
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType, FilePondPluginMediaPreview);
 
 export default function UtilityForm({utility = null, mapName}: {
-    utility: UtilityForm | null,
+    utility: UtilityFormType | null,
     mapName: string
 }) {
     const queryClient = useQueryClient();
@@ -50,7 +51,7 @@ export default function UtilityForm({utility = null, mapName}: {
         setError,
         clearErrors,
         formState: {errors}
-    } = useForm<UtilityForm>({
+    } = useForm<UtilityFormType>({
         defaultValues: {
             grenade_name: "",
             utility_type_id: "",
@@ -69,12 +70,12 @@ export default function UtilityForm({utility = null, mapName}: {
         setVideoLineup(files as unknown as FilePondInitialFile[]);
     };
 
-    const handleMutation = useMutationApi<UtilityForm, UtilityFormErrors>({
+    const handleMutation = useMutationApi<UtilityFormType, UtilityFormErrors>({
         url: utility ? `/utilities/${utility.id}` : '/utilities',
         method: isEditing,
     })
 
-    const onSubmit = (utility: UtilityForm) => {
+    const onSubmit = (utility: UtilityFormType) => {
         const payload = {
             map_name: mapName,
             grenade_name: utility.grenade_name,
@@ -124,7 +125,7 @@ export default function UtilityForm({utility = null, mapName}: {
             },
             onError: (error) => {
                 Object.entries(error.errors).forEach(([field, message]) => {
-                    setError(field as keyof UtilityForm, {message: message[0]})
+                    setError(field as keyof UtilityFormType, {message: message[0]})
                 })
             }
         })
@@ -191,7 +192,7 @@ export default function UtilityForm({utility = null, mapName}: {
         url: '/getTeams',
     })
 
-    const {data: utilityCoordinates} = useQueryApi<{data: UtilityForm[]}>({
+    const {data: utilityCoordinates} = useQueryApi<{data: UtilityFormType[]}>({
         queryKey: ['utilityCoordinates'],
         method: 'GET',
         url: `/getUtilityCoordinates/${mapName}`,
