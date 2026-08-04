@@ -1,9 +1,9 @@
 import React, {useState} from "react";
 import {useQueryApi} from "@/hooks/use-query";
-import FrontendHeader from "@/components/FrontendHeader";
-import HomeSidebar from "@/components/HomeSidebar";
+import FrontendHeader from "@/components/layout/FrontendHeader";
+import HomeSidebar from "@/components/sidebar/HomeSidebar";
 import {LayoutResponse} from "@/types/map";
-import FrontendNavbarComponent from "@/components/navbar/FrontendNavbarComponent";
+import FrontendNavbar from "@/components/navbar/FrontendNavbar";
 
 export default function FrontendLayout({children}: any) {
     const [showSearchDialog, setShowSearchDialog] = useState(false);
@@ -16,7 +16,7 @@ export default function FrontendLayout({children}: any) {
 
     return (
         <div>
-            <FrontendNavbarComponent/>
+            <FrontendNavbar/>
             <div className="mx-auto w-full max-w-[1900px] flex-1 px-6 py-10">
                 <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
                     <aside className="hidden lg:block">

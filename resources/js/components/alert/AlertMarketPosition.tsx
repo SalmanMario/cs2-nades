@@ -1,6 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
-export default function AlertMarketPositionComponent({position} : {position: {x: number, y: number}}) {
+export default function AlertMarketPosition({position} : {position: {x: number, y: number}}) {
     return (
         <div className="fixed top-20 right-15 w-64 z-50">
             <Alert>

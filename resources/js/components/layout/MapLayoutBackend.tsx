@@ -1,4 +1,4 @@
-import AlertMarketPositionComponent from "@/components/AlertMarketPositionComponent";
+import AlertMarketPosition from "@/components/alert/AlertMarketPosition";
 import {Image, Layer, Stage, Circle, Line} from "react-konva";
 import React, {useState, useEffect, useRef} from "react";
 import Konva from "konva";
@@ -87,10 +87,10 @@ export default function MapLayoutBackend({
     return (
         <div>
             {editingStartingCoords && startCoordinates && (
-                <AlertMarketPositionComponent position={startCoordinates!}/>
+                <AlertMarketPosition position={startCoordinates!}/>
             )}
             {editingEndCoords && endCoordinates && (
-                <AlertMarketPositionComponent position={endCoordinates!}/>
+                <AlertMarketPosition position={endCoordinates!}/>
             )}
             <div ref={containerRef} className="w-full h-full flex items-center justify-center overflow-hidden">
                 <Stage width={stageSize.width}

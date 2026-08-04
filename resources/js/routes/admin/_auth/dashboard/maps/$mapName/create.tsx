@@ -1,6 +1,6 @@
 import {createFileRoute} from '@tanstack/react-router'
 import React from "react";
-import UtilityFormComponent from "@/components/form/utility-form-component";
+import UtilityForm from "@/components/form/UtilityForm";
 
 export const Route = createFileRoute('/admin/_auth/dashboard/maps/$mapName/create')({
     component: RouteComponent,
@@ -9,6 +9,6 @@ export const Route = createFileRoute('/admin/_auth/dashboard/maps/$mapName/creat
 function RouteComponent() {
     const {mapName} = Route.useParams()
     return (
-        <UtilityFormComponent utility={null} mapName={mapName}/>
+        <UtilityForm utility={null} mapName={mapName}/>
     )
 }

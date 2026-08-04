@@ -1,7 +1,7 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {useQueryApi} from "@/hooks/use-query";
-import {UtilityForm} from "@/types/utility";
-import UtilityFormComponent from "@/components/form/utility-form-component";
+import {UtilityFormType} from "@/types/utility";
+import UtilityForm from "@/components/form/UtilityForm";
 
 export const Route = createFileRoute('/admin/_auth/dashboard/maps/$mapName/$id/edit')(
     {
@@ -11,10 +11,10 @@ export const Route = createFileRoute('/admin/_auth/dashboard/maps/$mapName/$id/e
 
 function RouteComponent() {
     const {id, mapName} = Route.useParams();
-    const {data: utility} = useQueryApi<{ data: UtilityForm}>({
+    const {data: utility} = useQueryApi<{ data: UtilityFormType}>({
         queryKey: ['utility', id],
         method: 'GET',
         url: `/utilities/${id}/edit`,
     })
-    return <UtilityFormComponent utility={utility?.data} mapName={mapName}/>
+    return <UtilityForm utility={utility?.data} mapName={mapName}/>
 }

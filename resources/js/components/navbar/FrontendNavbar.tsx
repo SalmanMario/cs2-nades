@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
-export default function FrontendNavbarComponent() {
+export default function FrontendNavbar() {
     const navigate = useNavigate();
 
     const goToHome = () => {

@@ -1,7 +1,7 @@
 import {InputGroup, InputGroupAddon, InputGroupInput} from "@/components/ui/input-group";
 import {Search} from "lucide-react";
-import StatCard from "@/components/StatCard";
-import DialogSearch from "@/components/DialogSearch";
+import StatCard from "@/components/card/StatCard";
+import DialogSearch from "@/components/search/DialogSearch";
 import {LayoutResponse} from "@/types/map";
 
 export default function FrontendHeader({info, setShowSearchDialog, showSearchDialog}: {

@@ -50,7 +50,7 @@ export type SingleUtilityResponse = {
     coords: Coords,
 }
 
-export type UtilityForm = {
+export type UtilityFormType = {
     id: string,
     grenade_name: string,
     utility_type_id: string,
@@ -69,7 +69,7 @@ export type UtilityForm = {
 }
 
 export type UtilityFormErrors = {
-    UtilityForm: UtilityForm
+    UtilityForm: UtilityFormType
     errors: Record<string, string[]>
 }
 

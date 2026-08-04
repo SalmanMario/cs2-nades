@@ -1,13 +1,13 @@
 import {createFileRoute, useNavigate} from '@tanstack/react-router'
 import AdminLayout from "@/layouts/AdminLayout";
-import {DataTable} from "@/components/mapsTable/data-table";
-import {utilitiesColumns} from "@/components/mapsTable/utilities-columns";
+import {DataTable} from "@/components/mapsTable/DataTable";
+import {utilitiesColumns} from "@/components/mapsTable/UtilitiesColumns";
 import {Button} from "@/components/ui/button";
 import {useQueryApi} from "@/hooks/use-query";
-import StatCard from "@/components/StatCard";
+import StatCard from "@/components/card/StatCard";
 import {BackendMapOverview} from "@/types/utility";
-import BackendSidebar from "@/components/BackendSidebar";
-import AdminNavbarComponent from "@/components/navbar/AdminNavbarComponent";
+import BackendSidebar from "@/components/sidebar/BackendSidebar";
+import AdminNavbar from "@/components/navbar/AdminNavbar";
 
 export const Route = createFileRoute('/admin/_auth/dashboard/maps/$mapName/')({
     component: RouteComponent
@@ -29,7 +29,7 @@ function RouteComponent() {
     if (isLoading) return <div>Loading...</div>
     return (
         <div>
-            <AdminNavbarComponent/>
+            <AdminNavbar/>
             <div className="flex min-h-screen">
                 <BackendSidebar maps={utilities.maps}/>
 

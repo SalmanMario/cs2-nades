@@ -1,14 +1,14 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {useQueryApi} from "@/hooks/use-query";
-import MapLayoutFrontend from "@/components/MapLayoutFrontend";
-import {useEffect, useRef, useState} from "react";
+import MapLayoutFrontend from "@/components/layout/MapLayoutFrontend";
+import {useEffect, useState} from "react";
 import MapViewLayout from "@/layouts/MapViewLayout";
 import {ExistingCoords} from "@/types/coords";
-import MapSidebar from "@/components/MapSidebar";
+import MapSidebar from "@/components/sidebar/MapSidebar";
 import {MapOverviewResponse} from "@/types/map";
 import {InputGroup, InputGroupAddon, InputGroupInput} from "@/components/ui/input-group";
 import {Search} from "lucide-react";
-import DialogSearch from "@/components/DialogSearch";
+import DialogSearch from "@/components/search/DialogSearch";
 
 export const Route = createFileRoute('/maps/$mapName/')({
     component: RouteComponent,

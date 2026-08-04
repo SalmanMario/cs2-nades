@@ -4,7 +4,7 @@ import {useNavigate} from "@tanstack/react-router";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {Menubar, MenubarContent, MenubarGroup, MenubarItem, MenubarMenu, MenubarTrigger} from "@/components/ui/menubar";
 
-export default function AdminNavbarComponent() {
+export default function AdminNavbar() {
     const {logout} = useAuth();
     const navigate = useNavigate();
 

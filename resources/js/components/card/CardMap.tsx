@@ -1,36 +1,19 @@
 import {Card} from "@/components/ui/card";
-import {useQueryApi} from "@/hooks/use-query";
 import {ArrowRight} from "lucide-react";
-import {MapOverviewResponse} from "@/types/map";
+import {MapResponse} from "@/types/map";
 
-export default function CardMap({onCardClick}: { onCardClick: (mapName: string) => void; }) {
-    const {data: maps, isLoading, error} = useQueryApi<MapOverviewResponse>({
-        queryKey: ["mapsOverview"],
-        method: "GET",
-        url: "/mapsOverview",
-    });
+type CardMapProps = {
+    maps?: MapResponse[];
+    nadeCounts?: NadeCount[];
+    onCardClick: (mapName: string) => void;
+}
 
-    if (isLoading) {
-        return (
-            <div className="py-20 text-center text-zinc-400">
-                Loading maps...
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="py-20 text-center text-red-500">
-                Error: {error.message}
-            </div>
-        );
-    }
-
+export default function CardMap({maps, nadeCounts, onCardClick}: CardMapProps) {
     return (
         <>
             <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                {maps?.maps?.map((map) => {
-                    const mapNades = maps?.nade_count?.find((nc) => nc.map_id === map.id)?.nades ?? [];
+                {maps?.map((map) => {
+                    const mapNades = nadeCounts?.find((nc) => nc.map_id === map.id)?.nades ?? [];
                     return (
                         <Card
                             key={map.id}

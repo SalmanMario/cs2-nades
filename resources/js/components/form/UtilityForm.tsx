@@ -6,11 +6,11 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import AdminLayout from "@/layouts/AdminLayout";
 import {useForm} from "react-hook-form";
-import {SelectForm} from "@/components/select-form";
+import {SelectForm} from "@/components/form/SelectForm";
 import {SelectItem} from "@/components/ui/select";
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 import {Button} from "@/components/ui/button";
-import MapLayoutBackend from "@/components/MapLayoutBackend";
+import MapLayoutBackend from "@/components/layout/MapLayoutBackend";
 import {FilePond, registerPlugin} from 'react-filepond';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
@@ -26,7 +26,7 @@ import {useQueryClient} from "@tanstack/react-query";
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType, FilePondPluginMediaPreview);
 
-export default function UtilityFormComponent({utility = null, mapName}: {
+export default function UtilityForm({utility = null, mapName}: {
     utility: UtilityForm | null,
     mapName: string
 }) {

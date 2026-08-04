@@ -1,9 +1,9 @@
 import {Image, Layer, Line, Stage} from "react-konva";
 import React, {useEffect, useRef, useState} from "react";
 import Konva from "konva";
-import {MarkerMap} from "@/components/MarkerMap";
+import {MarkerMap} from "@/components/marker/MarkerMap";
 import {UtilityCoordinates} from "@/routes/maps/$mapName";
-import AnimatedCircle from "@/components/AnimatedCircle";
+import AnimatedCircle from "@/components/animated/AnimatedCircle";
 import {Legend} from "recharts";
 
 const COORD_SPACE = 1024;

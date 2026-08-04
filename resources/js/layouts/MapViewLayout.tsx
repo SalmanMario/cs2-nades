@@ -1,7 +1,7 @@
 import React from "react";
-import FrontendNavbarComponent from "@/components/navbar/FrontendNavbarComponent";
-import FooterComponent from "@/components/FooterComponent";
-import StatCard from "@/components/StatCard";
+import FrontendNavbar from "@/components/navbar/FrontendNavbar";
+import Footer from "@/components/footer/Footer";
+import StatCard from "@/components/card/StatCard";
 
 type Props = {
     children: React.ReactNode;
@@ -14,7 +14,7 @@ export default function MapViewLayout({children, info, sidebar, rightPanel}: Pro
     return (
         <div className="min-h-screen bg-[#0d0f14] flex flex-col">
 
-            <FrontendNavbarComponent />
+            <FrontendNavbar />
 
             <div className="flex-1">
 
@@ -110,7 +110,7 @@ export default function MapViewLayout({children, info, sidebar, rightPanel}: Pro
 
             </div>
 
-            <FooterComponent />
+            <Footer />
 
         </div>
     );

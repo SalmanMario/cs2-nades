@@ -1,7 +1,7 @@
 import {createFileRoute, redirect} from '@tanstack/react-router'
 import React from "react";
 import AdminLayout from "@/layouts/AdminLayout";
-import {UtilityChart} from "@/components/UtilityChart";
+import {UtilityChart} from "@/components/chart/UtilityChart";
 import {useQueryApi} from "@/hooks/use-query";
 import {UtilityStatsResponse} from "@/types/utility";
 

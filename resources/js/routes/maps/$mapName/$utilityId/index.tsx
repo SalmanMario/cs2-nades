@@ -15,8 +15,8 @@ import {
     Keyboard
 } from "lucide-react";
 import {firstToUpperCase, formatDate} from "@/hooks/helper";
-import FrontendNavbarComponent from "@/components/navbar/FrontendNavbarComponent";
-import FooterComponent from "@/components/FooterComponent";
+import FrontendNavbar from "@/components/navbar/FrontendNavbar";
+import Footer from "@/components/footer/Footer";
 import {SimilarUtilityResponse, SingleUtilityResponse} from "@/types/utility";
 import {Carousel, CarouselContent, CarouselItem} from "@/components/ui/carousel";
 import {Card, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
@@ -96,7 +96,7 @@ function RouteComponent() {
     const toggleVideo = () => setShowVideo(!showVideo);
     return (
         <div className="flex flex-col min-h-screen">
-            <FrontendNavbarComponent/>
+            <FrontendNavbar/>
             <div className="mx-10 flex-1">
                 <div className="flex items-center mb-6">
                     <span onClick={handleGoBack} className="cursor-pointer flex items-center gap-2 me-3">
@@ -301,7 +301,7 @@ function RouteComponent() {
                         )))}
                 </div>
             </div>
-            <FooterComponent/>
+            <Footer/>
         </div>
     )
 }

@@ -30,3 +30,13 @@ export type MapOverviewResponse = {
     utilityCoordinates: UtilityCoordinates[],
     teams: Team[],
 }
+
+export type MapsOverviewResponse = {
+    maps: MapResponse[],
+    maps_count: number,
+    nade_count: NadeCount[],
+    utilities: {
+        nades: Nade[],
+    },
+    utilities_count: number,
+}
