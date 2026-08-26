@@ -12,7 +12,6 @@ use App\Models\StartUtilityCoordinate;
 use App\Models\Utility;
 use App\Models\UtilityCoordinate;
 use App\Services\AttachmentService;
-use Illuminate\Http\Request;
 
 class UtilityController extends Controller
 {
@@ -21,14 +20,6 @@ class UtilityController extends Controller
     public function __construct(AttachmentService $attachmentService)
     {
         $this->attachmentService = $attachmentService;
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -93,25 +84,12 @@ class UtilityController extends Controller
         return response()->json(['message' => 'Utility created successfully'], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $utility = Utility::with(['team', 'utilityCoordinates.utility_type', 'utilityCoordinates.start_utility_coordinates', 'utilityCoordinates.end_utility_coordinates', 'attachments'])->find($id);
         return new UtilityResource($utility);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UtilityRequest $request, string $id)
     {
         $utility = Utility::with(['team', 'utilityCoordinates.utility_type', 'utilityCoordinates.start_utility_coordinates', 'utilityCoordinates.end_utility_coordinates', 'attachments'])->find($id);
@@ -167,13 +145,5 @@ class UtilityController extends Controller
         $attachmentsToDelete->each(fn($attachment) => $attachment->delete());
 
         return response()->json(['message' => 'Utility updated successfully'], 200);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

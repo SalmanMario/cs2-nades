@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ApiAttachmentController;
 use App\Http\Controllers\Api\ApiSearchController;
+use App\Http\Controllers\Api\ApiUtilityController;
 use App\Http\Controllers\Api\ApiUtilsController;
 use App\Http\Controllers\UtilityController;
 use Illuminate\Support\Facades\Route;
@@ -11,10 +12,8 @@ Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])-
 
 Route::get('/getNades', [ApiUtilsController::class, 'getNades'])->name('getNades');
 Route::get('/getTeams', [ApiUtilsController::class, 'getTeams'])->name('getTeams');
-Route::get('/getUtilityStats', [ApiUtilsController::class, 'getUtilityStats'])->name('getUtilityStats');
-Route::post('/getSimilarUtilitiesByCoords/{mapId}', [ApiUtilsController::class, 'getSimilarUtilitiesByCoords'])->name('getSimilarUtilitiesByCoords');
-Route::get('/getUtility/{map}/{id}', [ApiUtilsController::class, 'getUtility'])->name('getUtility');
-Route::get('/getUtilityCoordinates/{mapName}', [ApiUtilsController::class, 'getUtilityCoordinates'])->name('getUtilityCoordinates');
+Route::get('/getUtilityStats', [ApiUtilityController::class, 'getUtilityStats'])->name('getUtilityStats');
+Route::get('/getUtilityCoordinates/{mapName}', [ApiUtilityController::class, 'getUtilityCoordinates'])->name('getUtilityCoordinates');
 Route::get('/search', [ApiSearchController::class, 'search'])->name('search');
 Route::get('/search-by-map', [ApiSearchController::class, 'searchByMap'])->name('searchByMap');
 Route::post('/attachment/upload', [ApiAttachmentController::class, 'store'])->name('attachment.store');
@@ -29,5 +28,7 @@ Route::get('/backend-map-overview/{mapName}', [\App\Http\Controllers\MapControll
 Route::get('/layoutOverview', [\App\Http\Controllers\MapController::class, 'layoutOverview'])->name('layoutOverview');
 
 Route::resource('utilities', UtilityController::class)->except('index');
+Route::get('/getUtility/{map}/{id}', [ApiUtilityController::class, 'getUtility'])->name('getUtility');
+Route::post('/getSimilarUtilitiesByCoords/{mapId}', [ApiUtilityController::class, 'getSimilarUtilitiesByCoords'])->name('getSimilarUtilitiesByCoords');
 
 Route::view('/{any}', 'app')->where('any', '.*');

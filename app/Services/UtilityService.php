@@ -95,6 +95,12 @@ class UtilityService
         return UtilityCoordinateResource::collection($utilityCoordinates);
     }
 
+    public function getUtility($mapId, $utility): ?Utility
+    {
+        return Utility::query()->with(['team', 'utilityCoordinates.start_utility_coordinates', 'utilityCoordinates.end_utility_coordinates', 'attachments'])
+            ->where('map_id', $mapId)->where('id', $utility)->first();
+    }
+
     private function nadesWithCounts($utilityTypes, $counts)
     {
         return $utilityTypes->map(fn ($type) => (object) [
