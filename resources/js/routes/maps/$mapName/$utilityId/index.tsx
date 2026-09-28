@@ -98,7 +98,7 @@ function RouteComponent() {
         <div className="flex flex-col min-h-screen">
             <FrontendNavbar/>
             <div className="mx-10 flex-1">
-                <div className="flex items-center mb-6">
+                <div className="flex items-center mt-5 mb-6">
                     <span onClick={handleGoBack} className="cursor-pointer flex items-center gap-2 me-3">
                         <ArrowLeft/>
                         <span className="text-3xl">{firstToUpperCase(mapName)} {utility.type}: </span>

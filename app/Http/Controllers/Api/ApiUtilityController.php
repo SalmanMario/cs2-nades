@@ -19,7 +19,7 @@ class ApiUtilityController extends Controller
     public function getUtility($map, $utility)
     {
         $mapId = Map::where('name', $map)->first()->id;
-        $utility = $this->utilityService->getUtility($map, $utility);
+        $utility = $this->utilityService->getUtility($mapId, $utility);
         return response()->json([
             'created_at' => $utility->created_at,
             'updated_at' => $utility->updated_at,
