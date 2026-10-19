@@ -43,7 +43,7 @@ export type SingleUtilityResponse = {
     technique:TechniqueEnum,
     image: {
         path: string,
-    }
+    }[],
     key:string,
     created_at: string,
     updated_at: string,

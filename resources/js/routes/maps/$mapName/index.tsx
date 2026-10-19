@@ -1,7 +1,7 @@
 import {createFileRoute} from '@tanstack/react-router'
 import {useQueryApi} from "@/hooks/use-query";
 import MapLayoutFrontend from "@/components/layout/MapLayoutFrontend";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import MapViewLayout from "@/layouts/MapViewLayout";
 import {ExistingCoords} from "@/types/coords";
 import MapSidebar from "@/components/sidebar/MapSidebar";
@@ -9,6 +9,7 @@ import {MapOverviewResponse} from "@/types/map";
 import {InputGroup, InputGroupAddon, InputGroupInput} from "@/components/ui/input-group";
 import {Search} from "lucide-react";
 import DialogSearch from "@/components/search/DialogSearch";
+import UtilityPreviewPanel from "@/components/panel/UtilityPreviewPanel";
 
 export const Route = createFileRoute('/maps/$mapName/')({
     component: RouteComponent,
@@ -34,6 +35,7 @@ function RouteComponent() {
     const [grenadeType, setGrenadeType] = useState("ANY");
     const [teamType, setTeamType] = useState(3);
     const [showSearchDialog, setShowSearchDialog] = useState(false)
+    const [selectedUtilityId, setSelectedUtilityId] = useState<number | null>(null);
 
     const {data: info, isLoading: infoLoading} = useQueryApi<MapOverviewResponse>({
         queryKey:['info', mapName],
@@ -77,37 +79,30 @@ function RouteComponent() {
         }
     }, [info]);
 
+    const filterCoords = (coordinates: UtilityCoordinates[]) => {
+        let filteredCoords;
+        if (!grenadeType) return coordinates;
+
+        grenadeType === "ANY" ? filteredCoords = coordinates : filteredCoords = coordinates.filter((e) => e.type === grenadeType);
+
+        if (teamType === 1) {
+            return filteredCoords.filter((e) => e.team_id === 1);
+        } else if (teamType === 2) {
+            return filteredCoords.filter((e) => e.team_id === 2);
+        } else {
+            return filteredCoords;
+        }
+    }
+
+    // Memoized so the map doesn't reset its active markers on every re-render
+    const filteredEndCoords = useMemo(() => filterCoords(endCoords), [endCoords, grenadeType, teamType]);
+    const filteredStartCoords = useMemo(() => filterCoords(startCoords), [startCoords, grenadeType, teamType]);
+
+    useEffect(() => {
+        setSelectedUtilityId(null);
+    }, [grenadeType, teamType, mapName]);
+
     if (infoLoading) return <div>Loading...</div>;
-
-    const filterEndCoords = (endCoordinates: UtilityCoordinates[]) => {
-        let filteredCoords;
-        if (!grenadeType) return endCoordinates;
-
-        grenadeType === "ANY" ? filteredCoords = endCoordinates : filteredCoords = endCoordinates.filter((e) => e.type === grenadeType);
-
-        if (teamType === 1) {
-            return filteredCoords.filter((e) => e.team_id === 1);
-        } else if (teamType === 2) {
-            return filteredCoords.filter((e) => e.team_id === 2);
-        } else {
-            return filteredCoords;
-        }
-    }
-
-    const filterStartCoords = (startCoordinates: UtilityCoordinates[]) => {
-        let filteredCoords;
-        if (!grenadeType) return startCoordinates;
-
-        grenadeType === "ANY" ? filteredCoords = startCoordinates : filteredCoords = startCoordinates.filter((e) => e.type === grenadeType);
-
-        if (teamType === 1) {
-            return filteredCoords.filter((e) => e.team_id === 1);
-        } else if (teamType === 2) {
-            return filteredCoords.filter((e) => e.team_id === 2);
-        } else {
-            return filteredCoords;
-        }
-    }
 
     return (
         <MapViewLayout
@@ -143,21 +138,33 @@ function RouteComponent() {
                         </InputGroup>
                     </div>
 
-                    <h3 className="text-lg font-semibold text-white">
-                        Select a lineup
-                    </h3>
+                    {selectedUtilityId !== null ? (
+                        <UtilityPreviewPanel
+                            mapName={mapName}
+                            utilityId={selectedUtilityId}
+                            onClose={() => setSelectedUtilityId(null)}
+                        />
+                    ) : (
+                        <>
+                            <h3 className="text-lg font-semibold text-white">
+                                Select a lineup
+                            </h3>
 
-                    <p className="mt-2 text-zinc-400">
-                        Click a marker on the map to see its details.
-                    </p>
+                            <p className="mt-2 text-zinc-400">
+                                Click a marker on the map to see its details.
+                            </p>
+                        </>
+                    )}
                 </div>
             }
         >
             <MapLayoutFrontend
                 mapImage={info?.map?.map_no_callouts}
-                endCoordinates={filterEndCoords(endCoords)}
-                startCoordinates={filterStartCoords(startCoords)}
+                endCoordinates={filteredEndCoords}
+                startCoordinates={filteredStartCoords}
                 teamType={teamType}
+                selectedUtilityId={selectedUtilityId}
+                onSelectUtility={setSelectedUtilityId}
             />
 
             <DialogSearch setShowSearchDialog={setShowSearchDialog} showSearchDialog={showSearchDialog} url="/search-by-map" params={{map: mapName}}/>

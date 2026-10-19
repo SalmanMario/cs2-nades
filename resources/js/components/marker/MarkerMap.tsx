@@ -8,7 +8,7 @@ type MarkerProps = {
     end: UtilityCoordinates,
 }
 
-export function MarkerMap({props} : {props: MarkerProps}) {
+export function MarkerMap({props, isSelected} : {props: MarkerProps, isSelected: boolean, onSelect: (utilityId: number) => void}) {
     const [image, setImage] = useState<HTMLImageElement | undefined>();
     const [isHovered, setIsHovered] = useState<boolean>(false);
     const {mapName} = Route.useParams();
@@ -39,8 +39,10 @@ export function MarkerMap({props} : {props: MarkerProps}) {
             }}
             width={50}
             height={50}
-            scaleX={isHovered ? 1.25 : 1}
-            scaleY={isHovered ? 1.25 : 1}
+            scaleX={isHovered || isSelected ? 1.25 : 1}
+            scaleY={isHovered || isSelected ? 1.25 : 1}
+            shadowColor="#f97316"
+            shadowBlur={isSelected ? 25 : 0}
             offsetX={25}
             offsetY={25}
             onClick={() => {

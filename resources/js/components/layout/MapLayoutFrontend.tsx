@@ -13,7 +13,16 @@ type ActiveCircle = {
     end: UtilityCoordinates;
 };
 
-export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordinates, teamType}: {mapImage: string, endCoordinates: UtilityCoordinates[], startCoordinates: UtilityCoordinates[], teamType: number}) {
+type Props = {
+    mapImage: string,
+    endCoordinates: UtilityCoordinates[],
+    startCoordinates: UtilityCoordinates[],
+    teamType: number,
+    selectedUtilityId: number | null,
+    onSelectUtility: (utilityId: number | null) => void,
+}
+
+export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordinates, teamType, selectedUtilityId, onSelectUtility}: Props) {
     const [activeCircles, setActiveCircles] = useState<ActiveCircle[]>([]);
     const [activeEndId, setActiveEndId] = useState<number | null>(null);
     const [img, setImg] = useState<HTMLImageElement | null>(null);
@@ -68,6 +77,8 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
             );
             setActiveEndId(endCoor.end_utility_id);
             setActiveCircles(matchingStarts.map((start: UtilityCoordinates) => ({ start, end: endCoor })));
+            // Only one lineup lands here: preview it straight away
+            onSelectUtility(matchingStarts.length === 1 ? matchingStarts[0].utility_id : null);
         };
     }
 
@@ -75,6 +86,7 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
         if (event.target.className === "Image") {
             setActiveCircles([]);
             setActiveEndId(null);
+            onSelectUtility(null);
         }
     }
 
@@ -131,6 +143,8 @@ export default function MapLayoutFrontend({mapImage, endCoordinates, startCoordi
                             <MarkerMap
                                 props={props}
                                 key={index}
+                                isSelected={props.start.utility_id === selectedUtilityId}
+                                onSelect={onSelectUtility}
                             />
                         ))}
 
