@@ -5,6 +5,7 @@ import {SingleUtilityResponse} from "@/types/utility";
 import {Button} from "@/components/ui/button";
 import {Skeleton} from "@/components/ui/skeleton";
 import {firstToUpperCase} from "@/hooks/helper";
+import FavoriteButton from "@/components/button/FavoriteButton";
 
 type Props = {
     mapName: string;
@@ -62,13 +63,16 @@ export default function UtilityPreviewPanel({mapName, utilityId, onClose}: Props
                         {utility.title}
                     </h3>
                 </div>
-                <button
-                    onClick={onClose}
-                    className="cursor-pointer rounded-lg p-1 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
-                    aria-label="Close preview"
-                >
-                    <X className="h-5 w-5"/>
-                </button>
+                <div className="flex items-center gap-1">
+                    <FavoriteButton utilityId={utilityId}/>
+                    <button
+                        onClick={onClose}
+                        className="cursor-pointer rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+                        aria-label="Close preview"
+                    >
+                        <X className="h-5 w-5"/>
+                    </button>
+                </div>
             </div>
 
             <div className="aspect-video w-full overflow-hidden rounded-xl border border-zinc-800 bg-black">

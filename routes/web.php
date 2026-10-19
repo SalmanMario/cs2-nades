@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ApiAttachmentController;
+use App\Http\Controllers\Api\ApiFavoriteUtilityController;
 use App\Http\Controllers\Api\ApiSearchController;
 use App\Http\Controllers\Api\ApiUtilityController;
 use App\Http\Controllers\Api\ApiUtilsController;
@@ -18,6 +19,13 @@ Route::middleware('admin')->group(function () {
     Route::get('/attachment/{attachment}', [ApiAttachmentController::class, 'show'])->name('attachment.show');
     Route::get('/backend-map-overview/{mapName}', [\App\Http\Controllers\MapController::class, 'backendMapOverview'])->name('backendMapOverview');
     Route::resource('utilities', UtilityController::class)->except('index');
+});
+
+// Any logged-in user (ADMIN or GUEST)
+Route::middleware('auth')->group(function () {
+    Route::get('/favorites', [ApiFavoriteUtilityController::class, 'index'])->name('favorites.index');
+    Route::get('/favorites/ids', [ApiFavoriteUtilityController::class, 'ids'])->name('favorites.ids');
+    Route::post('/favorites/{utility}', [ApiFavoriteUtilityController::class, 'toggle'])->name('favorites.toggle');
 });
 
 Route::get('/getNades', [ApiUtilsController::class, 'getNades'])->name('getNades');

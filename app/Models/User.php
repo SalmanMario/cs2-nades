@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enum\RoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -52,5 +53,10 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->role === RoleEnum::ADMIN;
+    }
+
+    public function favoriteUtilities(): BelongsToMany
+    {
+        return $this->belongsToMany(Utility::class, 'favorite_utilities')->withTimestamps();
     }
 }

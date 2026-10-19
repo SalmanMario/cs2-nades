@@ -20,6 +20,7 @@ import Footer from "@/components/footer/Footer";
 import {SimilarUtilityResponse, SingleUtilityResponse} from "@/types/utility";
 import {Carousel, CarouselContent, CarouselItem} from "@/components/ui/carousel";
 import {Card, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+import FavoriteButton from "@/components/button/FavoriteButton";
 
 export const Route = createFileRoute('/maps/$mapName/$utilityId/')({
     component: RouteComponent,
@@ -104,6 +105,7 @@ function RouteComponent() {
                         <span className="text-3xl">{firstToUpperCase(mapName)} {utility.type}: </span>
                     </span>
                     <h1 className="text-3xl">{utility.title}</h1>
+                    <FavoriteButton utilityId={Number(utilityId)} className="ms-3 [&_svg]:h-7 [&_svg]:w-7"/>
                 </div>
                 <div className="grid grid-cols-12 gap-5 items-start">
                     <div className="col-span-9">
