@@ -10,9 +10,9 @@ export const Route = createFileRoute('/admin/login')({
     component: RouteComponent,
     beforeLoad: async ({context}) => {
         const auth: AuthContext = (context as { auth: AuthContext }).auth;
-        const user: Login = auth.user ?? (await auth.loadUser());
+        const user: User | null = auth.user ?? (await auth.loadUser());
 
-        if (user) {
+        if (user?.role === "ADMIN") {
             throw redirect({to: "/admin/dashboard"});
         }
 

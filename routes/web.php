@@ -10,24 +10,28 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
 Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
 
+// Backend only: ADMIN users
+Route::middleware('admin')->group(function () {
+    Route::get('/getUtilityStats', [ApiUtilityController::class, 'getUtilityStats'])->name('getUtilityStats');
+    Route::post('/attachment/upload', [ApiAttachmentController::class, 'store'])->name('attachment.store');
+    Route::post('/attachment/reorder', [ApiAttachmentController::class, 'reorder'])->name('attachment.reorder');
+    Route::get('/attachment/{attachment}', [ApiAttachmentController::class, 'show'])->name('attachment.show');
+    Route::get('/backend-map-overview/{mapName}', [\App\Http\Controllers\MapController::class, 'backendMapOverview'])->name('backendMapOverview');
+    Route::resource('utilities', UtilityController::class)->except('index');
+});
+
 Route::get('/getNades', [ApiUtilsController::class, 'getNades'])->name('getNades');
 Route::get('/getTeams', [ApiUtilsController::class, 'getTeams'])->name('getTeams');
-Route::get('/getUtilityStats', [ApiUtilityController::class, 'getUtilityStats'])->name('getUtilityStats');
 Route::get('/getUtilityCoordinates/{mapName}', [ApiUtilityController::class, 'getUtilityCoordinates'])->name('getUtilityCoordinates');
 Route::get('/search', [ApiSearchController::class, 'search'])->name('search');
 Route::get('/search-by-map', [ApiSearchController::class, 'searchByMap'])->name('searchByMap');
-Route::post('/attachment/upload', [ApiAttachmentController::class, 'store'])->name('attachment.store');
-Route::post('/attachment/reorder', [ApiAttachmentController::class, 'reorder'])->name('attachment.reorder');
-Route::get('/attachment/{attachment}', [ApiAttachmentController::class, 'show'])->name('attachment.show');
 
 Route::get('/getMap/{map}', [\App\Http\Controllers\MapController::class, 'getMap'])->name('getMap');
 Route::get('/getMaps', [\App\Http\Controllers\MapController::class, 'maps'])->name('getMaps');
 Route::get('/mapsOverview', [\App\Http\Controllers\MapController::class, 'mapsOverview'])->name('mapsOverview');
 Route::get('/mapOverview', [\App\Http\Controllers\MapController::class, 'mapOverview'])->name('mapOverview');
-Route::get('/backend-map-overview/{mapName}', [\App\Http\Controllers\MapController::class, 'backendMapOverview'])->name('backendMapOverview');
 Route::get('/layoutOverview', [\App\Http\Controllers\MapController::class, 'layoutOverview'])->name('layoutOverview');
 
-Route::resource('utilities', UtilityController::class)->except('index');
 Route::get('/getUtility/{map}/{id}', [ApiUtilityController::class, 'getUtility'])->name('getUtility');
 Route::post('/getSimilarUtilitiesByCoords/{mapId}', [ApiUtilityController::class, 'getSimilarUtilitiesByCoords'])->name('getSimilarUtilitiesByCoords');
 

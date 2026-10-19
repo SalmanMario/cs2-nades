@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enum\RoleEnum;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,6 +20,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'CS2 Nades',
             'email' => 'cs2-nades@gmail.com',
             'password' => bcrypt('password'),
+            'role' => RoleEnum::ADMIN,
         ]);
 
         $this->call(MapSeeder::class);
