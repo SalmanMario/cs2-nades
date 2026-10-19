@@ -39,6 +39,8 @@ export default function CardMap({maps, nadeCounts, onCardClick}: CardMapProps) {
                             {/* Background */}
                             <img
                                 src={map.map_card_image}
+                                loading="lazy"
+                                decoding="async"
                                 alt={map.name}
                                 className="
                                absolute

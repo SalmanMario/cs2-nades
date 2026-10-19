@@ -98,3 +98,20 @@ type Attachment = {
     path: string,
     filename: string,
 }
+
+export type FavoriteUtilityResponse = {
+    id: number,
+    title: string,
+    grenade_name: string,
+    utility_type: UtilityEnum,
+    utility_image: string,
+    team: TeamEnum,
+    team_image: string,
+    map_name: string,
+    map_image: string,
+    technique: TechniqueEnum,
+    movement: MovementEnum,
+    image: string | null,
+    video: string | null,
+    favorited_at: string,
+}

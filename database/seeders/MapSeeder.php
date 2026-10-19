@@ -58,7 +58,7 @@ class MapSeeder extends Seeder
                 'image' => '/storage/images/maps-img/'.$map.'.png',
                 'map_callouts' => '/storage/images/maps-callouts-img/'.$map.'_callouts.png',
                 'map_no_callouts' => '/storage/images/maps-callouts-img/'.$map.'_no_callouts.png',
-                'map_card_image' => '/storage/images/maps-card-img/'.$map.'_card_image.png',
+                'map_card_image' => '/storage/images/maps-card-img/'.strtolower($map).'_card_image.webp',
             ]);
         }
     }
