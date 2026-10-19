@@ -1,4 +1,5 @@
 import {createFileRoute, redirect, useNavigate} from '@tanstack/react-router'
+import {pageTitle} from "@/hooks/helper";
 import {Input} from "@/components/ui/input";
 import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {Label} from "@/components/ui/label";
@@ -7,6 +8,7 @@ import React from "react";
 import {useAuth} from "@/AuthContext";
 
 export const Route = createFileRoute('/admin/login')({
+    head: () => ({meta: [{title: pageTitle("Login", true)}]}),
     component: RouteComponent,
     beforeLoad: async ({context}) => {
         const auth: AuthContext = (context as { auth: AuthContext }).auth;

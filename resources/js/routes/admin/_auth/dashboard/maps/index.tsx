@@ -1,4 +1,5 @@
 import {createFileRoute, useNavigate} from '@tanstack/react-router'
+import {pageTitle} from "@/hooks/helper";
 import CardMap from "@/components/card/CardMap";
 import React from "react";
 import AdminNavbar from "@/components/navbar/AdminNavbar";
@@ -8,6 +9,7 @@ import {useQueryApi} from "@/hooks/use-query";
 import {MapsOverviewResponse} from "@/types/map";
 
 export const Route = createFileRoute('/admin/_auth/dashboard/maps/')({
+    head: () => ({meta: [{title: pageTitle("Maps", true)}]}),
     component: RouteComponent,
 })
 

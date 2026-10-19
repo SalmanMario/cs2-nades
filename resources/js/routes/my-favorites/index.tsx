@@ -12,8 +12,12 @@ import {InputGroup, InputGroupAddon, InputGroupInput} from "@/components/ui/inpu
 import {Skeleton} from "@/components/ui/skeleton";
 import {Button} from "@/components/ui/button";
 import {FavoriteUtilityResponse} from "@/types/utility";
+import {pageTitle} from "@/hooks/helper";
 
 export const Route = createFileRoute('/my-favorites/')({
+    head: () => ({
+        meta: [{title: pageTitle("My Favorites")}],
+    }),
     component: RouteComponent,
 })
 

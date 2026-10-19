@@ -14,7 +14,8 @@ import {
     ArrowLeft,
     Keyboard
 } from "lucide-react";
-import {firstToUpperCase, formatDate} from "@/hooks/helper";
+import {firstToUpperCase, formatDate, pageTitle} from "@/hooks/helper";
+import {QueryClient} from "@tanstack/react-query";
 import FrontendNavbar from "@/components/navbar/FrontendNavbar";
 import Footer from "@/components/footer/Footer";
 import {SimilarUtilityResponse, SingleUtilityResponse} from "@/types/utility";
@@ -23,6 +24,29 @@ import {Card, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import FavoriteButton from "@/components/button/FavoriteButton";
 
 export const Route = createFileRoute('/maps/$mapName/$utilityId/')({
+    // Fills the same cache entry the component reads, so the title is known before render
+    loader: async ({context, params}) => {
+        const {queryClient} = context as { queryClient: QueryClient };
+        try {
+            return await queryClient.ensureQueryData<SingleUtilityResponse>({
+                queryKey: ['utility', params.utilityId],
+                queryFn: async () => {
+                    const response = await fetch(`/getUtility/${params.mapName}/${params.utilityId}`);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                },
+            });
+        } catch {
+            return null;
+        }
+    },
+    head: ({params, loaderData}) => ({
+        meta: [{
+            title: pageTitle(loaderData
+                ? `${loaderData.title} - ${firstToUpperCase(params.mapName)} ${firstToUpperCase(loaderData.type.toLowerCase())}`
+                : `${firstToUpperCase(params.mapName)} Lineup`),
+        }],
+    }),
     component: RouteComponent,
 })
 

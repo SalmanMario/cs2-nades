@@ -3,8 +3,12 @@ import CardMap from "@/components/card/CardMap";
 import FrontendLayout from "@/layouts/FrontendLayout";
 import {useQueryApi} from "@/hooks/use-query";
 import {MapsOverviewResponse} from "@/types/map";
+import {pageTitle} from "@/hooks/helper";
 
 export const Route = createFileRoute('/')({
+    head: () => ({
+        meta: [{title: pageTitle("Smoke, Flash & Molotov Lineups")}],
+    }),
     component: Index,
 })
 

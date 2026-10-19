@@ -14,3 +14,8 @@ export function formatDate(dateString: string) {
 export function firstToUpperCase(s: string) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
+
+export function pageTitle(title?: string, admin = false) {
+    const site = admin ? "CS2 Nades Admin" : "CS2 Nades";
+    return title ? `${title} | ${site}` : site;
+}

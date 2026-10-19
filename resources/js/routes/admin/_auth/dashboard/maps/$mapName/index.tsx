@@ -1,4 +1,5 @@
 import {createFileRoute, useNavigate} from '@tanstack/react-router'
+import {firstToUpperCase, pageTitle} from "@/hooks/helper";
 import AdminLayout from "@/layouts/AdminLayout";
 import {DataTable} from "@/components/mapsTable/DataTable";
 import {utilitiesColumns} from "@/components/mapsTable/UtilitiesColumns";
@@ -10,6 +11,7 @@ import BackendSidebar from "@/components/sidebar/BackendSidebar";
 import AdminNavbar from "@/components/navbar/AdminNavbar";
 
 export const Route = createFileRoute('/admin/_auth/dashboard/maps/$mapName/')({
+    head: ({params}) => ({meta: [{title: pageTitle(`${firstToUpperCase(params.mapName)} Lineups`, true)}]}),
     component: RouteComponent
 })
 

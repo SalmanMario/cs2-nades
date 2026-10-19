@@ -10,8 +10,12 @@ import {InputGroup, InputGroupAddon, InputGroupInput} from "@/components/ui/inpu
 import {Search} from "lucide-react";
 import DialogSearch from "@/components/search/DialogSearch";
 import UtilityPreviewPanel from "@/components/panel/UtilityPreviewPanel";
+import {firstToUpperCase, pageTitle} from "@/hooks/helper";
 
 export const Route = createFileRoute('/maps/$mapName/')({
+    head: ({params}) => ({
+        meta: [{title: pageTitle(`${firstToUpperCase(params.mapName)} Lineups`)}],
+    }),
     component: RouteComponent,
 })
 
