@@ -3,6 +3,7 @@ import {Footprints, LightbulbIcon, Play, Star} from "lucide-react";
 import UtilityBadge from "@/components/badge/UtilityBadge";
 import {UtilityCardResponse} from "@/types/utility";
 import FavoriteButton from "@/components/button/FavoriteButton";
+import CopyLinkButton from "@/components/button/CopyLinkButton";
 import {firstToUpperCase} from "@/hooks/helper";
 
 function formatEnum(value?: string) {
@@ -63,7 +64,9 @@ export default function UtilityCard({utility, onClick}: Props) {
                     {formatEnum(utility.utility_type)}
                 </div>
 
-                <div className="absolute right-2 top-2 rounded-lg bg-black/70 backdrop-blur" onClick={(e) => e.stopPropagation()}>
+                {/* stopPropagation: these buttons shouldn't open the lineup */}
+                <div className="absolute right-2 top-2 flex items-center rounded-lg bg-black/70 backdrop-blur" onClick={(e) => e.stopPropagation()}>
+                    <CopyLinkButton mapName={utility.map_name} utilityId={utility.id}/>
                     <FavoriteButton utilityId={utility.id}/>
                 </div>
 

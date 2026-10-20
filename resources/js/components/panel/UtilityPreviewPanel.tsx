@@ -7,6 +7,7 @@ import {Skeleton} from "@/components/ui/skeleton";
 import {firstToUpperCase} from "@/hooks/helper";
 import FavoriteButton from "@/components/button/FavoriteButton";
 import UtilityBadge from "@/components/badge/UtilityBadge";
+import CopyLinkButton from "@/components/button/CopyLinkButton";
 
 type Props = {
     mapName: string;
@@ -69,6 +70,7 @@ export default function UtilityPreviewPanel({mapName, utilityId, onClose}: Props
                     </h3>
                 </div>
                 <div className="flex items-center gap-1">
+                    <CopyLinkButton mapName={mapName} utilityId={utilityId}/>
                     <FavoriteButton utilityId={utilityId}/>
                     <button
                         onClick={onClose}

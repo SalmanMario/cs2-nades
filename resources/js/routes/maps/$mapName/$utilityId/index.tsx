@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import ReportUtilityButton from "@/components/button/ReportUtilityButton";
 import UtilityBadge from "@/components/badge/UtilityBadge";
+import CopyLinkButton from "@/components/button/CopyLinkButton";
 import {firstToUpperCase, formatDate, pageTitle} from "@/hooks/helper";
 import {QueryClient} from "@tanstack/react-query";
 import FrontendNavbar from "@/components/navbar/FrontendNavbar";
@@ -135,7 +136,10 @@ function RouteComponent() {
                     <h1 className="text-xl md:text-3xl">{utility.title}</h1>
                     <UtilityBadge isFlagged={utility.is_flagged} freshness={utility.freshness} className="ms-3"/>
                     <FavoriteButton utilityId={Number(utilityId)} className="ms-3 [&_svg]:h-7 [&_svg]:w-7"/>
-                    <ReportUtilityButton utilityId={Number(utilityId)} reportedByMe={utility.reported_by_me} className="ms-auto"/>
+                    <div className="ms-auto flex items-center gap-2">
+                        <CopyLinkButton mapName={mapName} utilityId={Number(utilityId)} showLabel/>
+                        <ReportUtilityButton utilityId={Number(utilityId)} reportedByMe={utility.reported_by_me}/>
+                    </div>
                 </div>
                 {utility.is_flagged && (
                     <div className="mb-6 flex items-center gap-3 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-300">
