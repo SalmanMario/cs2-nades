@@ -20,6 +20,7 @@ class ApiFavoriteUtilityController extends Controller
                 'utilityCoordinates.start_utility_coordinates',
                 'utilityCoordinates.end_utility_coordinates',
             ])
+            ->withCount('favoritedBy')
             ->latest('favorite_utilities.created_at')
             ->get();
 

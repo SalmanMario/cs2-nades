@@ -45,6 +45,8 @@ export default function FavoriteButton({utilityId, className}: {utilityId: numbe
                 return data.is_favorite ? [...withoutUtility, data.utility_id] : withoutUtility;
             });
             queryClient.invalidateQueries({queryKey: ['favorites'], exact: true});
+            // refreshes the "saved by" count on the popular page
+            queryClient.invalidateQueries({queryKey: ['popularUtilities']});
         },
     });
 
