@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MyFavoritesIndexRouteImport } from './routes/my-favorites/index'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
@@ -21,6 +23,16 @@ import { Route as AdminAuthDashboardMapsMapNameIndexRouteImport } from './routes
 import { Route as AdminAuthDashboardMapsMapNameCreateRouteImport } from './routes/admin/_auth/dashboard/maps/$mapName/create'
 import { Route as AdminAuthDashboardMapsMapNameIdEditRouteImport } from './routes/admin/_auth/dashboard/maps/$mapName/$id/edit'
 
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -84,6 +96,8 @@ const AdminAuthDashboardMapsMapNameIdEditRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/admin': typeof AdminAuthRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/my-favorites/': typeof MyFavoritesIndexRoute
@@ -97,6 +111,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/admin': typeof AdminAuthRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/my-favorites': typeof MyFavoritesIndexRoute
@@ -111,6 +127,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/admin/_auth': typeof AdminAuthRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/my-favorites/': typeof MyFavoritesIndexRoute
@@ -126,6 +144,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
+    | '/register'
     | '/admin'
     | '/admin/login'
     | '/my-favorites/'
@@ -139,6 +159,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
+    | '/register'
     | '/admin'
     | '/admin/login'
     | '/my-favorites'
@@ -152,6 +174,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/login'
+    | '/register'
     | '/admin/_auth'
     | '/admin/login'
     | '/my-favorites/'
@@ -166,6 +190,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
   AdminAuthRoute: typeof AdminAuthRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
   MyFavoritesIndexRoute: typeof MyFavoritesIndexRoute
@@ -175,6 +201,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -280,6 +320,8 @@ const AdminAuthRouteWithChildren = AdminAuthRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
   AdminAuthRoute: AdminAuthRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
   MyFavoritesIndexRoute: MyFavoritesIndexRoute,

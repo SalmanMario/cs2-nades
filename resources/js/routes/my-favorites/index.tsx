@@ -122,6 +122,7 @@ function RouteComponent() {
                 <EmptyState
                     title="Log in to see your favorites"
                     text="Save lineups with the star button and find them all here."
+                    action={<Button onClick={() => navigate({to: "/login"})} className="mt-6 rounded-xl bg-orange-500 text-black hover:bg-orange-400">Login</Button>}
                 />
             );
         }

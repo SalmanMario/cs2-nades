@@ -2,17 +2,22 @@ import {Menubar, MenubarMenu} from "@/components/ui/menubar";
 import React from "react";
 import {useNavigate} from "@tanstack/react-router";
 import {Button} from "@/components/ui/button";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Avatar, AvatarFallback} from "@/components/ui/avatar";
+import {initials} from "@/hooks/helper";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuGroup,
+    DropdownMenuItem,
     DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import {useAuth} from "@/AuthContext";
 
 export default function FrontendNavbar() {
     const navigate = useNavigate();
+    const {user, logout} = useAuth();
 
     const goToHome = () => {
         navigate({to: "/"}).then();
@@ -38,21 +43,45 @@ export default function FrontendNavbar() {
                         <div>
                             <Button onClick={() => navigate({to: "/my-favorites"})}>My Favorites</Button>
                         </div>
-                        <div>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger className="rounded-full">
-                                    <Avatar className="cursor-pointer">
-                                        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" className="grayscale" />
-                                        <AvatarFallback>CS</AvatarFallback>
-                                    </Avatar>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent>
-                                    <DropdownMenuGroup>
-                                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                    </DropdownMenuGroup>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
+                        {user ? (
+                            <div>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger className="rounded-full">
+                                        <Avatar className="cursor-pointer">
+                                            <AvatarFallback className="bg-orange-500 font-semibold text-black">
+                                                {initials(user.name)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                        <DropdownMenuGroup>
+                                            <DropdownMenuLabel>
+                                                <div>{user.name}</div>
+                                                <div className="text-xs font-normal text-zinc-400">{user.email}</div>
+                                            </DropdownMenuLabel>
+                                        </DropdownMenuGroup>
+                                        <DropdownMenuSeparator/>
+                                        <DropdownMenuGroup>
+                                            <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+                                            {user.role === "ADMIN" && (
+                                                <DropdownMenuItem className="cursor-pointer" onClick={() => navigate({to: "/admin/dashboard"})}>
+                                                    Admin dashboard
+                                                </DropdownMenuItem>
+                                            )}
+                                            <DropdownMenuItem className="cursor-pointer" onClick={() => logout()}>Logout</DropdownMenuItem>
+                                        </DropdownMenuGroup>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-3">
+                                <Button variant="outline" onClick={() => navigate({to: "/login"})}>Login</Button>
+                                <Button onClick={() => navigate({to: "/register"})}
+                                        className="bg-orange-500 text-black hover:bg-orange-400">
+                                    Register
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 </MenubarMenu>
             </Menubar>

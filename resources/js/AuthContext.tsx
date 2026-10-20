@@ -1,10 +1,10 @@
-import React, {createContext, useContext, useState} from "react";
+import React, {createContext, useContext, useEffect, useState} from "react";
 import api from "@/lib/api";
 
 const AuthContext = createContext<AuthContext | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<User | null>(null);
 
     const loadUser = async () => {
         try {
@@ -17,20 +17,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
+    useEffect(() => {
+        loadUser().then();
+    }, []);
+
     const login = async (data: Login) => {
         await api.get("/sanctum/csrf-cookie");
         await api.post("/login", data);
         return await loadUser();
     };
 
+    const register = async (data: Register) => {
+        await api.get("/sanctum/csrf-cookie");
+        await api.post("/register", data);
+        return await loadUser();
+    };
+
     const logout = async () => {
         await api.post("/logout");
+        const wasAdmin = user?.role === "ADMIN";
         setUser(null);
-        window.location.href = "/admin/login";
+        window.location.href = wasAdmin ? "/admin/login" : "/";
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loadUser}}>
+        <AuthContext.Provider value={{ user, login, register, logout, loadUser}}>
             {children}
         </AuthContext.Provider>
     );
