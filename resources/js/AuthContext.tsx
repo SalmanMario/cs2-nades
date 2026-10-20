@@ -35,9 +35,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const logout = async () => {
         await api.post("/logout");
-        const wasAdmin = user?.role === "ADMIN";
         setUser(null);
-        window.location.href = wasAdmin ? "/admin/login" : "/";
+        window.location.href = "/";
     };
 
     return (

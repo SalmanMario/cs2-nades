@@ -1,4 +1,4 @@
-import {createFileRoute, Link, redirect, useNavigate} from '@tanstack/react-router'
+import {createFileRoute, Link, redirect, useRouter} from '@tanstack/react-router'
 import React from "react";
 import {useForm} from "react-hook-form";
 import {useQueryClient} from "@tanstack/react-query";
@@ -9,14 +9,24 @@ import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 
+type LoginSearch = {
+    redirect?: string,
+}
+
 export const Route = createFileRoute('/login')({
     head: () => ({meta: [{title: pageTitle("Login")}]}),
-    beforeLoad: async ({context}) => {
+    validateSearch: (search: Record<string, unknown>): LoginSearch => ({
+        // only paths inside the app, so the link can't send users to another site
+        redirect: typeof search.redirect === "string" && search.redirect.startsWith("/") && !search.redirect.startsWith("//")
+            ? search.redirect
+            : undefined,
+    }),
+    beforeLoad: async ({context, search}) => {
         const auth: AuthContext = (context as { auth: AuthContext }).auth;
         const user: User | null = auth.user ?? (await auth.loadUser());
 
         if (user) {
-            throw redirect({to: "/"});
+            throw redirect({href: search.redirect ?? "/"});
         }
     },
     component: RouteComponent,
@@ -24,8 +34,9 @@ export const Route = createFileRoute('/login')({
 
 function RouteComponent() {
     const {login} = useAuth();
-    const navigate = useNavigate();
+    const router = useRouter();
     const queryClient = useQueryClient();
+    const {redirect: redirectTo} = Route.useSearch();
 
     const {
         register,
@@ -45,7 +56,7 @@ function RouteComponent() {
             await login(data);
             // favorites were cached as "not logged in"
             await queryClient.invalidateQueries({queryKey: ['favorites']});
-            await navigate({to: "/"});
+            router.history.push(redirectTo ?? "/");
         } catch (error) {
             setError("root", {message: parseAuthError(error).message});
         }
