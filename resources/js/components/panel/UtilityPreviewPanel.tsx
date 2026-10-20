@@ -1,5 +1,5 @@
 import {useNavigate} from "@tanstack/react-router";
-import {ArrowRight, Footprints, Keyboard, LightbulbIcon, X} from "lucide-react";
+import {ArrowRight, Footprints, Keyboard, LightbulbIcon, NotebookPen, X} from "lucide-react";
 import {useQueryApi} from "@/hooks/use-query";
 import {SingleUtilityResponse} from "@/types/utility";
 import {Button} from "@/components/ui/button";
@@ -129,6 +129,17 @@ export default function UtilityPreviewPanel({mapName, utilityId, onClose}: Props
                     </div>
                 )}
             </div>
+
+            {utility.notes && (
+                <div className="mt-4 rounded-xl border border-zinc-800 bg-zinc-950/50 p-3 text-sm">
+                    <p className="mb-1 flex items-center gap-2 text-zinc-400">
+                        <NotebookPen className="h-4 w-4"/>
+                        Notes
+                    </p>
+                    {/* full notes are on the lineup page */}
+                    <p className="line-clamp-4 whitespace-pre-line text-zinc-300">{utility.notes}</p>
+                </div>
+            )}
 
             <Button
                 onClick={openUtility}

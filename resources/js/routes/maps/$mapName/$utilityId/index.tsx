@@ -12,7 +12,8 @@ import {
     RotateCwIcon,
     Footprints,
     ArrowLeft,
-    Keyboard
+    Keyboard,
+    NotebookPen
 } from "lucide-react";
 import {firstToUpperCase, formatDate, pageTitle} from "@/hooks/helper";
 import {QueryClient} from "@tanstack/react-query";
@@ -235,6 +236,16 @@ function RouteComponent() {
                                 </div>
                             )}
                         </div>
+
+                        {utility.notes && (
+                            <div className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+                                <h2 className="mb-2 flex items-center gap-2 text-xl font-semibold">
+                                    <NotebookPen className="h-5 w-5 text-orange-400"/>
+                                    Notes
+                                </h2>
+                                <p className="whitespace-pre-line text-zinc-300">{utility.notes}</p>
+                            </div>
+                        )}
                     </div>
 
                     <div className="col-span-3">

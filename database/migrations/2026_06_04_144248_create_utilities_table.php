@@ -23,6 +23,9 @@ return new class extends Migration
             $table->enum('key_type', \App\Enum\KeyEnum::cases())->nullable();
             $table->enum('technique_type', \App\Enum\TechniqueEnum::cases());
             $table->enum('movement_type', \App\Enum\MovementEnum::cases());
+            $table->longText('notes')->nullable();
+            // set only when an admin marks the lineup as updated, unlike updated_at which changes on every save
+            $table->timestamp('content_updated_at')->nullable();
         });
     }
 

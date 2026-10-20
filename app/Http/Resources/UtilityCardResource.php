@@ -34,6 +34,9 @@ class UtilityCardResource extends JsonResource
             // also used for the popular page, where there is no favorites pivot
             'favorited_at' => $this->whenPivotLoaded('favorite_utilities', fn() => $this->pivot->created_at),
             'favorites_count' => $this->whenCounted('favoritedBy'),
+            'freshness' => $this->freshness(),
+            'created_at' => $this->created_at,
+            'content_updated_at' => $this->content_updated_at,
         ];
     }
 }

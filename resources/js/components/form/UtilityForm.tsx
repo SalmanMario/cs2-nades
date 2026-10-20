@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import {useQueryApi} from "@/hooks/use-query";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
 import AdminLayout from "@/layouts/AdminLayout";
 import {useForm} from "react-hook-form";
 import {SelectForm} from "@/components/form/SelectForm";
@@ -59,6 +60,7 @@ export default function UtilityForm({utility = null, mapName}: {
             technique_type: undefined,
             movement_type: undefined,
             key_type: undefined,
+            notes: "",
             is_popular: false,
         }
     });
@@ -85,7 +87,9 @@ export default function UtilityForm({utility = null, mapName}: {
             technique_type: utility.technique_type,
             key_type: utility.key_type,
             movement_type: utility.movement_type,
+            notes: utility.notes || null,
             is_popular: utility.is_popular,
+            mark_as_updated: utility.mark_as_updated,
             start_coords: {
                 x: utility.start_coords.x,
                 y: utility.start_coords.y,
@@ -118,6 +122,7 @@ export default function UtilityForm({utility = null, mapName}: {
             onSuccess: () => {
                 queryClient.invalidateQueries({queryKey: ['utility', String(utility.id)]});
                 queryClient.invalidateQueries({queryKey: ['popularUtilities']});
+                queryClient.invalidateQueries({queryKey: ['latestUtilities']});
                 reset();
                 navigate({
                     to: "/admin/dashboard/maps/$mapName",
@@ -144,6 +149,8 @@ export default function UtilityForm({utility = null, mapName}: {
                 movement_type: utility.movement_type ?? "",
                 title_from: utility.start_coords.title ?? "",
                 title_to: utility.end_coords.title ?? "",
+                notes: utility.notes ?? "",
+                mark_as_updated: false,
                 image_lineup: [],
                 video_lineup: [],
             })
@@ -333,6 +340,19 @@ export default function UtilityForm({utility = null, mapName}: {
                         {errors.is_popular &&
                             <p className="text-red-500 text-sm mt-1">{errors.is_popular.message}</p>}
                     </div>
+
+                    {utility && (
+                        <div>
+                            <Label htmlFor="mark_as_updated">Updated</Label>
+                            <label htmlFor="mark_as_updated" className="mt-2 flex h-9 cursor-pointer items-center gap-2 text-sm">
+                                <input id="mark_as_updated" type="checkbox" className="h-4 w-4 cursor-pointer accent-sky-400"
+                                       {...register('mark_as_updated')}/>
+                                Mark as updated (shows on the Latest page)
+                            </label>
+                            {errors.mark_as_updated &&
+                                <p className="text-red-500 text-sm mt-1">{errors.mark_as_updated.message}</p>}
+                        </div>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -347,6 +367,14 @@ export default function UtilityForm({utility = null, mapName}: {
                         <Input type="text" id="title_to" className="mt-2" {...register('title_to')}/>
                         {errors.title_to && <p className="text-red-500 text-sm mt-1">{errors.title_to.message}</p>}
                     </div>
+                </div>
+
+                <div className="mt-4">
+                    <Label htmlFor="notes">Notes</Label>
+                    <Textarea id="notes" rows={4} className="mt-2"
+                              placeholder="Optional tips for tricky lineups, e.g. where exactly to stand or when to throw"
+                              {...register('notes')}/>
+                    {errors.notes && <p className="text-red-500 text-sm mt-1">{errors.notes.message}</p>}
                 </div>
 
                 <Accordion type="single" collapsible defaultValue="item-1">

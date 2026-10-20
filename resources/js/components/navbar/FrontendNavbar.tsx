@@ -38,7 +38,7 @@ export default function FrontendNavbar() {
                             <Button onClick={() => navigate({to: "/popular"})}>Popular</Button>
                         </div>
                         <div>
-                            <Button>Recently Updated</Button>
+                            <Button onClick={() => navigate({to: "/latest"})}>Latest</Button>
                         </div>
                         <div>
                             <Button onClick={() => navigate({to: "/my-favorites"})}>My Favorites</Button>

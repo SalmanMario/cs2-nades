@@ -74,6 +74,7 @@ class UtilityController extends Controller
             'map_id' => $mapId,
             'utility_coordinate_id' => $coordinates->id,
             'key_type' => $request->key_type,
+            'notes' => $request->notes,
         ]);
         $utility->save();
 
@@ -137,6 +138,8 @@ class UtilityController extends Controller
             'technique_type' => $request->technique_type,
             'movement_type' => $request->movement_type,
             'key_type' => $request->key_type,
+            'notes' => $request->notes,
+            ...($request->boolean('mark_as_updated') ? ['content_updated_at' => now()] : []),
         ]);
 
         $this->syncPopular($utility, $request->boolean('is_popular'));

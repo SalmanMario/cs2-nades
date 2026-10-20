@@ -45,6 +45,7 @@ export type SingleUtilityResponse = {
         path: string,
     }[],
     key:string,
+    notes: string | null,
     created_at: string,
     updated_at: string,
     coords: Coords,
@@ -58,7 +59,9 @@ export type UtilityFormType = {
     technique_type: TechniqueEnum,
     movement_type: MovementEnum,
     key_type: KeyEnum,
+    notes: string | null,
     is_popular: boolean,
+    mark_as_updated: boolean,
     title_from: string,
     title_to: string,
     start_coords: Coords,
@@ -116,6 +119,9 @@ export type UtilityCardResponse = {
     video: string | null,
     // only on My Favorites
     favorited_at?: string,
-    // only on Popular
     favorites_count?: number,
+    // badge for lineups created or marked as updated in the last 14 days
+    freshness: "new" | "updated" | null,
+    created_at: string,
+    content_updated_at: string | null,
 }

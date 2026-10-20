@@ -66,6 +66,14 @@ export default function UtilityCard({utility, onClick}: Props) {
                     <FavoriteButton utilityId={utility.id}/>
                 </div>
 
+                {utility.freshness && (
+                    <div className={`absolute bottom-3 left-3 rounded-lg px-2 py-1 text-xs font-bold uppercase tracking-wide ${
+                        utility.freshness === "new" ? "bg-emerald-400 text-black" : "bg-sky-400 text-black"
+                    }`}>
+                        {utility.freshness === "new" ? "New" : "Updated"}
+                    </div>
+                )}
+
                 {utility.video && (
                     <div className="absolute bottom-3 right-3 rounded-full bg-black/70 p-1.5 text-white transition-opacity group-hover:opacity-0">
                         <Play className="h-3.5 w-3.5" fill="currentColor"/>
