@@ -62,7 +62,7 @@ export default function FrontendNavbar() {
                                         </DropdownMenuGroup>
                                         <DropdownMenuSeparator/>
                                         <DropdownMenuGroup>
-                                            <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+                                            <DropdownMenuItem className="cursor-pointer" onClick={() => navigate({to: "/profile"})}>Profile</DropdownMenuItem>
                                             {user.role === "ADMIN" && (
                                                 <DropdownMenuItem className="cursor-pointer" onClick={() => navigate({to: "/admin/dashboard"})}>
                                                     Admin dashboard

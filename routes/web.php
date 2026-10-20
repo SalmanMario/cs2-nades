@@ -29,6 +29,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/favorites', [ApiFavoriteUtilityController::class, 'index'])->name('favorites.index');
     Route::get('/favorites/ids', [ApiFavoriteUtilityController::class, 'ids'])->name('favorites.ids');
     Route::post('/favorites/{utility}', [ApiFavoriteUtilityController::class, 'toggle'])->name('favorites.toggle');
+    Route::put('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])
+        ->middleware('throttle:5,1')
+        ->name('profile.password');
 });
 
 Route::get('/getNades', [ApiUtilsController::class, 'getNades'])->name('getNades');

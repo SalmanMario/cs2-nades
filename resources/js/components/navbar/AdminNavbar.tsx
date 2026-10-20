@@ -46,7 +46,7 @@ export default function AdminNavbar() {
                             </>
                         )}
                         <MenubarGroup>
-                            <MenubarItem className="cursor-pointer">Profile</MenubarItem>
+                            <MenubarItem className="cursor-pointer" onClick={() => navigate({to: "/profile"})}>Profile</MenubarItem>
                             <MenubarItem className="cursor-pointer" onClick={() => navigate({to: "/"})}>
                                 Frontend
                             </MenubarItem>
