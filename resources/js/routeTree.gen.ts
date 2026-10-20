@@ -13,6 +13,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PopularIndexRouteImport } from './routes/popular/index'
 import { Route as MyFavoritesIndexRouteImport } from './routes/my-favorites/index'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminAuthRouteImport } from './routes/admin/_auth'
@@ -42,6 +43,11 @@ const LoginRoute = LoginRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PopularIndexRoute = PopularIndexRouteImport.update({
+  id: '/popular/',
+  path: '/popular/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MyFavoritesIndexRoute = MyFavoritesIndexRouteImport.update({
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminAuthRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/my-favorites/': typeof MyFavoritesIndexRoute
+  '/popular/': typeof PopularIndexRoute
   '/maps/$mapName/': typeof MapsMapNameIndexRoute
   '/admin/dashboard/': typeof AdminAuthDashboardIndexRoute
   '/maps/$mapName/$utilityId/': typeof MapsMapNameUtilityIdIndexRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminAuthRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/my-favorites': typeof MyFavoritesIndexRoute
+  '/popular': typeof PopularIndexRoute
   '/maps/$mapName': typeof MapsMapNameIndexRoute
   '/admin/dashboard': typeof AdminAuthDashboardIndexRoute
   '/maps/$mapName/$utilityId': typeof MapsMapNameUtilityIdIndexRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/admin/_auth': typeof AdminAuthRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/my-favorites/': typeof MyFavoritesIndexRoute
+  '/popular/': typeof PopularIndexRoute
   '/maps/$mapName/': typeof MapsMapNameIndexRoute
   '/admin/_auth/dashboard/': typeof AdminAuthDashboardIndexRoute
   '/maps/$mapName/$utilityId/': typeof MapsMapNameUtilityIdIndexRoute
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/login'
     | '/my-favorites/'
+    | '/popular/'
     | '/maps/$mapName/'
     | '/admin/dashboard/'
     | '/maps/$mapName/$utilityId/'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/login'
     | '/my-favorites'
+    | '/popular'
     | '/maps/$mapName'
     | '/admin/dashboard'
     | '/maps/$mapName/$utilityId'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/admin/_auth'
     | '/admin/login'
     | '/my-favorites/'
+    | '/popular/'
     | '/maps/$mapName/'
     | '/admin/_auth/dashboard/'
     | '/maps/$mapName/$utilityId/'
@@ -208,6 +220,7 @@ export interface RootRouteChildren {
   AdminAuthRoute: typeof AdminAuthRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
   MyFavoritesIndexRoute: typeof MyFavoritesIndexRoute
+  PopularIndexRoute: typeof PopularIndexRoute
   MapsMapNameIndexRoute: typeof MapsMapNameIndexRoute
   MapsMapNameUtilityIdIndexRoute: typeof MapsMapNameUtilityIdIndexRoute
 }
@@ -240,6 +253,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/popular/': {
+      id: '/popular/'
+      path: '/popular'
+      fullPath: '/popular/'
+      preLoaderRoute: typeof PopularIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/my-favorites/': {
@@ -346,6 +366,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAuthRoute: AdminAuthRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
   MyFavoritesIndexRoute: MyFavoritesIndexRoute,
+  PopularIndexRoute: PopularIndexRoute,
   MapsMapNameIndexRoute: MapsMapNameIndexRoute,
   MapsMapNameUtilityIdIndexRoute: MapsMapNameUtilityIdIndexRoute,
 }

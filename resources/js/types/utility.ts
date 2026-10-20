@@ -58,6 +58,7 @@ export type UtilityFormType = {
     technique_type: TechniqueEnum,
     movement_type: MovementEnum,
     key_type: KeyEnum,
+    is_popular: boolean,
     title_from: string,
     title_to: string,
     start_coords: Coords,
@@ -99,7 +100,7 @@ type Attachment = {
     filename: string,
 }
 
-export type FavoriteUtilityResponse = {
+export type UtilityCardResponse = {
     id: number,
     title: string,
     grenade_name: string,
@@ -113,5 +114,8 @@ export type FavoriteUtilityResponse = {
     movement: MovementEnum,
     image: string | null,
     video: string | null,
-    favorited_at: string,
+    // only on My Favorites
+    favorited_at?: string,
+    // only on Popular
+    favorites_count?: number,
 }

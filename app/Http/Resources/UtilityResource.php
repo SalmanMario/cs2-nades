@@ -36,6 +36,8 @@ class UtilityResource extends JsonResource
             ],
             'technique_type' => $this->technique_type,
             'movement_type' => $this->movement_type,
+            'key_type' => $this->key_type,
+            'is_popular' => $this->when($this->relationLoaded('popular'), fn() => $this->popular !== null),
             'image_lineup' => $this->attachments->where('type', AttachmentType::IMAGE_LINEUP->value),
             'video_lineup' => $this->attachments->where('type', AttachmentType::VIDEO_LINEUP->value),
         ];

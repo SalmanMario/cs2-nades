@@ -8,7 +8,7 @@ export type FilterOption = {
     count: number;
 };
 
-export type FavoriteFilters = {
+export type UtilityFilters = {
     map: string | null;
     type: string | null;
     team: string | null;
@@ -16,17 +16,18 @@ export type FavoriteFilters = {
 
 type Props = {
     total: number;
+    countLabel?: string;
     maps: FilterOption[];
     types: FilterOption[];
     teams: FilterOption[];
-    filters: FavoriteFilters;
-    onChange: (filters: FavoriteFilters) => void;
+    filters: UtilityFilters;
+    onChange: (filters: UtilityFilters) => void;
 };
 
-export default function FavoritesSidebar({total, maps, types, teams, filters, onChange}: Props) {
+export default function UtilityFiltersSidebar({total, countLabel = "saved lineups", maps, types, teams, filters, onChange}: Props) {
     const hasFilters = filters.map !== null || filters.type !== null || filters.team !== null;
 
-    const toggle = (key: keyof FavoriteFilters, value: string) => {
+    const toggle = (key: keyof UtilityFilters, value: string) => {
         onChange({...filters, [key]: filters[key] === value ? null : value});
     };
 
@@ -35,7 +36,7 @@ export default function FavoritesSidebar({total, maps, types, teams, filters, on
             <div className="mb-8 flex items-center justify-between">
                 <div>
                     <h2 className="text-2xl font-bold text-white">Filters</h2>
-                    <p className="text-sm text-zinc-400">{total} saved lineups</p>
+                    <p className="text-sm text-zinc-400">{total} {countLabel}</p>
                 </div>
                 {hasFilters && (
                     <button

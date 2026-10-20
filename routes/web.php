@@ -35,7 +35,8 @@ Route::middleware('auth')->group(function () {
         ->name('profile.password');
 });
 
-Route::get('/getNades', [ApiUtilsController::class, 'getNades'])->name('getNades');
+Route::get('/popular-utilities', [\App\Http\Controllers\Api\ApiPopularUtilityController::class, 'index'])->name('popularUtilities.index');
+Route::get('/getNades',[ApiUtilsController::class, 'getNades'])->name('getNades');
 Route::get('/getTeams', [ApiUtilsController::class, 'getTeams'])->name('getTeams');
 Route::get('/getUtilityCoordinates/{mapName}', [ApiUtilityController::class, 'getUtilityCoordinates'])->name('getUtilityCoordinates');
 Route::get('/search', [ApiSearchController::class, 'search'])->name('search');

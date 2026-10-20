@@ -59,6 +59,7 @@ export default function UtilityForm({utility = null, mapName}: {
             technique_type: undefined,
             movement_type: undefined,
             key_type: undefined,
+            is_popular: false,
         }
     });
 
@@ -84,6 +85,7 @@ export default function UtilityForm({utility = null, mapName}: {
             technique_type: utility.technique_type,
             key_type: utility.key_type,
             movement_type: utility.movement_type,
+            is_popular: utility.is_popular,
             start_coords: {
                 x: utility.start_coords.x,
                 y: utility.start_coords.y,
@@ -115,6 +117,7 @@ export default function UtilityForm({utility = null, mapName}: {
         handleMutation.mutate(payload, {
             onSuccess: () => {
                 queryClient.invalidateQueries({queryKey: ['utility', String(utility.id)]});
+                queryClient.invalidateQueries({queryKey: ['popularUtilities']});
                 reset();
                 navigate({
                     to: "/admin/dashboard/maps/$mapName",
@@ -318,6 +321,17 @@ export default function UtilityForm({utility = null, mapName}: {
                         </SelectForm>
                         {errors.key_type &&
                             <p className="text-red-500 text-sm mt-1">{errors.key_type.message}</p>}
+                    </div>
+
+                    <div>
+                        <Label htmlFor="is_popular">Popular</Label>
+                        <label htmlFor="is_popular" className="mt-2 flex h-9 cursor-pointer items-center gap-2 text-sm">
+                            <input id="is_popular" type="checkbox" className="h-4 w-4 cursor-pointer accent-orange-500"
+                                   {...register('is_popular')}/>
+                            Show on the Popular page
+                        </label>
+                        {errors.is_popular &&
+                            <p className="text-red-500 text-sm mt-1">{errors.is_popular.message}</p>}
                     </div>
                 </div>
 

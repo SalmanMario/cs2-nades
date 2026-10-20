@@ -8,6 +8,7 @@ use App\Http\Resources\UtilityResource;
 use App\Models\Attachment;
 use App\Models\EndUtilityCoordinate;
 use App\Models\Map;
+use App\Models\PopularUtility;
 use App\Models\StartUtilityCoordinate;
 use App\Models\Utility;
 use App\Models\UtilityCoordinate;
@@ -76,6 +77,8 @@ class UtilityController extends Controller
         ]);
         $utility->save();
 
+        $this->syncPopular($utility, $request->boolean('is_popular'));
+
         if ($request->image_lineup_ids)
             $this->attachmentService->process($request->image_lineup_ids, AttachmentType::IMAGE_LINEUP->value, $utility);
         if ($request->video_lineup_ids)
@@ -86,7 +89,7 @@ class UtilityController extends Controller
 
     public function edit(string $id)
     {
-        $utility = Utility::with(['team', 'utilityCoordinates.utility_type', 'utilityCoordinates.start_utility_coordinates', 'utilityCoordinates.end_utility_coordinates', 'attachments'])->find($id);
+        $utility = Utility::with(['team', 'utilityCoordinates.utility_type', 'utilityCoordinates.start_utility_coordinates', 'utilityCoordinates.end_utility_coordinates', 'attachments', 'popular'])->find($id);
         return new UtilityResource($utility);
     }
 
@@ -133,7 +136,10 @@ class UtilityController extends Controller
             'team_id' => $request->team_type_id,
             'technique_type' => $request->technique_type,
             'movement_type' => $request->movement_type,
+            'key_type' => $request->key_type,
         ]);
+
+        $this->syncPopular($utility, $request->boolean('is_popular'));
 
         if ($request->image_lineup_ids)
             $this->attachmentService->process($request->image_lineup_ids, AttachmentType::IMAGE_LINEUP->value, $utility);
@@ -145,5 +151,14 @@ class UtilityController extends Controller
         $attachmentsToDelete->each(fn($attachment) => $attachment->delete());
 
         return response()->json(['message' => 'Utility updated successfully'], 200);
+    }
+
+    private function syncPopular(Utility $utility, bool $isPopular): void
+    {
+        if ($isPopular) {
+            PopularUtility::query()->firstOrCreate(['utility_id' => $utility->id]);
+        } else {
+            PopularUtility::query()->where('utility_id', $utility->id)->delete();
+        }
     }
 }

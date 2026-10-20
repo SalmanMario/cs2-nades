@@ -1,6 +1,6 @@
 import {useRef} from "react";
-import {Footprints, LightbulbIcon, Play} from "lucide-react";
-import {FavoriteUtilityResponse} from "@/types/utility";
+import {Footprints, LightbulbIcon, Play, Star} from "lucide-react";
+import {UtilityCardResponse} from "@/types/utility";
 import FavoriteButton from "@/components/button/FavoriteButton";
 import {firstToUpperCase} from "@/hooks/helper";
 
@@ -10,11 +10,11 @@ function formatEnum(value?: string) {
 }
 
 type Props = {
-    utility: FavoriteUtilityResponse;
+    utility: UtilityCardResponse;
     onClick: () => void;
 };
 
-export default function FavoriteUtilityCard({utility, onClick}: Props) {
+export default function UtilityCard({utility, onClick}: Props) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const isT = utility.team === "T";
 
@@ -87,6 +87,12 @@ export default function FavoriteUtilityCard({utility, onClick}: Props) {
                         <Footprints className="h-3.5 w-3.5"/>
                         {formatEnum(utility.movement)}
                     </span>
+                    {utility.favorites_count !== undefined && (
+                        <span className="flex items-center gap-1" title="Saved by players">
+                            <Star className="h-3.5 w-3.5"/>
+                            {utility.favorites_count}
+                        </span>
+                    )}
                 </div>
 
                 <div className="mt-4 flex items-center justify-between border-t border-zinc-800 pt-3 text-sm">

@@ -32,6 +32,7 @@ class UtilityRequest extends FormRequest
             'movement_type' => ['required', Rule::enum(MovementEnum::class)],
             'technique_type' => ['required', Rule::enum(TechniqueEnum::class)],
             'key_type' => ['nullable', Rule::enum(KeyEnum::class)],
+            'is_popular' => 'boolean',
             'start_coords.title' => 'required|string|max:255',
             'end_coords.title' => 'required|string|max:255',
             'start_coords.x' => 'nullable|required_without:existing_start_coords_x|numeric|between:0,1024',

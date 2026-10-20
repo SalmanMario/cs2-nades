@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\FavoriteUtilityResource;
+use App\Http\Resources\UtilityCardResource;
 use App\Models\Utility;
 use Illuminate\Http\Request;
 
@@ -23,7 +23,7 @@ class ApiFavoriteUtilityController extends Controller
             ->latest('favorite_utilities.created_at')
             ->get();
 
-        return response()->json(FavoriteUtilityResource::collection($favorites));
+        return response()->json(UtilityCardResource::collection($favorites));
     }
 
     public function ids(Request $request)

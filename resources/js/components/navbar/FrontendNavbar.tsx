@@ -35,7 +35,7 @@ export default function FrontendNavbar() {
                     </h1>
                     <div className="ml-auto flex items-center gap-10 me-12">
                         <div>
-                            <Button>Popular</Button>
+                            <Button onClick={() => navigate({to: "/popular"})}>Popular</Button>
                         </div>
                         <div>
                             <Button>Recently Updated</Button>

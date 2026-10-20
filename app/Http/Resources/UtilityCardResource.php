@@ -6,7 +6,7 @@ use App\Enum\AttachmentType;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FavoriteUtilityResource extends JsonResource
+class UtilityCardResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -31,7 +31,9 @@ class FavoriteUtilityResource extends JsonResource
             'movement' => $this->movement_type,
             'image' => $this->attachments->where('type', AttachmentType::IMAGE_LINEUP->value)->sortBy('order')->first()?->path,
             'video' => $this->attachments->where('type', AttachmentType::VIDEO_LINEUP->value)->first()?->path,
-            'favorited_at' => $this->pivot->created_at,
+            // also used for the popular page, where there is no favorites pivot
+            'favorited_at' => $this->whenPivotLoaded('favorite_utilities', fn() => $this->pivot->created_at),
+            'favorites_count' => $this->whenCounted('favoritedBy'),
         ];
     }
 }
