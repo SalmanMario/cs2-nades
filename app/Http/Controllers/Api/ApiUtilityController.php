@@ -22,7 +22,8 @@ class ApiUtilityController extends Controller
         $utility = $this->utilityService->getUtility($mapId, $utility);
         return response()->json([
             'created_at' => $utility->created_at,
-            'updated_at' => $utility->updated_at,
+            // when an admin marked the lineup as updated, otherwise the last time it was saved
+            'updated_at' => $utility->content_updated_at ?? $utility->updated_at,
             'title' => $utility->utilityCoordinates->start_utility_coordinates->title_from . ' - ' . $utility->utilityCoordinates->end_utility_coordinates->title_to,
             'coords' => [
                 'start_coords' => [
