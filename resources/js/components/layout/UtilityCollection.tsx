@@ -1,6 +1,7 @@
 import React, {useMemo, useState} from "react";
 import {useNavigate} from "@tanstack/react-router";
-import {Search, Star} from "lucide-react";
+import {Search, SlidersHorizontal, Star} from "lucide-react";
+import {Sheet, SheetContent, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
 import FrontendNavbar from "@/components/navbar/FrontendNavbar";
 import Footer from "@/components/footer/Footer";
 import UtilityFiltersSidebar, {UtilityFilters, FilterOption} from "@/components/sidebar/UtilityFiltersSidebar";
@@ -84,6 +85,20 @@ export default function UtilityCollection({title, icon, description, countLabel,
         return filtered;
     }, [utilities, filters, search, sort]);
 
+    const activeFilters = Object.values(filters).filter((value) => value !== null).length;
+
+    const sidebar = (
+        <UtilityFiltersSidebar
+            total={allUtilities.length}
+            countLabel={countLabel}
+            maps={mapOptions}
+            types={typeOptions}
+            teams={teamOptions}
+            filters={filters}
+            onChange={setFilters}
+        />
+    );
+
     const openUtility = (utility: UtilityCardResponse) => {
         navigate({
             to: "/maps/$mapName/$utilityId",
@@ -136,28 +151,20 @@ export default function UtilityCollection({title, icon, description, countLabel,
             <FrontendNavbar/>
 
             <div className="flex-1">
-                <div className="mx-auto max-w-[1920px] px-8 py-8">
+                <div className="mx-auto max-w-[1920px] px-4 py-6 md:px-8 md:py-8">
                     <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
                         <aside className="hidden lg:block">
                             <div className="sticky top-24">
-                                <UtilityFiltersSidebar
-                                    total={allUtilities.length}
-                                    countLabel={countLabel}
-                                    maps={mapOptions}
-                                    types={typeOptions}
-                                    teams={teamOptions}
-                                    filters={filters}
-                                    onChange={setFilters}
-                                />
+                                {sidebar}
                             </div>
                         </aside>
 
                         <section className="min-w-0">
-                            <div className="mb-6 rounded-3xl border border-zinc-800 bg-zinc-900 p-8">
+                            <div className="mb-6 rounded-3xl border border-zinc-800 bg-zinc-900 p-5 md:p-8">
                                 <div className="flex flex-wrap items-center gap-5">
                                     {icon}
                                     <div>
-                                        <h1 className="text-5xl font-bold text-white">{title}</h1>
+                                        <h1 className="text-3xl font-bold text-white md:text-5xl">{title}</h1>
                                         <p className="mt-2 text-zinc-400">
                                             {utilities?.length ? `${visibleUtilities.length} of ${allUtilities.length} lineups` : description}
                                         </p>
@@ -165,8 +172,8 @@ export default function UtilityCollection({title, icon, description, countLabel,
                                 </div>
 
                                 {!!utilities?.length && (
-                                    <div className="mt-8 flex flex-wrap items-center gap-4">
-                                        <InputGroup className="max-w-xl flex-1 rounded-xl border border-zinc-700 bg-zinc-900/80">
+                                    <div className="mt-6 flex flex-wrap items-center gap-3 md:mt-8 md:gap-4">
+                                        <InputGroup className="min-w-0 max-w-xl basis-full rounded-xl border border-zinc-700 bg-zinc-900/80 sm:basis-auto sm:flex-1">
                                             <InputGroupInput
                                                 value={search}
                                                 onChange={(e) => setSearch(e.target.value)}
@@ -191,6 +198,23 @@ export default function UtilityCollection({title, icon, description, countLabel,
                                                 </button>
                                             ))}
                                         </div>
+
+                                        {/* the sidebar is hidden below lg, so filters open in a sheet */}
+                                        <Sheet>
+                                            <SheetTrigger asChild>
+                                                <Button variant="outline" className="rounded-xl lg:hidden">
+                                                    <SlidersHorizontal/>
+                                                    Filters
+                                                    {activeFilters > 0 && (
+                                                        <span className="rounded-full bg-orange-500 px-1.5 text-xs text-black">{activeFilters}</span>
+                                                    )}
+                                                </Button>
+                                            </SheetTrigger>
+                                            <SheetContent side="left" className="overflow-y-auto border-zinc-800 bg-[#0d0f14] p-0">
+                                                <SheetTitle className="sr-only">Filters</SheetTitle>
+                                                {sidebar}
+                                            </SheetContent>
+                                        </Sheet>
                                     </div>
                                 )}
                             </div>

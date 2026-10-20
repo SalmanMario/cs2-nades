@@ -126,13 +126,13 @@ function RouteComponent() {
     return (
         <div className="flex flex-col min-h-screen">
             <FrontendNavbar/>
-            <div className="mx-10 flex-1">
-                <div className="flex items-center mt-5 mb-6">
+            <div className="mx-4 md:mx-10 flex-1">
+                <div className="flex flex-wrap items-center gap-y-3 mt-5 mb-6">
                     <span onClick={handleGoBack} className="cursor-pointer flex items-center gap-2 me-3">
                         <ArrowLeft/>
-                        <span className="text-3xl">{firstToUpperCase(mapName)} {utility.type}: </span>
+                        <span className="text-xl md:text-3xl">{firstToUpperCase(mapName)} {utility.type}: </span>
                     </span>
-                    <h1 className="text-3xl">{utility.title}</h1>
+                    <h1 className="text-xl md:text-3xl">{utility.title}</h1>
                     <UtilityBadge isFlagged={utility.is_flagged} freshness={utility.freshness} className="ms-3"/>
                     <FavoriteButton utilityId={Number(utilityId)} className="ms-3 [&_svg]:h-7 [&_svg]:w-7"/>
                     <ReportUtilityButton utilityId={Number(utilityId)} reportedByMe={utility.reported_by_me} className="ms-auto"/>
@@ -143,8 +143,8 @@ function RouteComponent() {
                         Players reported that this lineup may be outdated or incorrect. We're looking into it.
                     </div>
                 )}
-                <div className="grid grid-cols-12 gap-5 items-start">
-                    <div className="col-span-9">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    <div className="min-w-0 lg:col-span-9">
                         <div className="aspect-video w-full">
                             {showVideo ? (
                                 <video className="h-full w-full" src={utility.video?.path} controls/>
@@ -259,7 +259,7 @@ function RouteComponent() {
                         )}
                     </div>
 
-                    <div className="col-span-3">
+                    <div className="lg:col-span-3">
                         <Button variant="outline" intent="success" onClick={toggleVideo} className="mb-6">
                             {showVideo ? "Show Lineup" : "Show Video"}
                         </Button>
@@ -309,9 +309,9 @@ function RouteComponent() {
                     </div>
                 </div>
             </div>
-            <div className="m-10">
-                <h1 className="text-3xl mb-6">Explore Utilities</h1>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="m-4 md:m-10">
+                <h1 className="text-2xl md:text-3xl mb-6">Explore Utilities</h1>
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {getSimilarUtilities && (
                         getSimilarUtilities.map((utility) => (
                             <Card

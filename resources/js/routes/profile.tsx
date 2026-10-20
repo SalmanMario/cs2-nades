@@ -52,8 +52,8 @@ function RouteComponent() {
             <FrontendNavbar/>
 
             <div className="flex-1">
-                <div className="mx-auto max-w-6xl px-8 py-8">
-                    <div className="mb-6 rounded-3xl border border-zinc-800 bg-zinc-900 p-8">
+                <div className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-8">
+                    <div className="mb-6 rounded-3xl border border-zinc-800 bg-zinc-900 p-5 md:p-8">
                         <div className="flex flex-wrap items-center gap-5">
                             <Avatar className="h-16 w-16">
                                 <AvatarFallback className="bg-orange-500 text-2xl font-semibold text-black">
@@ -61,7 +61,7 @@ function RouteComponent() {
                                 </AvatarFallback>
                             </Avatar>
                             <div>
-                                <h1 className="text-4xl font-bold text-white">{user.name}</h1>
+                                <h1 className="break-all text-3xl font-bold text-white md:text-4xl">{user.name}</h1>
                                 <p className="mt-1 text-zinc-400">
                                     {user.email} · {user.role === "ADMIN" ? "Admin" : "Member"}
                                 </p>
@@ -83,7 +83,7 @@ function RouteComponent() {
 
 function Section({title, text, children}: {title: string, text: string, children: React.ReactNode}) {
     return (
-        <section className="flex flex-col rounded-3xl border border-zinc-800 bg-zinc-900 p-8">
+        <section className="flex flex-col rounded-3xl border border-zinc-800 bg-zinc-900 p-5 md:p-8">
             <h2 className="text-2xl font-semibold text-white">{title}</h2>
             <p className="mt-1 text-zinc-400">{text}</p>
             <div className="mt-6 flex flex-1 flex-col">{children}</div>

@@ -57,4 +57,10 @@ Route::get('/layoutOverview', [\App\Http\Controllers\MapController::class, 'layo
 Route::get('/getUtility/{map}/{id}', [ApiUtilityController::class, 'getUtility'])->name('getUtility');
 Route::post('/getSimilarUtilitiesByCoords/{mapId}', [ApiUtilityController::class, 'getSimilarUtilitiesByCoords'])->name('getSimilarUtilitiesByCoords');
 
+// SPA pages with link preview meta tags, the rest of the SPA is served by the catch-all below
+Route::get('/maps/{mapName}', [\App\Http\Controllers\PageMetaController::class, 'map'])->name('page.map');
+Route::get('/maps/{mapName}/{utilityId}', [\App\Http\Controllers\PageMetaController::class, 'utility'])
+    ->whereNumber('utilityId')
+    ->name('page.utility');
+
 Route::view('/{any}', 'app')->where('any', '.*');

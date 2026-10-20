@@ -14,6 +14,13 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import {useAuth} from "@/AuthContext";
+import {Menu} from "lucide-react";
+
+const NAV_LINKS = [
+    {to: "/popular", label: "Popular"},
+    {to: "/latest", label: "Latest"},
+    {to: "/my-favorites", label: "My Favorites"},
+] as const;
 
 export default function FrontendNavbar() {
     const navigate = useNavigate();
@@ -29,20 +36,38 @@ export default function FrontendNavbar() {
                 <MenubarMenu className="relative flex items-center w-full">
                     <h1
                         onClick={goToHome}
-                        className="font-bold text-4xl cursor-pointer ms-12"
+                        className="font-bold text-2xl md:text-4xl cursor-pointer ms-4 md:ms-12 whitespace-nowrap"
                     >
                         CS2 Nades
                     </h1>
-                    <div className="ml-auto flex items-center gap-10 me-12">
-                        <div>
-                            <Button onClick={() => navigate({to: "/popular"})}>Popular</Button>
-                        </div>
-                        <div>
-                            <Button onClick={() => navigate({to: "/latest"})}>Latest</Button>
-                        </div>
-                        <div>
-                            <Button onClick={() => navigate({to: "/my-favorites"})}>My Favorites</Button>
-                        </div>
+                    <div className="ml-auto flex items-center gap-3 md:gap-10 me-4 md:me-12">
+                        {NAV_LINKS.map((link) => (
+                            <div key={link.to} className="hidden md:block">
+                                <Button onClick={() => navigate({to: link.to})}>{link.label}</Button>
+                            </div>
+                        ))}
+
+                        {/* phones: the links (and login/register for guests) live in this menu */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger className="cursor-pointer rounded-lg p-2 text-zinc-300 hover:bg-zinc-800 md:hidden" aria-label="Open menu">
+                                <Menu className="h-6 w-6"/>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48">
+                                {NAV_LINKS.map((link) => (
+                                    <DropdownMenuItem key={link.to} className="cursor-pointer" onClick={() => navigate({to: link.to})}>
+                                        {link.label}
+                                    </DropdownMenuItem>
+                                ))}
+                                {!user && (
+                                    <>
+                                        <DropdownMenuSeparator/>
+                                        <DropdownMenuItem className="cursor-pointer" onClick={() => navigate({to: "/login"})}>Login</DropdownMenuItem>
+                                        <DropdownMenuItem className="cursor-pointer" onClick={() => navigate({to: "/register"})}>Register</DropdownMenuItem>
+                                    </>
+                                )}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
                         {user ? (
                             <div>
                                 <DropdownMenu>
@@ -74,7 +99,7 @@ export default function FrontendNavbar() {
                                 </DropdownMenu>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-3">
+                            <div className="hidden items-center gap-3 md:flex">
                                 <Button variant="outline" onClick={() => navigate({to: "/login"})}>Login</Button>
                                 <Button onClick={() => navigate({to: "/register"})}
                                         className="bg-orange-500 text-black hover:bg-orange-400">

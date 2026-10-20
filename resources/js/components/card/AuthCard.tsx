@@ -29,7 +29,7 @@ export default function AuthCard({title, subtitle, children, footer}: {
             <FrontendNavbar/>
 
             <div className="flex flex-1 items-center justify-center px-4 py-16">
-                <div className="w-full max-w-md rounded-3xl border border-zinc-800 bg-zinc-900 p-8">
+                <div className="w-full max-w-md rounded-3xl border border-zinc-800 bg-zinc-900 p-6 md:p-8">
                     <h1 className="text-4xl font-bold text-white">{title}</h1>
                     <p className="mt-2 text-zinc-400">{subtitle}</p>
 

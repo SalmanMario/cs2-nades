@@ -106,6 +106,12 @@ function RouteComponent() {
         setSelectedUtilityId(null);
     }, [grenadeType, teamType, mapName]);
 
+    // below xl the preview sits under the map, so bring it into view when a marker is tapped
+    useEffect(() => {
+        if (selectedUtilityId === null || window.matchMedia("(min-width: 1280px)").matches) return;
+        document.getElementById("utility-preview")?.scrollIntoView({behavior: "smooth", block: "start"});
+    }, [selectedUtilityId]);
+
     if (infoLoading) return <div>Loading...</div>;
 
     return (
@@ -121,7 +127,7 @@ function RouteComponent() {
                 />
             }
             rightPanel={
-                <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+                <div id="utility-preview" className="scroll-mt-4 rounded-2xl border border-zinc-800 bg-zinc-900 p-5 md:p-6">
                     <h3 className="text-lg mb-3 font-semibold text-white">
                         Search a utility
                     </h3>

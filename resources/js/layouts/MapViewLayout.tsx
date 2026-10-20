@@ -18,38 +18,39 @@ export default function MapViewLayout({children, info, sidebar, rightPanel}: Pro
 
             <div className="flex-1">
 
-                <div className="mx-auto max-w-[1920px] px-8 py-8">
+                <div className="mx-auto max-w-[1920px] px-4 py-6 md:px-8 md:py-8">
 
-                    <div className="grid grid-cols-[320px_minmax(0,1fr)_360px] gap-6">
+                    {/* phones: map first, then the selected lineup, then the filters */}
+                    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)_360px]">
 
                         {/* LEFT */}
 
-                        <aside>
-                            <div className="sticky top-24">
+                        <aside className="order-3 lg:order-1">
+                            <div className="lg:sticky lg:top-24">
                                 {sidebar}
                             </div>
                         </aside>
 
                         {/* CENTER */}
 
-                        <section className="min-w-0">
+                        <section className="order-1 min-w-0 lg:order-2">
 
                             {/* HEADER CARD */}
 
-                            <div className="mb-6 rounded-3xl border border-zinc-800 bg-zinc-900 p-8">
+                            <div className="mb-6 rounded-3xl border border-zinc-800 bg-zinc-900 p-5 md:p-8">
 
                                 <div className="flex items-center gap-5">
 
                                     {info?.map?.image && (
                                         <img
                                             src={info.map.image}
-                                            className="h-20 w-20 object-contain"
+                                            className="h-14 w-14 object-contain md:h-20 md:w-20"
                                         />
                                     )}
 
                                     <div>
 
-                                        <h1 className="text-5xl font-bold text-white">
+                                        <h1 className="text-3xl font-bold text-white md:text-5xl">
                                             {info?.map?.name}
                                         </h1>
 
@@ -61,7 +62,7 @@ export default function MapViewLayout({children, info, sidebar, rightPanel}: Pro
 
                                 </div>
 
-                                <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+                                <div className="mt-6 grid grid-cols-2 gap-3 md:mt-8 md:grid-cols-3 md:gap-4 2xl:grid-cols-5">
 
                                     <StatCard
                                         label="Total"
@@ -92,11 +93,11 @@ export default function MapViewLayout({children, info, sidebar, rightPanel}: Pro
                             </div>
                         </section>
 
-                        {/* RIGHT */}
+                        {/* RIGHT (below the map until xl) */}
 
-                        <aside>
+                        <aside className="order-2 lg:order-3 lg:col-span-2 xl:col-span-1">
 
-                            <div className="sticky top-24">
+                            <div className="xl:sticky xl:top-24">
 
                                 {rightPanel}
 

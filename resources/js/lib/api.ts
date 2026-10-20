@@ -1,7 +1,8 @@
 import axios from "axios";
 
+// No baseURL: Laravel serves the app and the API from the same domain,
+// so requests go to whatever domain the site is opened on
 const api = axios.create({
-    baseURL: "http://cs2-nades.test",
     withCredentials: true,
     withXSRFToken: true,
     headers: {
