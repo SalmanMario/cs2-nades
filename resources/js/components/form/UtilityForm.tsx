@@ -123,6 +123,8 @@ export default function UtilityForm({utility = null, mapName}: {
                 queryClient.invalidateQueries({queryKey: ['utility', String(utility.id)]});
                 queryClient.invalidateQueries({queryKey: ['popularUtilities']});
                 queryClient.invalidateQueries({queryKey: ['latestUtilities']});
+                // saving resolves the lineup's reports
+                queryClient.invalidateQueries({queryKey: ['flaggedUtilities']});
                 reset();
                 navigate({
                     to: "/admin/dashboard/maps/$mapName",

@@ -44,6 +44,9 @@ class ApiUtilityController extends Controller
             'movement' => $utility->movement_type,
             'key' => $utility->key_type,
             'notes' => $utility->notes,
+            'is_flagged' => $utility->openReports()->exists(),
+            'freshness' => $utility->freshness(),
+            'reported_by_me' => \Auth::check() && $utility->openReports()->where('user_id', \Auth::id())->exists(),
             'video' => $utility->attachments->where('type', AttachmentType::VIDEO_LINEUP->value)->where('attachmentable_id', $utility->id)->first(),
             'image' => $utility->attachments->where('type', AttachmentType::IMAGE_LINEUP->value)->where('attachmentable_id', $utility->id)->sortBy('order')->values()
         ]);

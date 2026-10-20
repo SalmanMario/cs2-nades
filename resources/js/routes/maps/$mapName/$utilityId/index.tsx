@@ -13,8 +13,11 @@ import {
     Footprints,
     ArrowLeft,
     Keyboard,
-    NotebookPen
+    NotebookPen,
+    Flag
 } from "lucide-react";
+import ReportUtilityButton from "@/components/button/ReportUtilityButton";
+import UtilityBadge from "@/components/badge/UtilityBadge";
 import {firstToUpperCase, formatDate, pageTitle} from "@/hooks/helper";
 import {QueryClient} from "@tanstack/react-query";
 import FrontendNavbar from "@/components/navbar/FrontendNavbar";
@@ -130,8 +133,16 @@ function RouteComponent() {
                         <span className="text-3xl">{firstToUpperCase(mapName)} {utility.type}: </span>
                     </span>
                     <h1 className="text-3xl">{utility.title}</h1>
+                    <UtilityBadge isFlagged={utility.is_flagged} freshness={utility.freshness} className="ms-3"/>
                     <FavoriteButton utilityId={Number(utilityId)} className="ms-3 [&_svg]:h-7 [&_svg]:w-7"/>
+                    <ReportUtilityButton utilityId={Number(utilityId)} reportedByMe={utility.reported_by_me} className="ms-auto"/>
                 </div>
+                {utility.is_flagged && (
+                    <div className="mb-6 flex items-center gap-3 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-300">
+                        <Flag className="h-5 w-5 shrink-0"/>
+                        Players reported that this lineup may be outdated or incorrect. We're looking into it.
+                    </div>
+                )}
                 <div className="grid grid-cols-12 gap-5 items-start">
                     <div className="col-span-9">
                         <div className="aspect-video w-full">

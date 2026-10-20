@@ -13,10 +13,19 @@ import {
     MenubarTrigger
 } from "@/components/ui/menubar";
 import {initials} from "@/hooks/helper";
+import {useQueryApi} from "@/hooks/use-query";
+import {FlaggedUtilityResponse} from "@/types/utility";
 
 export default function AdminNavbar() {
     const {user, logout} = useAuth();
     const navigate = useNavigate();
+
+    // same query as the flagged page, so the count updates after a dismiss
+    const {data: flagged} = useQueryApi<FlaggedUtilityResponse[]>({
+        queryKey: ["flaggedUtilities"],
+        method: "GET",
+        url: "/flagged-utilities",
+    });
 
     return (
         <div>
@@ -25,7 +34,15 @@ export default function AdminNavbar() {
                     <h1 onClick={() => navigate({to: "/admin/dashboard"})} className="ms-10 font-bold text-2xl cursor-pointer">Dashboard</h1>
                 </MenubarMenu>
                 <MenubarMenu>
-                    <h1 onClick={() => navigate({to: "/admin/dashboard/maps"})} className="ms-10 grow font-bold text-2xl cursor-pointer">Maps</h1>
+                    <h1 onClick={() => navigate({to: "/admin/dashboard/maps"})} className="ms-10 font-bold text-2xl cursor-pointer">Maps</h1>
+                </MenubarMenu>
+                <MenubarMenu>
+                    <h1 onClick={() => navigate({to: "/admin/dashboard/flagged"})} className="ms-10 grow flex items-center gap-2 font-bold text-2xl cursor-pointer">
+                        Flagged
+                        {!!flagged?.length && (
+                            <span className="rounded-full bg-red-500 px-2 text-sm text-white">{flagged.length}</span>
+                        )}
+                    </h1>
                 </MenubarMenu>
                 <MenubarMenu>
                     <MenubarTrigger>

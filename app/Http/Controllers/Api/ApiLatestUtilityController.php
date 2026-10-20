@@ -22,6 +22,7 @@ class ApiLatestUtilityController extends Controller
                 'utilityCoordinates.end_utility_coordinates',
             ])
             ->withCount('favoritedBy')
+            ->withExists('openReports')
             // newest of "created" and "marked as updated" first
             ->orderByRaw('GREATEST(created_at, COALESCE(content_updated_at, created_at)) DESC')
             ->limit(self::LIMIT)

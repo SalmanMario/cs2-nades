@@ -64,4 +64,14 @@ class Utility extends Model
     {
         return $this->hasOne(PopularUtility::class);
     }
+
+    public function openReports(): HasMany
+    {
+        return $this->hasMany(UtilityReport::class)->whereNull('resolved_at');
+    }
+
+    public function resolveReports(): void
+    {
+        $this->openReports()->update(['resolved_at' => now()]);
+    }
 }

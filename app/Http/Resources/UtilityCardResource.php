@@ -35,6 +35,8 @@ class UtilityCardResource extends JsonResource
             'favorited_at' => $this->whenPivotLoaded('favorite_utilities', fn() => $this->pivot->created_at),
             'favorites_count' => $this->whenCounted('favoritedBy'),
             'freshness' => $this->freshness(),
+            // needs withExists('openReports') on the query
+            'is_flagged' => (bool) $this->open_reports_exists,
             'created_at' => $this->created_at,
             'content_updated_at' => $this->content_updated_at,
         ];

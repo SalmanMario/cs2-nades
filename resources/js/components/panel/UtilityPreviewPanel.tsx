@@ -6,6 +6,7 @@ import {Button} from "@/components/ui/button";
 import {Skeleton} from "@/components/ui/skeleton";
 import {firstToUpperCase} from "@/hooks/helper";
 import FavoriteButton from "@/components/button/FavoriteButton";
+import UtilityBadge from "@/components/badge/UtilityBadge";
 
 type Props = {
     mapName: string;
@@ -56,9 +57,13 @@ export default function UtilityPreviewPanel({mapName, utilityId, onClose}: Props
         <div>
             <div className="mb-3 flex items-start justify-between gap-3">
                 <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-orange-400">
-                        {formatEnum(utility.type)}
-                    </p>
+                    <div className="flex items-center gap-2">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-orange-400">
+                            {formatEnum(utility.type)}
+                        </p>
+                        <UtilityBadge isFlagged={utility.is_flagged} freshness={utility.freshness}
+                                      className="px-1.5 py-0.5 text-[10px]"/>
+                    </div>
                     <h3 className="mt-1 text-lg font-semibold leading-snug text-white">
                         {utility.title}
                     </h3>

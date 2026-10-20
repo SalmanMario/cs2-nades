@@ -21,6 +21,7 @@ import { Route as MapsMapNameIndexRouteImport } from './routes/maps/$mapName/ind
 import { Route as MapsMapNameUtilityIdIndexRouteImport } from './routes/maps/$mapName/$utilityId/index'
 import { Route as AdminAuthDashboardIndexRouteImport } from './routes/admin/_auth/dashboard/index'
 import { Route as AdminAuthDashboardMapsIndexRouteImport } from './routes/admin/_auth/dashboard/maps/index'
+import { Route as AdminAuthDashboardFlaggedIndexRouteImport } from './routes/admin/_auth/dashboard/flagged/index'
 import { Route as AdminAuthDashboardMapsMapNameIndexRouteImport } from './routes/admin/_auth/dashboard/maps/$mapName/index'
 import { Route as AdminAuthDashboardMapsMapNameCreateRouteImport } from './routes/admin/_auth/dashboard/maps/$mapName/create'
 import { Route as AdminAuthDashboardMapsMapNameIdEditRouteImport } from './routes/admin/_auth/dashboard/maps/$mapName/$id/edit'
@@ -87,6 +88,12 @@ const AdminAuthDashboardMapsIndexRoute =
     path: '/dashboard/maps/',
     getParentRoute: () => AdminAuthRoute,
   } as any)
+const AdminAuthDashboardFlaggedIndexRoute =
+  AdminAuthDashboardFlaggedIndexRouteImport.update({
+    id: '/dashboard/flagged/',
+    path: '/dashboard/flagged/',
+    getParentRoute: () => AdminAuthRoute,
+  } as any)
 const AdminAuthDashboardMapsMapNameIndexRoute =
   AdminAuthDashboardMapsMapNameIndexRouteImport.update({
     id: '/dashboard/maps/$mapName/',
@@ -118,6 +125,7 @@ export interface FileRoutesByFullPath {
   '/maps/$mapName/': typeof MapsMapNameIndexRoute
   '/admin/dashboard/': typeof AdminAuthDashboardIndexRoute
   '/maps/$mapName/$utilityId/': typeof MapsMapNameUtilityIdIndexRoute
+  '/admin/dashboard/flagged/': typeof AdminAuthDashboardFlaggedIndexRoute
   '/admin/dashboard/maps/': typeof AdminAuthDashboardMapsIndexRoute
   '/admin/dashboard/maps/$mapName/create': typeof AdminAuthDashboardMapsMapNameCreateRoute
   '/admin/dashboard/maps/$mapName/': typeof AdminAuthDashboardMapsMapNameIndexRoute
@@ -135,6 +143,7 @@ export interface FileRoutesByTo {
   '/maps/$mapName': typeof MapsMapNameIndexRoute
   '/admin/dashboard': typeof AdminAuthDashboardIndexRoute
   '/maps/$mapName/$utilityId': typeof MapsMapNameUtilityIdIndexRoute
+  '/admin/dashboard/flagged': typeof AdminAuthDashboardFlaggedIndexRoute
   '/admin/dashboard/maps': typeof AdminAuthDashboardMapsIndexRoute
   '/admin/dashboard/maps/$mapName/create': typeof AdminAuthDashboardMapsMapNameCreateRoute
   '/admin/dashboard/maps/$mapName': typeof AdminAuthDashboardMapsMapNameIndexRoute
@@ -153,6 +162,7 @@ export interface FileRoutesById {
   '/maps/$mapName/': typeof MapsMapNameIndexRoute
   '/admin/_auth/dashboard/': typeof AdminAuthDashboardIndexRoute
   '/maps/$mapName/$utilityId/': typeof MapsMapNameUtilityIdIndexRoute
+  '/admin/_auth/dashboard/flagged/': typeof AdminAuthDashboardFlaggedIndexRoute
   '/admin/_auth/dashboard/maps/': typeof AdminAuthDashboardMapsIndexRoute
   '/admin/_auth/dashboard/maps/$mapName/create': typeof AdminAuthDashboardMapsMapNameCreateRoute
   '/admin/_auth/dashboard/maps/$mapName/': typeof AdminAuthDashboardMapsMapNameIndexRoute
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/maps/$mapName/'
     | '/admin/dashboard/'
     | '/maps/$mapName/$utilityId/'
+    | '/admin/dashboard/flagged/'
     | '/admin/dashboard/maps/'
     | '/admin/dashboard/maps/$mapName/create'
     | '/admin/dashboard/maps/$mapName/'
@@ -189,6 +200,7 @@ export interface FileRouteTypes {
     | '/maps/$mapName'
     | '/admin/dashboard'
     | '/maps/$mapName/$utilityId'
+    | '/admin/dashboard/flagged'
     | '/admin/dashboard/maps'
     | '/admin/dashboard/maps/$mapName/create'
     | '/admin/dashboard/maps/$mapName'
@@ -206,6 +218,7 @@ export interface FileRouteTypes {
     | '/maps/$mapName/'
     | '/admin/_auth/dashboard/'
     | '/maps/$mapName/$utilityId/'
+    | '/admin/_auth/dashboard/flagged/'
     | '/admin/_auth/dashboard/maps/'
     | '/admin/_auth/dashboard/maps/$mapName/create'
     | '/admin/_auth/dashboard/maps/$mapName/'
@@ -311,6 +324,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthDashboardMapsIndexRouteImport
       parentRoute: typeof AdminAuthRoute
     }
+    '/admin/_auth/dashboard/flagged/': {
+      id: '/admin/_auth/dashboard/flagged/'
+      path: '/dashboard/flagged'
+      fullPath: '/admin/dashboard/flagged/'
+      preLoaderRoute: typeof AdminAuthDashboardFlaggedIndexRouteImport
+      parentRoute: typeof AdminAuthRoute
+    }
     '/admin/_auth/dashboard/maps/$mapName/': {
       id: '/admin/_auth/dashboard/maps/$mapName/'
       path: '/dashboard/maps/$mapName'
@@ -337,6 +357,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminAuthRouteChildren {
   AdminAuthDashboardIndexRoute: typeof AdminAuthDashboardIndexRoute
+  AdminAuthDashboardFlaggedIndexRoute: typeof AdminAuthDashboardFlaggedIndexRoute
   AdminAuthDashboardMapsIndexRoute: typeof AdminAuthDashboardMapsIndexRoute
   AdminAuthDashboardMapsMapNameCreateRoute: typeof AdminAuthDashboardMapsMapNameCreateRoute
   AdminAuthDashboardMapsMapNameIndexRoute: typeof AdminAuthDashboardMapsMapNameIndexRoute
@@ -345,6 +366,7 @@ interface AdminAuthRouteChildren {
 
 const AdminAuthRouteChildren: AdminAuthRouteChildren = {
   AdminAuthDashboardIndexRoute: AdminAuthDashboardIndexRoute,
+  AdminAuthDashboardFlaggedIndexRoute: AdminAuthDashboardFlaggedIndexRoute,
   AdminAuthDashboardMapsIndexRoute: AdminAuthDashboardMapsIndexRoute,
   AdminAuthDashboardMapsMapNameCreateRoute:
     AdminAuthDashboardMapsMapNameCreateRoute,

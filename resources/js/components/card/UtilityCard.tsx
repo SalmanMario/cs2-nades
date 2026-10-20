@@ -1,5 +1,6 @@
 import {useRef} from "react";
 import {Footprints, LightbulbIcon, Play, Star} from "lucide-react";
+import UtilityBadge from "@/components/badge/UtilityBadge";
 import {UtilityCardResponse} from "@/types/utility";
 import FavoriteButton from "@/components/button/FavoriteButton";
 import {firstToUpperCase} from "@/hooks/helper";
@@ -66,13 +67,8 @@ export default function UtilityCard({utility, onClick}: Props) {
                     <FavoriteButton utilityId={utility.id}/>
                 </div>
 
-                {utility.freshness && (
-                    <div className={`absolute bottom-3 left-3 rounded-lg px-2 py-1 text-xs font-bold uppercase tracking-wide ${
-                        utility.freshness === "new" ? "bg-emerald-400 text-black" : "bg-sky-400 text-black"
-                    }`}>
-                        {utility.freshness === "new" ? "New" : "Updated"}
-                    </div>
-                )}
+                <UtilityBadge isFlagged={utility.is_flagged} freshness={utility.freshness}
+                              className="absolute bottom-3 left-3"/>
 
                 {utility.video && (
                     <div className="absolute bottom-3 right-3 rounded-full bg-black/70 p-1.5 text-white transition-opacity group-hover:opacity-0">

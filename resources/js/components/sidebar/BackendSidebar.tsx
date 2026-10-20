@@ -1,6 +1,7 @@
 import {
     Map,
     Bomb,
+    Flag,
     LayoutDashboard,
 } from "lucide-react";
 import {Link, useNavigate} from "@tanstack/react-router";
@@ -21,6 +22,11 @@ const menu = [
         title: "Utilities",
         icon: Bomb,
         href: "/admin/dashboard/maps",
+    },
+    {
+        title: "Flagged",
+        icon: Flag,
+        href: "/admin/dashboard/flagged",
     },
 ];
 

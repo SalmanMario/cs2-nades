@@ -22,6 +22,8 @@ Route::middleware('admin')->group(function () {
     Route::get('/attachment/{attachment}', [ApiAttachmentController::class, 'show'])->name('attachment.show');
     Route::get('/backend-map-overview/{mapName}', [\App\Http\Controllers\MapController::class, 'backendMapOverview'])->name('backendMapOverview');
     Route::resource('utilities', UtilityController::class)->except('index');
+    Route::get('/flagged-utilities', [\App\Http\Controllers\Api\ApiUtilityReportController::class, 'flagged'])->name('flaggedUtilities.index');
+    Route::post('/flagged-utilities/{utility}/dismiss', [\App\Http\Controllers\Api\ApiUtilityReportController::class, 'resolve'])->name('flaggedUtilities.dismiss');
 });
 
 // Any logged-in user (ADMIN or GUEST)
@@ -29,7 +31,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/favorites', [ApiFavoriteUtilityController::class, 'index'])->name('favorites.index');
     Route::get('/favorites/ids', [ApiFavoriteUtilityController::class, 'ids'])->name('favorites.ids');
     Route::post('/favorites/{utility}', [ApiFavoriteUtilityController::class, 'toggle'])->name('favorites.toggle');
-    Route::put('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/utilities/{utility}/reports', [\App\Http\Controllers\Api\ApiUtilityReportController::class, 'store'])
+        ->middleware('throttle:10,1')
+        ->name('utilityReports.store');
+    Route::put('/profile',[\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])
         ->middleware('throttle:5,1')
         ->name('profile.password');

@@ -1,5 +1,5 @@
 import {Coords, ExistingCoords} from "@/types/coords";
-import {MovementEnum, TechniqueEnum, UtilityEnum, TeamEnum, KeyEnum} from "@/types/enums";
+import {MovementEnum, TechniqueEnum, UtilityEnum, TeamEnum, KeyEnum, ReportReasonEnum} from "@/types/enums";
 import {MapResponse} from "@/types/map";
 
 export type UtilityType = {
@@ -46,6 +46,10 @@ export type SingleUtilityResponse = {
     }[],
     key:string,
     notes: string | null,
+    // has open reports from players
+    is_flagged: boolean,
+    reported_by_me: boolean,
+    freshness: "new" | "updated" | null,
     created_at: string,
     updated_at: string,
     coords: Coords,
@@ -122,6 +126,35 @@ export type UtilityCardResponse = {
     favorites_count?: number,
     // badge for lineups created or marked as updated in the last 14 days
     freshness: "new" | "updated" | null,
+    // has open reports from players, shown until the lineup is updated or the reports are dismissed
+    is_flagged: boolean,
     created_at: string,
     content_updated_at: string | null,
 }
+
+export type FlaggedUtilityResponse = {
+    id: number,
+    title: string,
+    grenade_name: string,
+    utility_type: UtilityEnum,
+    utility_image: string,
+    team: TeamEnum,
+    team_image: string,
+    map_name: string,
+    map_image: string,
+    reports: {
+        id: number,
+        reason: ReportReasonEnum,
+        message: string | null,
+        user_name: string | null,
+        created_at: string,
+    }[],
+}
+
+export const REPORT_REASON_LABELS: Record<ReportReasonEnum, string> = {
+    OUTDATED: "Outdated after a map update",
+    WRONG_NAME: "Wrong name or position",
+    WRONG_LINEUP: "Lineup doesn't land",
+    BROKEN_MEDIA: "Broken video or images",
+    OTHER: "Something else",
+};

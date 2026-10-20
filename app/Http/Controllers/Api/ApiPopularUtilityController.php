@@ -22,6 +22,7 @@ class ApiPopularUtilityController extends Controller
                 'utilityCoordinates.end_utility_coordinates',
             ])
             ->withCount('favoritedBy')
+            ->withExists('openReports')
             // most recently marked as popular first
             ->orderByDesc(
                 PopularUtility::query()->select('created_at')->whereColumn('utility_id', 'utilities.id')

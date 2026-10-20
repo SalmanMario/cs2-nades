@@ -21,6 +21,7 @@ class ApiFavoriteUtilityController extends Controller
                 'utilityCoordinates.end_utility_coordinates',
             ])
             ->withCount('favoritedBy')
+            ->withExists('openReports')
             ->latest('favorite_utilities.created_at')
             ->get();
 

@@ -144,6 +144,9 @@ class UtilityController extends Controller
 
         $this->syncPopular($utility, $request->boolean('is_popular'));
 
+        // saving the lineup means the admin reviewed it, so its reports are handled
+        $utility->resolveReports();
+
         if ($request->image_lineup_ids)
             $this->attachmentService->process($request->image_lineup_ids, AttachmentType::IMAGE_LINEUP->value, $utility);
         if ($request->video_lineup_ids)
