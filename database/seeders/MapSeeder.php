@@ -25,6 +25,7 @@ class MapSeeder extends Seeder
             'Overpass',
             'Train',
             'Cache',
+            'Vertigo'
         ];
 
         $initialPath = File::allFiles('database/seeders/images/maps-img');
