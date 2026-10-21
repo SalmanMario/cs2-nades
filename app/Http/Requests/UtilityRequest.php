@@ -50,4 +50,12 @@ class UtilityRequest extends FormRequest
             'video_lineup' => 'nullable|array|mimes:mp4,avi,mov,wmv,flv,mkv|max:8192',
         ];
     }
+
+    public function attributes(): array
+    {
+        return [
+            'start_coords.title' => 'from',
+            'end_coords.title' => 'to',
+        ];
+    }
 }

@@ -20,6 +20,7 @@ const NAV_LINKS = [
     {to: "/popular", label: "Popular"},
     {to: "/latest", label: "Latest"},
     {to: "/my-favorites", label: "My Favorites"},
+    {to: "/request-nade", label: "Request a nade"},
 ] as const;
 
 export default function FrontendNavbar() {

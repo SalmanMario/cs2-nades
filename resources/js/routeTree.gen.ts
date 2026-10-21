@@ -13,6 +13,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RequestNadeIndexRouteImport } from './routes/request-nade/index'
 import { Route as PopularIndexRouteImport } from './routes/popular/index'
 import { Route as MyFavoritesIndexRouteImport } from './routes/my-favorites/index'
 import { Route as LatestIndexRouteImport } from './routes/latest/index'
@@ -20,6 +21,7 @@ import { Route as AdminAuthRouteImport } from './routes/admin/_auth'
 import { Route as MapsMapNameIndexRouteImport } from './routes/maps/$mapName/index'
 import { Route as MapsMapNameUtilityIdIndexRouteImport } from './routes/maps/$mapName/$utilityId/index'
 import { Route as AdminAuthDashboardIndexRouteImport } from './routes/admin/_auth/dashboard/index'
+import { Route as AdminAuthDashboardRequestsIndexRouteImport } from './routes/admin/_auth/dashboard/requests/index'
 import { Route as AdminAuthDashboardMapsIndexRouteImport } from './routes/admin/_auth/dashboard/maps/index'
 import { Route as AdminAuthDashboardFlaggedIndexRouteImport } from './routes/admin/_auth/dashboard/flagged/index'
 import { Route as AdminAuthDashboardMapsMapNameIndexRouteImport } from './routes/admin/_auth/dashboard/maps/$mapName/index'
@@ -44,6 +46,11 @@ const LoginRoute = LoginRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RequestNadeIndexRoute = RequestNadeIndexRouteImport.update({
+  id: '/request-nade/',
+  path: '/request-nade/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PopularIndexRoute = PopularIndexRouteImport.update({
@@ -82,6 +89,12 @@ const AdminAuthDashboardIndexRoute = AdminAuthDashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => AdminAuthRoute,
 } as any)
+const AdminAuthDashboardRequestsIndexRoute =
+  AdminAuthDashboardRequestsIndexRouteImport.update({
+    id: '/dashboard/requests/',
+    path: '/dashboard/requests/',
+    getParentRoute: () => AdminAuthRoute,
+  } as any)
 const AdminAuthDashboardMapsIndexRoute =
   AdminAuthDashboardMapsIndexRouteImport.update({
     id: '/dashboard/maps/',
@@ -122,11 +135,13 @@ export interface FileRoutesByFullPath {
   '/latest/': typeof LatestIndexRoute
   '/my-favorites/': typeof MyFavoritesIndexRoute
   '/popular/': typeof PopularIndexRoute
+  '/request-nade/': typeof RequestNadeIndexRoute
   '/maps/$mapName/': typeof MapsMapNameIndexRoute
   '/admin/dashboard/': typeof AdminAuthDashboardIndexRoute
   '/maps/$mapName/$utilityId/': typeof MapsMapNameUtilityIdIndexRoute
   '/admin/dashboard/flagged/': typeof AdminAuthDashboardFlaggedIndexRoute
   '/admin/dashboard/maps/': typeof AdminAuthDashboardMapsIndexRoute
+  '/admin/dashboard/requests/': typeof AdminAuthDashboardRequestsIndexRoute
   '/admin/dashboard/maps/$mapName/create': typeof AdminAuthDashboardMapsMapNameCreateRoute
   '/admin/dashboard/maps/$mapName/': typeof AdminAuthDashboardMapsMapNameIndexRoute
   '/admin/dashboard/maps/$mapName/$id/edit': typeof AdminAuthDashboardMapsMapNameIdEditRoute
@@ -140,11 +155,13 @@ export interface FileRoutesByTo {
   '/latest': typeof LatestIndexRoute
   '/my-favorites': typeof MyFavoritesIndexRoute
   '/popular': typeof PopularIndexRoute
+  '/request-nade': typeof RequestNadeIndexRoute
   '/maps/$mapName': typeof MapsMapNameIndexRoute
   '/admin/dashboard': typeof AdminAuthDashboardIndexRoute
   '/maps/$mapName/$utilityId': typeof MapsMapNameUtilityIdIndexRoute
   '/admin/dashboard/flagged': typeof AdminAuthDashboardFlaggedIndexRoute
   '/admin/dashboard/maps': typeof AdminAuthDashboardMapsIndexRoute
+  '/admin/dashboard/requests': typeof AdminAuthDashboardRequestsIndexRoute
   '/admin/dashboard/maps/$mapName/create': typeof AdminAuthDashboardMapsMapNameCreateRoute
   '/admin/dashboard/maps/$mapName': typeof AdminAuthDashboardMapsMapNameIndexRoute
   '/admin/dashboard/maps/$mapName/$id/edit': typeof AdminAuthDashboardMapsMapNameIdEditRoute
@@ -159,11 +176,13 @@ export interface FileRoutesById {
   '/latest/': typeof LatestIndexRoute
   '/my-favorites/': typeof MyFavoritesIndexRoute
   '/popular/': typeof PopularIndexRoute
+  '/request-nade/': typeof RequestNadeIndexRoute
   '/maps/$mapName/': typeof MapsMapNameIndexRoute
   '/admin/_auth/dashboard/': typeof AdminAuthDashboardIndexRoute
   '/maps/$mapName/$utilityId/': typeof MapsMapNameUtilityIdIndexRoute
   '/admin/_auth/dashboard/flagged/': typeof AdminAuthDashboardFlaggedIndexRoute
   '/admin/_auth/dashboard/maps/': typeof AdminAuthDashboardMapsIndexRoute
+  '/admin/_auth/dashboard/requests/': typeof AdminAuthDashboardRequestsIndexRoute
   '/admin/_auth/dashboard/maps/$mapName/create': typeof AdminAuthDashboardMapsMapNameCreateRoute
   '/admin/_auth/dashboard/maps/$mapName/': typeof AdminAuthDashboardMapsMapNameIndexRoute
   '/admin/_auth/dashboard/maps/$mapName/$id/edit': typeof AdminAuthDashboardMapsMapNameIdEditRoute
@@ -179,11 +198,13 @@ export interface FileRouteTypes {
     | '/latest/'
     | '/my-favorites/'
     | '/popular/'
+    | '/request-nade/'
     | '/maps/$mapName/'
     | '/admin/dashboard/'
     | '/maps/$mapName/$utilityId/'
     | '/admin/dashboard/flagged/'
     | '/admin/dashboard/maps/'
+    | '/admin/dashboard/requests/'
     | '/admin/dashboard/maps/$mapName/create'
     | '/admin/dashboard/maps/$mapName/'
     | '/admin/dashboard/maps/$mapName/$id/edit'
@@ -197,11 +218,13 @@ export interface FileRouteTypes {
     | '/latest'
     | '/my-favorites'
     | '/popular'
+    | '/request-nade'
     | '/maps/$mapName'
     | '/admin/dashboard'
     | '/maps/$mapName/$utilityId'
     | '/admin/dashboard/flagged'
     | '/admin/dashboard/maps'
+    | '/admin/dashboard/requests'
     | '/admin/dashboard/maps/$mapName/create'
     | '/admin/dashboard/maps/$mapName'
     | '/admin/dashboard/maps/$mapName/$id/edit'
@@ -215,11 +238,13 @@ export interface FileRouteTypes {
     | '/latest/'
     | '/my-favorites/'
     | '/popular/'
+    | '/request-nade/'
     | '/maps/$mapName/'
     | '/admin/_auth/dashboard/'
     | '/maps/$mapName/$utilityId/'
     | '/admin/_auth/dashboard/flagged/'
     | '/admin/_auth/dashboard/maps/'
+    | '/admin/_auth/dashboard/requests/'
     | '/admin/_auth/dashboard/maps/$mapName/create'
     | '/admin/_auth/dashboard/maps/$mapName/'
     | '/admin/_auth/dashboard/maps/$mapName/$id/edit'
@@ -234,6 +259,7 @@ export interface RootRouteChildren {
   LatestIndexRoute: typeof LatestIndexRoute
   MyFavoritesIndexRoute: typeof MyFavoritesIndexRoute
   PopularIndexRoute: typeof PopularIndexRoute
+  RequestNadeIndexRoute: typeof RequestNadeIndexRoute
   MapsMapNameIndexRoute: typeof MapsMapNameIndexRoute
   MapsMapNameUtilityIdIndexRoute: typeof MapsMapNameUtilityIdIndexRoute
 }
@@ -266,6 +292,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/request-nade/': {
+      id: '/request-nade/'
+      path: '/request-nade'
+      fullPath: '/request-nade/'
+      preLoaderRoute: typeof RequestNadeIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/popular/': {
@@ -317,6 +350,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthDashboardIndexRouteImport
       parentRoute: typeof AdminAuthRoute
     }
+    '/admin/_auth/dashboard/requests/': {
+      id: '/admin/_auth/dashboard/requests/'
+      path: '/dashboard/requests'
+      fullPath: '/admin/dashboard/requests/'
+      preLoaderRoute: typeof AdminAuthDashboardRequestsIndexRouteImport
+      parentRoute: typeof AdminAuthRoute
+    }
     '/admin/_auth/dashboard/maps/': {
       id: '/admin/_auth/dashboard/maps/'
       path: '/dashboard/maps'
@@ -359,6 +399,7 @@ interface AdminAuthRouteChildren {
   AdminAuthDashboardIndexRoute: typeof AdminAuthDashboardIndexRoute
   AdminAuthDashboardFlaggedIndexRoute: typeof AdminAuthDashboardFlaggedIndexRoute
   AdminAuthDashboardMapsIndexRoute: typeof AdminAuthDashboardMapsIndexRoute
+  AdminAuthDashboardRequestsIndexRoute: typeof AdminAuthDashboardRequestsIndexRoute
   AdminAuthDashboardMapsMapNameCreateRoute: typeof AdminAuthDashboardMapsMapNameCreateRoute
   AdminAuthDashboardMapsMapNameIndexRoute: typeof AdminAuthDashboardMapsMapNameIndexRoute
   AdminAuthDashboardMapsMapNameIdEditRoute: typeof AdminAuthDashboardMapsMapNameIdEditRoute
@@ -368,6 +409,7 @@ const AdminAuthRouteChildren: AdminAuthRouteChildren = {
   AdminAuthDashboardIndexRoute: AdminAuthDashboardIndexRoute,
   AdminAuthDashboardFlaggedIndexRoute: AdminAuthDashboardFlaggedIndexRoute,
   AdminAuthDashboardMapsIndexRoute: AdminAuthDashboardMapsIndexRoute,
+  AdminAuthDashboardRequestsIndexRoute: AdminAuthDashboardRequestsIndexRoute,
   AdminAuthDashboardMapsMapNameCreateRoute:
     AdminAuthDashboardMapsMapNameCreateRoute,
   AdminAuthDashboardMapsMapNameIndexRoute:
@@ -389,6 +431,7 @@ const rootRouteChildren: RootRouteChildren = {
   LatestIndexRoute: LatestIndexRoute,
   MyFavoritesIndexRoute: MyFavoritesIndexRoute,
   PopularIndexRoute: PopularIndexRoute,
+  RequestNadeIndexRoute: RequestNadeIndexRoute,
   MapsMapNameIndexRoute: MapsMapNameIndexRoute,
   MapsMapNameUtilityIdIndexRoute: MapsMapNameUtilityIdIndexRoute,
 }

@@ -24,6 +24,10 @@ Route::middleware('admin')->group(function () {
     Route::resource('utilities', UtilityController::class)->except('index');
     Route::get('/flagged-utilities', [\App\Http\Controllers\Api\ApiUtilityReportController::class, 'flagged'])->name('flaggedUtilities.index');
     Route::post('/flagged-utilities/{utility}/dismiss', [\App\Http\Controllers\Api\ApiUtilityReportController::class, 'resolve'])->name('flaggedUtilities.dismiss');
+    Route::get('/utility-requests', [\App\Http\Controllers\Api\ApiUtilityRequestController::class, 'index'])->name('utilityRequests.index');
+    Route::post('/utility-requests/{utilityRequest}/status', [\App\Http\Controllers\Api\ApiUtilityRequestController::class, 'updateStatus'])->name('utilityRequests.status');
+    Route::post('/utility-requests/{utilityRequest}/prefill', [\App\Http\Controllers\Api\ApiUtilityRequestController::class, 'prefill'])->name('utilityRequests.prefill');
+    Route::delete('/utility-requests/{utilityRequest}', [\App\Http\Controllers\Api\ApiUtilityRequestController::class, 'destroy'])->name('utilityRequests.destroy');
 });
 
 // Any logged-in user (ADMIN or GUEST)
@@ -34,6 +38,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/utilities/{utility}/reports', [\App\Http\Controllers\Api\ApiUtilityReportController::class, 'store'])
         ->middleware('throttle:10,1')
         ->name('utilityReports.store');
+    Route::get('/my-utility-requests', [\App\Http\Controllers\Api\ApiUtilityRequestController::class, 'mine'])->name('utilityRequests.mine');
+    Route::post('/utility-requests', [\App\Http\Controllers\Api\ApiUtilityRequestController::class, 'store'])
+        ->middleware('throttle:5,1')
+        ->name('utilityRequests.store');
     Route::put('/profile',[\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])
         ->middleware('throttle:5,1')

@@ -3,6 +3,7 @@ import {
     Bomb,
     Flag,
     LayoutDashboard,
+    Lightbulb,
 } from "lucide-react";
 import {Link, useNavigate} from "@tanstack/react-router";
 import {MapResponse} from "@/types/map";
@@ -27,6 +28,11 @@ const menu = [
         title: "Flagged",
         icon: Flag,
         href: "/admin/dashboard/flagged",
+    },
+    {
+        title: "Requests",
+        icon: Lightbulb,
+        href: "/admin/dashboard/requests",
     },
 ];
 

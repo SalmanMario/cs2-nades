@@ -1,5 +1,5 @@
 import {Coords, ExistingCoords} from "@/types/coords";
-import {MovementEnum, TechniqueEnum, UtilityEnum, TeamEnum, KeyEnum, ReportReasonEnum} from "@/types/enums";
+import {MovementEnum, TechniqueEnum, UtilityEnum, TeamEnum, KeyEnum, ReportReasonEnum, UtilityRequestStatusEnum} from "@/types/enums";
 import {MapResponse} from "@/types/map";
 
 export type UtilityType = {
@@ -157,4 +157,59 @@ export const REPORT_REASON_LABELS: Record<ReportReasonEnum, string> = {
     WRONG_LINEUP: "Lineup doesn't land",
     BROKEN_MEDIA: "Broken video or images",
     OTHER: "Something else",
+};
+
+export type UtilityRequestResponse = {
+    id: number,
+    grenade_name: string,
+    team_type: TeamEnum,
+    description: string | null,
+    source_url: string | null,
+    media: {
+        type: "image" | "video",
+        path: string,
+    }[],
+    status: UtilityRequestStatusEnum,
+    map_name: string,
+    map_image: string,
+    utility_type: UtilityEnum,
+    utility_image: string,
+    created_at: string,
+    // status changes, oldest first: the first one is the submission
+    history: UtilityRequestHistoryEntry[],
+    // only on the admin list
+    user_name?: string | null,
+}
+
+export type UtilityRequestHistoryEntry = {
+    id: number,
+    status: UtilityRequestStatusEnum,
+    // who made the change, null if the account was deleted
+    user_name: string | null,
+    created_at: string,
+}
+
+// values for the create lineup form, from a player's request
+export type UtilityRequestPrefill = {
+    id: number,
+    grenade_name: string,
+    utility_type_id: number,
+    team_type_id: number | null,
+    notes: string | null,
+    source_url: string | null,
+    // attachments copied from the request files
+    image_ids: number[],
+    video_ids: number[],
+}
+
+export const UTILITY_REQUEST_STATUS_LABELS: Record<UtilityRequestStatusEnum, string> = {
+    PENDING: "Waiting for review",
+    ADDED: "Added",
+    REJECTED: "Rejected",
+};
+
+export const UTILITY_REQUEST_STATUS_CLASSES: Record<UtilityRequestStatusEnum, string> = {
+    PENDING: "border-orange-500/40 bg-orange-500/10 text-orange-400",
+    ADDED: "border-emerald-500/40 bg-emerald-500/10 text-emerald-400",
+    REJECTED: "border-zinc-700 bg-zinc-800 text-zinc-400",
 };

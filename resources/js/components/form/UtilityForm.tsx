@@ -1,4 +1,4 @@
-import type {UtilityFormType, UtilityFormErrors} from "@/types/utility";
+import type {UtilityFormType, UtilityFormErrors, UtilityRequestPrefill} from "@/types/utility";
 import {useMutationApi} from "@/hooks/use-mutation";
 import React, {useEffect, useState} from "react";
 import {useQueryApi} from "@/hooks/use-query";
@@ -22,15 +22,18 @@ import 'filepond-plugin-media-preview/dist/filepond-plugin-media-preview.min.css
 import {FilePondFile, FilePondInitialFile} from "filepond";
 import {useNavigate} from "@tanstack/react-router";
 import {parseNumber} from "@/hooks/helper";
-import {getXsrfToken} from "@/lib/api";
+import api, {getXsrfToken} from "@/lib/api";
+import {ExternalLink} from "lucide-react";
 import {useQueryClient} from "@tanstack/react-query";
 import {MapResponse} from "@/types/map";
 
 registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType, FilePondPluginMediaPreview);
 
-export default function UtilityForm({utility = null, mapName}: {
+export default function UtilityForm({utility = null, mapName, prefill}: {
     utility: UtilityFormType | null,
-    mapName: string
+    mapName: string,
+    // new lineup from a player's request
+    prefill?: UtilityRequestPrefill,
 }) {
     const queryClient = useQueryClient();
 
@@ -119,7 +122,13 @@ export default function UtilityForm({utility = null, mapName}: {
         };
 
         handleMutation.mutate(payload, {
-            onSuccess: () => {
+            onSuccess: async () => {
+                if (prefill) {
+                    // the lineup is saved anyway, the request can still be marked from the requests page
+                    await api.post(`/utility-requests/${prefill.id}/status`, {status: "ADDED"}).catch(() => null);
+                    queryClient.invalidateQueries({queryKey: ['utilityRequests']});
+                    queryClient.removeQueries({queryKey: ['utilityRequestPrefill', prefill.id]});
+                }
                 queryClient.invalidateQueries({queryKey: ['utility', String(utility.id)]});
                 queryClient.invalidateQueries({queryKey: ['popularUtilities']});
                 queryClient.invalidateQueries({queryKey: ['latestUtilities']});
@@ -134,8 +143,13 @@ export default function UtilityForm({utility = null, mapName}: {
                 }).then();
             },
             onError: (error) => {
+                // the titles are sent inside the coords, but the inputs are title_from / title_to
+                const fieldNames: Record<string, keyof UtilityFormType> = {
+                    'start_coords.title': 'title_from',
+                    'end_coords.title': 'title_to',
+                };
                 Object.entries(error.errors).forEach(([field, message]) => {
-                    setError(field as keyof UtilityFormType, {message: message[0]})
+                    setError(fieldNames[field] ?? field as keyof UtilityFormType, {message: message[0]})
                 })
             }
         })
@@ -177,6 +191,18 @@ export default function UtilityForm({utility = null, mapName}: {
             setEndCoordinates({x: Number(utility.end_coords.x), y: Number(utility.end_coords.y)});
         }
     }, [utility, reset])
+
+    useEffect(() => {
+        if (!prefill) return;
+
+        setValue('grenade_name', prefill.grenade_name);
+        setValue('utility_type_id', String(prefill.utility_type_id));
+        if (prefill.team_type_id) setValue('team_type_id', String(prefill.team_type_id));
+        setValue('notes', prefill.notes ?? "");
+
+        setImageLineup(prefill.image_ids.map((id) => ({source: String(id), options: {type: 'local'}})));
+        setVideoLineup(prefill.video_ids.map((id) => ({source: String(id), options: {type: 'local'}})));
+    }, [prefill, setValue])
 
     const handleIsEditingStartCoordinates = () => {
         setIsEditingStartCoordinates((prev) => !prev)
@@ -255,6 +281,19 @@ export default function UtilityForm({utility = null, mapName}: {
                 clearErrors();
                 handleSubmit(onSubmit)(e);
             }}>
+                {prefill && (
+                    <div className="mb-5 rounded-xl border border-orange-500/30 bg-orange-500/5 p-4 text-sm text-zinc-300">
+                        Creating from a player's request. Check the details, set the coordinates and technique,
+                        the request is marked as added when you save.
+                        {prefill.source_url && (
+                            <a href={prefill.source_url} target="_blank" rel="noopener noreferrer nofollow"
+                               className="mt-2 flex w-fit max-w-full items-center gap-2 text-orange-400 hover:underline">
+                                <ExternalLink className="h-4 w-4 shrink-0"/>
+                                <span className="truncate">{prefill.source_url}</span>
+                            </a>
+                        )}
+                    </div>
+                )}
                 <div className="mb-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                     <div>
                         <Label htmlFor="grenade-name" className="">Grenade Name</Label>
