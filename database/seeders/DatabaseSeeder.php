@@ -16,12 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'CS2 Nades',
-            'email' => 'cs2-nades@gmail.com',
-            'password' => bcrypt('password'),
-            'role' => RoleEnum::ADMIN,
-        ]);
+        User::updateOrCreate(
+            ['email' => 'cs2-nades@gmail.com'],
+            [
+                'name' => 'CS2 Nades',
+                'password' => bcrypt('password'),
+                'role' => RoleEnum::ADMIN,
+                'email_verified_at' => now(),
+            ]
+        );
 
         $this->call(MapSeeder::class);
         $this->call(UtilityTypeSeeder::class);
