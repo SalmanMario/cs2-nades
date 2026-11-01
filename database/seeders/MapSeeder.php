@@ -54,7 +54,7 @@ class MapSeeder extends Seeder
 
         foreach ($maps as $map){
             Map::query()->updateOrCreate([
-                'name' => strtolower($map),
+                'name' => $map,
             ], [
                 'image' => '/storage/images/maps-img/'.strtolower($map).'.png',
                 'map_callouts' => '/storage/images/maps-callouts-img/'.strtolower($map).'_callouts.png',

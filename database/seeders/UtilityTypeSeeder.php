@@ -24,7 +24,7 @@ class UtilityTypeSeeder extends Seeder
             UtilityType::query()->updateOrCreate([
                 'name' => $nade->value,
             ], [
-                'image' => '/storage/images/nades-img/'.$nade->value.'.png',
+                'image' => '/storage/images/nades-img/'.strtolower($nade->value).'.png',
             ]);
         }
 
