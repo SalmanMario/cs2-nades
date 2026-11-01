@@ -54,11 +54,11 @@ class MapSeeder extends Seeder
 
         foreach ($maps as $map){
             Map::query()->updateOrCreate([
-                'name' => $map,
+                'name' => strtolower($map),
             ], [
-                'image' => '/storage/images/maps-img/'.$map.'.png',
-                'map_callouts' => '/storage/images/maps-callouts-img/'.$map.'_callouts.png',
-                'map_no_callouts' => '/storage/images/maps-callouts-img/'.$map.'_no_callouts.png',
+                'image' => '/storage/images/maps-img/'.strtolower($map).'.png',
+                'map_callouts' => '/storage/images/maps-callouts-img/'.strtolower($map).'_callouts.png',
+                'map_no_callouts' => '/storage/images/maps-callouts-img/'.strtolower($map).'_no_callouts.png',
                 'map_card_image' => '/storage/images/maps-card-img/'.strtolower($map).'_card_image.webp',
             ]);
         }
